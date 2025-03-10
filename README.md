@@ -1,75 +1,104 @@
-# Nuxt Minimal Starter
+# Mini-Games
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Description...
 
 ## Setup
 
-Make sure to install dependencies:
+1. Create empty root directory for the project:
+2. Go to the directory in the terminal:
+    ```bash
+    cd .../<project-name>
+    ```
+3. Clone the [client](https://github.com/iveke/minigames-client.git) repository
+    ```bash
+    git clone https://github.com/iveke/minigames-client.git ./minigames-client
+    ```
+4. Install Node.js from https://nodejs.org (if not installed).
+5. Install the dependencies:
+    ```bash
+    cd minigames-client 
+    ```
+   ```bash
+   npm install
+    ```
 
-```bash
-# npm
-npm install
+[//]: # (6. Go to the root)
 
-# pnpm
-pnpm install
+[//]: # (    ```bash)
 
-# yarn
-yarn install
+[//]: # (    cd ..)
 
-# bun
-bun install
-```
+[//]: # (    ```)
+
+[//]: # (7. Clone the [server]&#40;https://github.com/iveke/minigames-server.git&#41;)
+
+[//]: # (   )
+
+[//]: # (    ```bash)
+
+[//]: # (    cd backend)
+
+[//]: # (    ```)
+
+[//]: # (    ```bash)
+
+[//]: # (    git clone <link> .)
+
+[//]: # (    ```)
+
+[//]: # (8. Instal .NET SDK 8.0 from https://dotnet.microsoft.com/download/dotnet/8.0 &#40;if not installed&#41;.)
+
+[//]: # (9. Install the dependencies:)
+
+[//]: # (    ```bash)
+
+[//]: # (    ...)
+
+[//]: # (    ```)
 
 ## Development Server
 
-Start the development server on `http://localhost:3000`:
+Start the development server on http://localhost:3000:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+npm run dev -- -o
 ```
 
-## Production
-
-Build the application for production:
+Host the server on your local network:
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm run dev -- -o --host
 ```
 
-Locally preview production build:
+* http://192.168.1.68:3000/ on mobile if QR code does not work.
+* `Ctrl + C` to stop the server.
 
-```bash
-# npm
-npm run preview
+[//]: # (## Production)
 
-# pnpm
-pnpm preview
+[//]: # ()
 
-# yarn
-yarn preview
+[//]: # (Build the application for production:)
 
-# bun
-bun run preview
-```
+[//]: # ()
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+[//]: # (```bash)
+
+[//]: # (npm run build)
+
+[//]: # (```)
+
+[//]: # ()
+
+[//]: # (Locally preview production build:)
+
+[//]: # ()
+
+[//]: # (```bash)
+
+[//]: # (npm run preview)
+
+[//]: # (```)
+
+[//]: # ()
+
+[//]: # (Check out the [deployment documentation]&#40;https://nuxt.com/docs/getting-started/deployment&#41; for more information.)
