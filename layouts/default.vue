@@ -1,14 +1,18 @@
 <script setup>
 
+import Footer from "~/components/Footer.vue";
+import Header from "~/components/Header.vue";
 </script>
 
 <template>
 
-  <div class="container-default">
-    <Navigation/>
+  <Header/>
 
+  <main>
     <slot></slot>
-  </div>
+  </main>
+
+  <Footer/>
 
 
 </template>

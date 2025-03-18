@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const route = useRoute()
+
 </script>
 
 <template>
+  <NuxtLink to="/"><button>Головна</button></NuxtLink>
   <br>
-  <h2>Current route: {{ route.path }}</h2>
+  <slot></slot>
 </template>
 
 <style scoped>

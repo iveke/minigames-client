@@ -1,3 +1,11 @@
+:root {
+    /* Colors */
+    --header-color: #ffd7bb;
+
+    /* Paddings */
+    --default-section-padding-X: 5%;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

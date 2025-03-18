@@ -9,6 +9,19 @@ export default defineNuxtConfig({
   typescript: {
     strict: false
   },
-
+  imports: {
+    dirs: [
+     'utils/**'
+    ]
+  },
   css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+      title: 'GMini',
+      titleTemplate: '%s | GMini',
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    },
+  },
 })
