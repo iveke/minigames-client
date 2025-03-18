@@ -18,9 +18,5 @@ import Header from "~/components/Header.vue";
 </template>
 
 <style>
-.container-default {
-  border: 32px solid gray;
-  box-sizing: border-box;
-  padding: 32px;
-}
+
 </style>
