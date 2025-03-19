@@ -1,6 +1,4 @@
 <script setup>
-import {onMounted} from "vue";
-
 useHead({
   title: 'Авторизація',
 })
@@ -27,15 +25,15 @@ function LogIn() {
 <template>
   <br>
   <form action="">
+    <div class="input-fields">
+        <label for="email">Email </label>
+        <input v-model="email" id="email" type="email">
 
-    <label for="email">Email </label>
-    <input v-model="email" id="email" type="email">
+        <label for="password">Пароль </label>
+        <input v-model="password" id="password" type="password">
+    </div>
 
-    <label for="password">Пароль </label>
-    <input v-model="password" id="password" type="password">
-
-
-    <div class="sign-up-with">
+    <div class="login-with">
       <button @click="" type="button"><img src="" alt="">Google</button>
       <button @click="" type="button"><img src="" alt="">Apple</button>
     </div>
