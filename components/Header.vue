@@ -23,27 +23,27 @@ const auth = useAuthStore();
     </nav>
 
 
-    <client-only>
-      <div class="auth-block">
-        <div class="non-authorized" v-if="!auth.isAuthorized">
-          <NuxtLink to="/login">
-            <button>Увійти</button>
-          </NuxtLink>
-          <NuxtLink to="/signup">
-            <button>Зареєструватися</button>
-          </NuxtLink>
-        </div>
 
-
-        <div class="account" v-else>
-          <NuxtLink to="/account">
-            <button>Акаунт</button>
-          </NuxtLink>
-          <button @click="auth.logout">Вийти</button>
-        </div>
-
+    <div class="auth-block">
+      <div class="non-authorized" v-if="!auth.isAuthorized">
+        <NuxtLink to="/login">
+          <button>Увійти</button>
+        </NuxtLink>
+        <NuxtLink to="/signup">
+          <button>Зареєструватися</button>
+        </NuxtLink>
       </div>
-    </client-only>
+
+
+      <div class="account" v-else>
+        <NuxtLink to="/account">
+          <button>Акаунт</button>
+        </NuxtLink>
+        <button @click="auth.logout">Вийти</button>
+      </div>
+
+    </div>
+
 
   </header>
 </template>

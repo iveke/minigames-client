@@ -9,11 +9,11 @@ const email = ref('');
 const password = ref('');
 
 
-onBeforeMount(() => {
-  if (auth.isAuthorized) {
-    navigateTo('/account')
-  }
-})
+// onBeforeMount(() => {
+//   if (auth.isAuthorized) {
+//     navigateTo('/account')
+//   }
+// })
 function LogIn() {
   auth.login({
     email: email.value,
@@ -45,10 +45,10 @@ function LogIn() {
 
     <span class="">
       Ще не маєте акаунт?
-      <NuxtLink to="/signup">Завреєструватися</NuxtLink>
+      <NuxtLink to="/signup">Зареєструватися</NuxtLink>
     </span>
 
-    <button @click="LogIn" :disabled="!(email && password)">Увійти</button>
+    <button @click="LogIn" type="button" :disabled="!(email && password)">Увійти</button>
 
 <!--    <NuxtLink to="/account"><button @click="LogIn" type="submit">Увійти</button></NuxtLink>-->
   </form>

@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', {
 
                 navigateTo('/account');
 
-                localStorage.setItem('token', this.tempCredentials.token)
+                // localStorage.setItem('token', this.tempCredentials.token)
 
             }
         },
@@ -51,15 +51,17 @@ export const useAuthStore = defineStore('auth', {
         logout() {
             this.user = null;
             this.token = null;
-            localStorage.removeItem('token');
+            // localStorage.removeItem('token');
             navigateTo('/');
         },
 
-        initAuth() {
-            const token = localStorage.getItem('token')
-            if (token) {
-                this.token = token;
-            }
-        }
+        // initAuth() {
+        //     const token = localStorage.getItem('token')
+        //     if (token) {
+        //         this.token = token;
+        //     }
+        // }
     }
+}, {
+    persist: true
 })
