@@ -23,35 +23,43 @@ const auth = useAuthStore();
     </nav>
 
 
-    <div class="auth-block">
-      <div class="non-authorized" v-if="!auth.isAuthorized">
-            <NuxtLink to="/login"><button>Увійти</button></NuxtLink>
-            <NuxtLink to="/signup"><button>Зареєструватися</button></NuxtLink>
-      </div>
+    <client-only>
+      <div class="auth-block">
+        <div class="non-authorized" v-if="!auth.isAuthorized">
+          <NuxtLink to="/login">
+            <button>Увійти</button>
+          </NuxtLink>
+          <NuxtLink to="/signup">
+            <button>Зареєструватися</button>
+          </NuxtLink>
+        </div>
 
-      <div class="account" v-else>
-        <NuxtLink to="/account">
-          <button>Акаунт</button>
-        </NuxtLink>
-        <button @click="() => {auth.deauthorize; navigateTo('/')}">Вийти</button>
+
+        <div class="account" v-else>
+          <NuxtLink to="/account">
+            <button>Акаунт</button>
+          </NuxtLink>
+          <button @click="auth.logout">Вийти</button>
+        </div>
+
       </div>
-    </div>
+    </client-only>
+
   </header>
 </template>
 
 <style scoped>
-  header {
-    width: 100%;
-    height: 80px;
-    background-color: var(--header-color);
+header {
+  width: 100%;
+  height: 80px;
+  background-color: var(--header-color);
 
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 var(--default-section-padding-X);
-  }
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--default-section-padding-X);
+}
 
 
 </style>

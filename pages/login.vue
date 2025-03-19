@@ -1,11 +1,27 @@
 <script setup>
+import {onMounted} from "vue";
+
 useHead({
   title: 'Авторизація',
 })
-definePageMeta({
-  layout: 'auth',
-})
+
 const auth = useAuthStore();
+
+const email = ref('');
+const password = ref('');
+
+
+onBeforeMount(() => {
+  if (auth.isAuthorized) {
+    navigateTo('/account')
+  }
+})
+function LogIn() {
+  auth.login({
+    email: email.value,
+    password: password.value,
+  })
+}
 </script>
 
 <template>
@@ -13,12 +29,30 @@ const auth = useAuthStore();
   <form action="">
 
     <label for="email">Email </label>
-    <input id="email" type="email"><br>
+    <input v-model="email" id="email" type="email">
 
     <label for="password">Пароль </label>
-    <input id="password" type="password"><br>
+    <input v-model="password" id="password" type="password">
 
-    <NuxtLink to="/account"><button @click="auth.authorize" type="submit">Увійти</button></NuxtLink>
+
+    <div class="sign-up-with">
+      <button @click="" type="button"><img src="" alt="">Google</button>
+      <button @click="" type="button"><img src="" alt="">Apple</button>
+    </div>
+
+
+    <div class="status-note">
+      Неправильний логін або пароль
+    </div>
+
+    <span class="">
+      Ще не маєте акаунт?
+      <NuxtLink to="/signup">Завреєструватися</NuxtLink>
+    </span>
+
+    <button @click="LogIn" :disabled="!(email && password)">Увійти</button>
+
+<!--    <NuxtLink to="/account"><button @click="LogIn" type="submit">Увійти</button></NuxtLink>-->
   </form>
 
 </template>

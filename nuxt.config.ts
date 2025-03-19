@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-03-08',
   devtools: { enabled: true },
   modules: ['@pinia/nuxt'],
+  ssr: true,
   pinia: {
     storesDirs: ['./stores/**'],
   },
@@ -23,5 +24,6 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]
     },
+
   },
 })
