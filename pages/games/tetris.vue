@@ -190,9 +190,10 @@ function RandomTetramino() {
 
 function GetNextTetramino() {
 
-  currentTetramino.value = nextTetramino.value
+  currentTetramino.value = JSON.parse(JSON.stringify(nextTetramino.value))
   nextTetramino.value = RandomTetramino()
-  const newPosX = 10 / 2 - currentTetramino.value.shape[0].length / 2
+
+  let newPosX = 10 / 2 - Math.floor(currentTetramino.value.shape[0].length / 2)
   pos.value = {_x: newPosX, _y: 0}
 
 }
@@ -234,15 +235,7 @@ function FixTetramino() {
   board.value = displayedBoard.value.map(row => row.map(cell => cell))
 
   ClearLine()
-
-  currentTetramino.value = nextTetramino.value
-  nextTetramino.value = RandomTetramino()
-
-  let newPosX = 10 / 2 - Math.floor(currentTetramino.value.shape[0].length / 2)
-  pos.value = {_x: newPosX, _y: 0}
-  // const newPosX = 10 / 2 - currentTetramino.value.shape[0].length / 2
-  // pos.value = {_x: newPosX, _y: 0}
-
+  GetNextTetramino()
 
 }
 function ClearLine() {
@@ -341,6 +334,16 @@ watch(gameState, (state) => {
       <button @click="Right">Right</button>
       <button @click="Rotate">Rotate</button>
       <br>
+      Натсупний: br
+      <div class="game-board">
+        <div class="row" v-for="row in nextTetramino?.shape">
+          <div v-for="cell in row"
+               class="cell"
+               :class="cell === 0 ? 'empty' : 'piece-' + piecesIDs[nextTetramino.id]"
+          ></div>
+        </div>
+      </div>
+
 
       {{ gameState === 3 ? 'Game over' : gameState === 2 ? 'Pause' : ''}}<br>
       <br>
