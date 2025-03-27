@@ -2,10 +2,11 @@
 const { gameState } = defineProps({
   gameState: Number
 })
+const NOT_ACTIVE = computed(() => gameState === states.NOT_ACTIVE)
+
 const ACTIVE = computed(() => gameState === states.ACTIVE)
 const PAUSED = computed(() => gameState === states.PAUSED)
 const GAME_OVER = computed(() => gameState === states.GAME_OVER)
-const NOT_ACTIVE = computed(() => gameState === states.NOT_ACTIVE)
 
 const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'resume', 'reset', 'start'])
 </script>
@@ -19,14 +20,15 @@ const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'r
     <button @click="emit('rotate')" :disabled="!ACTIVE">Rotate</button>
   </div>
   {{gameState}}<br>
+  {{NOT_ACTIVE}}
   {{ACTIVE}}
   {{PAUSED}}
   {{GAME_OVER}}
-  {{NOT_ACTIVE}}
   <div class="state-manager">
     <button v-if="ACTIVE" @click="emit('pause')">Pause</button>
     <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>
     <div v-else>
+      <client-only>
       <Teleport to="#board">
         <div class="modal">
           <div v-if="GAME_OVER" class="inner">
@@ -35,10 +37,11 @@ const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'r
           </div>
           <div v-else-if="NOT_ACTIVE" class="inner">
             <h2>Play!</h2>
-            <button @click="emit('reset')">Start</button>
+            <button @click="emit('start')">Start</button>
           </div>
         </div>
       </Teleport>
+      </client-only>
     </div>
   </div>
 </template>

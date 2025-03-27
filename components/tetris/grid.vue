@@ -13,6 +13,7 @@ const {board, currentTetromino} = defineProps({
 })
 
 const displayedBoard = computed(() => {
+
   return board.flat()
 })
 

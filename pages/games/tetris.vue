@@ -6,6 +6,12 @@ import Controller from "~/components/tetris/controller.vue";
 
 
 const gameState = ref(states.NOT_ACTIVE)
+
+const ACTIVE = computed(() => gameState.value === states.ACTIVE)
+const PAUSED = computed(() => gameState.value === states.PAUSED)
+const GAME_OVER = computed(() => gameState.value === states.GAME_OVER)
+const NOT_ACTIVE = computed(() => gameState.value === states.NOT_ACTIVE)
+
 const board = ref(Array(20).fill().map(() => Array(10).fill(0)))
 const currentTetromino = ref({
   x: 0,
@@ -27,11 +33,93 @@ function NextTetramino() {
     ...tetraminos[Math.floor(Math.random() * tetraminos.length)]
   }
 }
-function down() {}
-function drop() {}
-function right() {}
-function left() {}
-function rotate() {}
+
+function FixTetramino() {
+  console.log("fix")
+}
+
+
+// Collision Lambdas
+
+const CollideBottom = () => {
+  const x = currentTetromino.value.x
+  const y = currentTetromino.value.y
+  let isCollide = false
+
+  if (y + 1 >= 20
+      || board.value[y + 1][x] !== 0) {
+    isCollide = true
+  }
+  return isCollide
+}
+const CollideLeft = () => {
+  const x = currentTetromino.value.x
+  const y = currentTetromino.value.y
+  let isCollide = false
+
+  if (x - 1 < 0
+      || board.value[y][x - 1] !== 0) {
+    isCollide = true
+  }
+  return isCollide
+}
+const CollideRight = () => {
+  const x = currentTetromino.value.x
+  const y = currentTetromino.value.y
+  let isCollide = false
+
+  if (x + 1 >= 10
+      || board.value[y][x + 1] !== 0) {
+    isCollide = true
+  }
+  return isCollide
+}
+
+
+
+// Tetramino controller Functions
+
+function drop() {
+  if (!ACTIVE.value) return
+
+  for (let i = 0; i < 20; i++) {
+    if (CollideBottom()) break;
+
+    currentTetromino.value.y++;
+  }
+
+}
+function down() {
+  if (!ACTIVE.value) return
+  if (CollideBottom()) return
+
+  currentTetromino.value.y++;
+}
+
+function right() {
+  if (!ACTIVE.value) return
+  if (CollideRight()) return
+
+  currentTetromino.value.x++;
+}
+function left() {
+  if (!ACTIVE.value) return
+  if (CollideLeft()) return
+
+  currentTetromino.value.x--;
+}
+function rotate() {
+  if (!ACTIVE.value) return
+  if (CollideRight()) {}
+  if (CollideLeft()) {}
+  if (CollideBottom()) {}
+
+  console.log("rotate")
+}
+
+
+// Game state functions
+
 function pause() {gameState.value = states.PAUSED}
 function resume() {gameState.value = states.ACTIVE}
 function reset() {gameState.value = states.NOT_ACTIVE}
@@ -45,6 +133,11 @@ function start() {gameState.value = states.ACTIVE}
       <Grid :board :currentTetromino/>
     </div>
     <Stats :next-tetramino="nextTetromino">
+      ({{ currentTetromino.x }}, {{ currentTetromino.y }})
+      {{ NOT_ACTIVE }}
+      {{ ACTIVE }}
+      {{ PAUSED }}
+      {{ GAME_OVER }}
       <Controller
           :gameState
           @down="down"
