@@ -1,5 +1,5 @@
 <script setup>
-const { gameState } = defineProps({
+const {gameState} = defineProps({
   gameState: Number
 })
 const NOT_ACTIVE = computed(() => gameState === states.NOT_ACTIVE)
@@ -19,30 +19,34 @@ const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'r
     <button @click="emit('drop')" :disabled="!ACTIVE">Drop</button>
     <button @click="emit('rotate')" :disabled="!ACTIVE">Rotate</button>
   </div>
-  {{gameState}}<br>
-  {{NOT_ACTIVE}}
-  {{ACTIVE}}
-  {{PAUSED}}
-  {{GAME_OVER}}
+  {{ gameState }}<br>
+  {{ NOT_ACTIVE }}
+  {{ ACTIVE }}
+  {{ PAUSED }}
+  {{ GAME_OVER }}
   <div class="state-manager">
     <button v-if="ACTIVE" @click="emit('pause')">Pause</button>
-    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>
-    <div v-else>
-      <client-only>
-      <Teleport to="#board">
-        <div class="modal">
-          <div v-if="GAME_OVER" class="inner">
-            <h2>Game Over!</h2>
-            <button @click="emit('reset')">Reset</button>
-          </div>
-          <div v-else-if="NOT_ACTIVE" class="inner">
-            <h2>Play!</h2>
-            <button @click="emit('start')">Start</button>
-          </div>
-        </div>
-      </Teleport>
-      </client-only>
-    </div>
+    <Modal v-if="PAUSED"
+           teleport-to="#board"
+           button-text="Resume"
+           label-text="Paused!"
+           @action="emit('resume')"
+    />
+<!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
+<!--    <div v-else>-->
+      <Modal v-if="GAME_OVER"
+             teleport-to="#board"
+             button-text="Reset"
+             label-text="Game over!"
+             @action="emit('reset')"
+      />
+      <Modal v-if="NOT_ACTIVE"
+             teleport-to="#board"
+             button-text="Start"
+             label-text="Play!"
+             @action="emit('start')"
+      />
+<!--    </div>-->
   </div>
 </template>
 
@@ -53,31 +57,5 @@ const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'r
   gap: 4px;
 }
 
-.modal {
-  width: 100%;
-  height: 100%;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  position: absolute;
-  top: 0;
-
-  background-color: rgba(0, 0, 0, 0.5);
-}
-.inner {
-  position: relative;
-  background-color: #13111E;
-  color: white;
-  width: 160px;
-  height: 100px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-}
 </style>

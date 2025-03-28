@@ -1,5 +1,6 @@
 <script setup>
 import Cell from "~/components/tetris/cell.vue";
+import {matrixMerge} from "~/composables/matrixMerge.js";
 
 const {board, currentTetromino} = defineProps({
   board: {
@@ -13,8 +14,11 @@ const {board, currentTetromino} = defineProps({
 })
 
 const displayedBoard = computed(() => {
+  const newBoard = matrixMerge(board, currentTetromino.shape, currentTetromino.x, currentTetromino.y)
+  // console.log("newBoard", newBoard)
 
-  return board.flat()
+  // console.log("board", board)
+  return newBoard.flat()
 })
 
 </script>
