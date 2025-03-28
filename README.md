@@ -22,42 +22,25 @@ Description...
    npm install
     ```
 
-[//]: # (6. Go to the root)
+6. Go to the root
 
-[//]: # (    ```bash)
+    ```bash
+    cd ..
+    ```
 
-[//]: # (    cd ..)
+7. Clone the [server](https://github.com/iveke/minigames-back.git)
+    ```bash
+    git clone https://github.com/iveke/minigames-back.git ./minigames-back
 
-[//]: # (    ```)
+    ```
 
-[//]: # (7. Clone the [server]&#40;https://github.com/iveke/minigames-server.git&#41;)
+8. Instal .NET SDK 8.0 from https://dotnet.microsoft.com/download/dotnet/8.0 (if not installed).
 
-[//]: # (   )
 
-[//]: # (    ```bash)
-
-[//]: # (    cd backend)
-
-[//]: # (    ```)
-
-[//]: # (    ```bash)
-
-[//]: # (    git clone <link> .)
-
-[//]: # (    ```)
-
-[//]: # (8. Instal .NET SDK 8.0 from https://dotnet.microsoft.com/download/dotnet/8.0 &#40;if not installed&#41;.)
-
-[//]: # (9. Install the dependencies:)
-
-[//]: # (    ```bash)
-
-[//]: # (    ...)
-
-[//]: # (    ```)
 
 ## Development Server
 
+### Frontend
 Start the development server on http://localhost:3000:
 
 ```bash
@@ -73,6 +56,15 @@ npm run dev -- -o --host
 * http://192.168.1.68:3000/ on mobile if QR code does not work.
 * `Ctrl + C` to stop the server.
 
+### Backend
+
+Start the development server on http://localhost::
+```bash
+cd minigames-back
+```
+```bash
+dotnet run
+```
 [//]: # (## Production)
 
 [//]: # ()
