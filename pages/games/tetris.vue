@@ -4,10 +4,11 @@ import Stats from "~/components/tetris/stats.vue";
 import {tetraminos} from "~/utils/constants.js";
 import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
+import {hasEmptyCell} from "~/composables/hasEmptyCell.js";
 
 
 const gameState = ref(states.NOT_ACTIVE)
-const clearedLines = ref()
+const clearedLines = ref(0)
 
 const ACTIVE = computed(() => gameState.value === states.ACTIVE)
 const PAUSED = computed(() => gameState.value === states.PAUSED)
@@ -31,13 +32,17 @@ const tetraminoHeigth = computed(() => {
   return height
 })
 const tetraminoTrueY = computed(() => {
-  // const shape = currentTetromino.value.shape;
-  // let trueY = currentTetromino.value.y;
-  // for (let i = 0; i < shape.length; i++) {
-  //   if (arrSum(shape[i]) !== 0) {
-  //     height++
-  //   }
-  // }
+  const shape = currentTetromino.value.shape;
+  let trueY = currentTetromino.value.y;
+  for (let i = 0; i < shape.length; i++) {
+    console.log(shape[i])
+    if (arrSum(shape[i]) === 0) {
+      trueY++
+    } if (arrSum(shape[i]) !== 0) {
+      break
+    }
+  }
+  return trueY
 })
 const nextTetromino = ref({
   x: 0,
@@ -57,6 +62,7 @@ function NextTetramino() {
     ...tetraminos[Math.floor(Math.random() * tetraminos.length)]
   }
   CalcNewPositionX()
+
   if (Overlap()) {
     gameOver()
   }
@@ -66,14 +72,22 @@ function NextTetramino() {
 function FixTetramino() {
   const newBoard = matrixMerge(board.value, currentTetromino.value.shape, currentTetromino.value.x, currentTetromino.value.y)
   board.value = newBoard
-  const height = 0
   const y = currentTetromino.value.y
-  ClearLine(y, height)
+  ClearLine(y, tetraminoHeigth.value)
   NextTetramino()
 }
 
 function ClearLine(y, height) {
-  console.log(y, height)
+  for (let i = y; i < y + height; i++) {
+    console.log(i)
+    if (!hasEmptyCell(board.value[i])) {
+      console.log(board.value[i])
+      clearedLines.value++
+      board.value.splice(i, 1)
+      board.value.unshift(Array(10).fill(0))
+    }
+  }
+  // console.log(y, height)
 }
 
 // Collision Lambdas
@@ -119,7 +133,6 @@ const CollideLeft = () => {
   const x = currentTetromino.value.x
   const y = currentTetromino.value.y
   const shape = currentTetromino.value.shape
-
   let isCollide = false
 
   for (let i = 0; i < shape.length; i++) {
@@ -198,14 +211,32 @@ function left() {
 
 function rotate() {
   if (!ACTIVE.value) return
-  if (CollideRight()) {
-  }
-  if (CollideLeft()) {
-  }
-  if (CollideBottom()) {
-  }
 
-  console.log("rotate")
+  currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+
+  for (let i = 0; i < 2; i++) {
+    if (Overlap()) {
+      console.log("overlap")
+      if (!CollideRight()) {
+        console.log("right")
+        currentTetromino.value.x++
+        continue
+      }
+      else if (!CollideLeft()) {
+        console.log("left")
+        currentTetromino.value.x--
+        continue
+      }
+      currentTetromino.value.y--
+      if (!CollideBottom()) {
+        currentTetromino.value.y++
+        continue
+      }
+      else {
+        currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+      }
+    }
+  }
 }
 
 
@@ -242,7 +273,7 @@ function gameOver() {
 function keyboardController(event) {
   if (!ACTIVE.value) return
 
-  if (event.ctrlKey || event.altKey || event.metaKey) {
+  if (event.ctrlKey || event.altKey || event.metaKey || event.key === ' ') {
     event.preventDefault();
   }
   switch (event.key) {
@@ -274,39 +305,67 @@ onBeforeUnmount(() => {
 
 
 <template>
-  <div class="tetris">
-    <div id="board">
-      <Grid :board :currentTetromino/>
+  <main>
+
+    <div class="tetris">
+      <div class="temp-grid">
+        <div class="temp-cell" v-for="i in 20">{{ i - 1}}</div>
+      </div>
+      <div id="board">
+        <Grid :board :currentTetromino/>
+      </div>
+      <Stats :next-tetramino="nextTetromino">
+        ({{ currentTetromino.x }}, {{ currentTetromino.y }})
+        <br>
+        {{ tetraminoHeigth}} {{ tetraminoTrueY }}
+        <br>
+        lines: {{ clearedLines }}
+        <!--      {{ NOT_ACTIVE }}-->
+        <!--      {{ ACTIVE }}-->
+        <!--      {{ PAUSED }}-->
+        <!--      {{ GAME_OVER }}-->
+        <Controller
+            :gameState
+            @down="down"
+            @drop="drop"
+            @right="right"
+            @left="left"
+            @rotate="rotate"
+
+            @pause="pause"
+            @resume="resume"
+            @reset="reset"
+            @start="start"
+        />
+      </Stats>
     </div>
-    <Stats :next-tetramino="nextTetromino">
-      ({{ currentTetromino.x }}, {{ currentTetromino.y }})
-      <br>
-      {{ tetraminoHeigth}}
-      <!--      {{ NOT_ACTIVE }}-->
-      <!--      {{ ACTIVE }}-->
-      <!--      {{ PAUSED }}-->
-      <!--      {{ GAME_OVER }}-->
-      <Controller
-          :gameState
-          @down="down"
-          @drop="drop"
-          @right="right"
-          @left="left"
-          @rotate="rotate"
-
-          @pause="pause"
-          @resume="resume"
-          @reset="reset"
-          @start="start"
-      />
-    </Stats>
-  </div>
-  <button class="temp" @click="FixTetramino">Fix</button>
-  <button class="temp" @click="NextTetramino">Next</button>
-
+    <button class="temp" @click="FixTetramino">Fix</button>
+    <button class="temp" @click="NextTetramino">Next</button>
+  </main>
 </template>
 
 <style scoped>
+.temp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+}
+.temp-cell {
+  width: 24px;
+  height: 24px;
+  background-color: #1D1A2D;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
 #board {
   position: relative;
   width: fit-content;

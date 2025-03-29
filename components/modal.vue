@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 const emit = defineEmits(['action'])
 defineProps({
   teleportTo: {
@@ -20,7 +20,7 @@ defineProps({
   <client-only>
     <Teleport :to="teleportTo">
       <div class="modal">
-        <div class="inner">
+        <div class="plate">
           <h2>{{ labelText}}</h2>
           <button @click="emit('action')">{{ buttonText }}</button>
         </div>
@@ -44,7 +44,7 @@ defineProps({
 
   background-color: rgba(0, 0, 0, 0.5);
 }
-.inner {
+.plate {
   position: relative;
   background-color: #13111E;
   color: white;
@@ -56,5 +56,7 @@ defineProps({
   align-items: center;
   justify-content: center;
   gap: 16px;
+
+  border: 2px solid white;
 }
 </style>
