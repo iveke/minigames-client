@@ -1,7 +1,6 @@
 <script setup>
 import Grid from "~/components/tetris/grid.vue";
 import Stats from "~/components/tetris/stats.vue";
-import {tetraminos} from "~/utils/constants.js";
 import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
 import {hasEmptyCell} from "~/composables/hasEmptyCell.js";
@@ -70,8 +69,7 @@ function NextTetramino() {
 
 
 function FixTetramino() {
-  const newBoard = matrixMerge(board.value, currentTetromino.value.shape, currentTetromino.value.x, currentTetromino.value.y)
-  board.value = newBoard
+  board.value = matrixMerge(board.value, currentTetromino.value.shape, currentTetromino.value.x, currentTetromino.value.y)
   const y = currentTetromino.value.y
   ClearLine(y, tetraminoHeigth.value)
   NextTetramino()
@@ -230,7 +228,6 @@ function rotate() {
       currentTetromino.value.y--
       if (!CollideBottom()) {
         currentTetromino.value.y++
-        continue
       }
       else {
         currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
@@ -263,44 +260,41 @@ function start() {
   NextTetramino()
 
   gameState.value = states.ACTIVE
-
 }
 
 function gameOver() {
   gameState.value = states.GAME_OVER
 }
 
-function keyboardController(event) {
-  if (!ACTIVE.value) return
 
-  if (event.ctrlKey || event.altKey || event.metaKey || event.key === ' ') {
-    event.preventDefault();
-  }
-  switch (event.key) {
-    case ' ':
-      drop()
-      break;
-    case 'ArrowLeft':
-      left()
-      break;
-    case 'ArrowRight':
-      right()
-      break;
-    case 'ArrowDown':
-      down()
-      break;
-    case 'ArrowUp':
-      rotate()
-      break;
-  }
-}
 
-onMounted(() => {
-  window.addEventListener('keydown', keyboardController)
-})
-onBeforeUnmount(() => {
-  window.removeEventListener('keydown', keyboardController)
-})
+// Safe exit
+
+// function safeExit(event) {
+//   if (!NOT_ACTIVE.value)
+//   {
+//     event.preventDefault();
+//   }
+// }
+// onMounted(() => {
+//   window.addEventListener("beforeunload", safeExit)
+// })
+// onBeforeUnmount(() => {
+//   window.addEventListener("beforeunload", safeExit)
+// })
+//
+// onBeforeRouteLeave((to, from, next) => {
+//   if (!NOT_ACTIVE.value) {
+//     const answer = window.confirm('Ви дійсно хочете покинути цю сторінку?')
+//     if (answer) {
+//       next() // Разрешаем переход
+//     } else {
+//       next(false) // Отменяем переход
+//     }
+//   } else {
+//     next()
+//   }
+// })
 </script>
 
 
@@ -312,6 +306,26 @@ onBeforeUnmount(() => {
         <div class="temp-cell" v-for="i in 20">{{ i - 1}}</div>
       </div>
       <div id="board">
+        <Modal v-if="NOT_ACTIVE"
+               teleport-to="#board"
+               button-text="Start"
+               label-text="Play!"
+               @action="start"
+        />
+        <Modal v-if="PAUSED"
+               teleport-to="#board"
+               button-text="Resume"
+               label-text="Paused!"
+               @action="resume"
+        />
+        <!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
+        <!--    <div v-else>-->
+        <Modal v-if="GAME_OVER"
+               teleport-to="#board"
+               button-text="Reset"
+               label-text="Game over!"
+               @action="reset"
+        />
         <Grid :board :currentTetromino/>
       </div>
       <Stats :next-tetramino="nextTetromino">

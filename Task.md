@@ -19,10 +19,12 @@
 - ~~Make reset~~
 
 
+- Make defineKeydowns macros
 - Separate code
   - Put game state in pinia 
   - Put tetramino controls in pinia? logic?
   - Put collide in composables?
+
 
 
 - Remake modal window (make it SSR able)

@@ -9,6 +9,38 @@ const PAUSED = computed(() => gameState === states.PAUSED)
 const GAME_OVER = computed(() => gameState === states.GAME_OVER)
 
 const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'resume', 'reset', 'start'])
+
+function keyboardController(event) {
+  if (!ACTIVE.value) return
+
+  if (event.ctrlKey || event.altKey || event.metaKey || event.key === ' ') {
+    event.preventDefault();
+  }
+  switch (event.key) {
+    case ' ':
+      emit('drop')
+      break;
+    case 'ArrowLeft':
+      emit('left')
+      break;
+    case 'ArrowRight':
+      emit('right')
+      break;
+    case 'ArrowDown':
+      emit('down')
+      break;
+    case 'ArrowUp':
+      emit('rotate')
+      break;
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', keyboardController)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', keyboardController)
+})
 </script>
 
 <template>
@@ -26,26 +58,7 @@ const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'r
   {{ GAME_OVER }}
   <div class="state-manager">
     <button v-if="ACTIVE" @click="emit('pause')">Pause</button>
-    <Modal v-if="PAUSED"
-           teleport-to="#board"
-           button-text="Resume"
-           label-text="Paused!"
-           @action="emit('resume')"
-    />
-<!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
-<!--    <div v-else>-->
-      <Modal v-if="GAME_OVER"
-             teleport-to="#board"
-             button-text="Reset"
-             label-text="Game over!"
-             @action="emit('reset')"
-      />
-      <Modal v-if="NOT_ACTIVE"
-             teleport-to="#board"
-             button-text="Start"
-             label-text="Play!"
-             @action="emit('start')"
-      />
+
 <!--    </div>-->
   </div>
 </template>
