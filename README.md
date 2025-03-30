@@ -61,9 +61,11 @@ Description...
 Run tests:
 
 ```bash
-npm run test
+npm run test # interface in CLI
 ```
-
+```bash
+npx vitest --ui # interface in browser
+```
 Start the development server on http://localhost:3000:
 
 ```bash
