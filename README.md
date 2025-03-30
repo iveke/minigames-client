@@ -58,6 +58,12 @@ Description...
 
 ## Development Server
 
+Run tests:
+
+```bash
+npm run test
+```
+
 Start the development server on http://localhost:3000:
 
 ```bash
