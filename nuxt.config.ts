@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
     compatibilityDate: '2025-03-08',
     devtools: {enabled: true},
-    modules: ['@pinia/nuxt'],
+    modules: ['@pinia/nuxt', '@nuxt/test-utils'],
     ssr: true,
     pinia: {
         storesDirs: ['./stores/**'],
