@@ -37,7 +37,8 @@ const tetraminoTrueY = computed(() => {
     console.log(shape[i])
     if (arrSum(shape[i]) === 0) {
       trueY++
-    } if (arrSum(shape[i]) !== 0) {
+    }
+    if (arrSum(shape[i]) !== 0) {
       break
     }
   }
@@ -51,8 +52,9 @@ const nextTetromino = ref({
 
 
 function CalcNewPositionX() {
-  nextTetromino.value.x = 10/2 - Math.floor(nextTetromino.value.shape[0].length/2)
+  nextTetromino.value.x = 10 / 2 - Math.floor(nextTetromino.value.shape[0].length / 2)
 }
+
 function NextTetramino() {
   currentTetromino.value = nextTetromino.value
   nextTetromino.value = {
@@ -173,7 +175,7 @@ function drop() {
   if (!ACTIVE.value) return
 
   for (let i = 0; i < 20; i++) {
-    if (CollideBottom()){
+    if (CollideBottom()) {
       FixTetramino()
       break
     }
@@ -212,28 +214,33 @@ function rotate() {
 
   currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 4; i++) {
     if (Overlap()) {
       console.log("overlap")
       if (!CollideRight()) {
-        console.log("right")
         currentTetromino.value.x++
-        continue
-      }
-      else if (!CollideLeft()) {
-        console.log("left")
+        break
+      } else if (!CollideLeft()) {
         currentTetromino.value.x--
-        continue
-      }
-      currentTetromino.value.y--
-      if (!CollideBottom()) {
-        currentTetromino.value.y++
-      }
-      else {
-        currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+        break
+      } else {
+        currentTetromino.value.y--
+        if (!Overlap()) {
+          break
+        } else {
+          currentTetromino.value.y++
+          currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+        }
       }
     }
   }
+  // currentTetromino.value.y--
+  // if (!CollideBottom()) {
+  //   currentTetromino.value.y++
+  // // }
+  // else {
+  //   currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+  // }
 }
 
 
@@ -265,7 +272,6 @@ function start() {
 function gameOver() {
   gameState.value = states.GAME_OVER
 }
-
 
 
 // Safe exit
@@ -303,7 +309,7 @@ function gameOver() {
 
     <div class="tetris">
       <div class="temp-grid">
-        <div class="temp-cell" v-for="i in 20">{{ i - 1}}</div>
+        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>
       </div>
       <div id="board">
         <Modal v-if="NOT_ACTIVE"
@@ -331,7 +337,7 @@ function gameOver() {
       <Stats :next-tetramino="nextTetromino">
         ({{ currentTetromino.x }}, {{ currentTetromino.y }})
         <br>
-        {{ tetraminoHeigth}} {{ tetraminoTrueY }}
+        {{ tetraminoHeigth }} {{ tetraminoTrueY }}
         <br>
         lines: {{ clearedLines }}
         <!--      {{ NOT_ACTIVE }}-->
@@ -365,6 +371,7 @@ function gameOver() {
   gap: 4px;
   padding: 4px;
 }
+
 .temp-cell {
   width: 24px;
   height: 24px;
@@ -374,12 +381,14 @@ function gameOver() {
   justify-content: center;
   align-items: center;
 }
+
 main {
   display: flex;
   flex-direction: column;
   gap: 16px;
   align-items: center;
 }
+
 #board {
   position: relative;
   width: fit-content;

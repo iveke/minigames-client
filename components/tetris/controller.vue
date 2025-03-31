@@ -13,9 +13,10 @@ const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'r
 function keyboardController(event) {
   if (!ACTIVE.value) return
 
-  if (event.ctrlKey || event.altKey || event.metaKey || event.key === ' ') {
-    event.preventDefault();
-  }
+  event.preventDefault()
+  // if (event.ctrlKey || event.altKey || event.metaKey || event.key === ' ') {
+  //   event.preventDefault();
+  // }
   switch (event.key) {
     case ' ':
       emit('drop')
