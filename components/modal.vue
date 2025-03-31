@@ -8,25 +8,25 @@ defineProps({
   buttonText: {
     type: String,
     required: true,
-  },
-  labelText: {
-    type: String,
-    required: true,
   }
 })
 </script>
 
 <template>
-  <client-only>
-    <Teleport :to="teleportTo">
+<!--  <client-only>-->
+<!--    <Teleport :to="teleportTo">-->
       <div class="modal">
         <div class="plate">
-          <h2>{{ labelText}}</h2>
+          <div class="plate__text">
+            <slot>
+
+            </slot>
+          </div>
           <button @click="emit('action')">{{ buttonText }}</button>
         </div>
       </div>
-    </Teleport>
-  </client-only>
+<!--    </Teleport>-->
+<!--  </client-only>-->
 </template>
 
 <style scoped>
@@ -43,6 +43,13 @@ defineProps({
   top: 0;
 
   background-color: rgba(0, 0, 0, 0.5);
+}
+.plate__text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px  ;
 }
 .plate {
   position: relative;

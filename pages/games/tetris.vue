@@ -8,6 +8,13 @@ import {hasEmptyCell} from "~/composables/hasEmptyCell.js";
 
 const gameState = ref(states.NOT_ACTIVE)
 const clearedLines = ref(0)
+const tetraminoCount = ref(0)
+const level = computed(() => {
+  return Math.floor(tetraminoCount.value / 10) + 1
+})
+const score = ref(0)
+
+const timer = ref(0)
 
 const ACTIVE = computed(() => gameState.value === states.ACTIVE)
 const PAUSED = computed(() => gameState.value === states.PAUSED)
@@ -34,7 +41,6 @@ const tetraminoTrueY = computed(() => {
   const shape = currentTetromino.value.shape;
   let trueY = currentTetromino.value.y;
   for (let i = 0; i < shape.length; i++) {
-    console.log(shape[i])
     if (arrSum(shape[i]) === 0) {
       trueY++
     }
@@ -73,21 +79,28 @@ function NextTetramino() {
 function FixTetramino() {
   board.value = matrixMerge(board.value, currentTetromino.value.shape, currentTetromino.value.x, currentTetromino.value.y)
   const y = currentTetromino.value.y
+  tetraminoCount.value++
   ClearLine(y, tetraminoHeigth.value)
   NextTetramino()
 }
 
 function ClearLine(y, height) {
+  let lines = 0
   for (let i = y; i < y + height; i++) {
-    console.log(i)
     if (!hasEmptyCell(board.value[i])) {
-      console.log(board.value[i])
+      lines++
       clearedLines.value++
       board.value.splice(i, 1)
       board.value.unshift(Array(10).fill(0))
     }
   }
-  // console.log(y, height)
+  CalculateScore(lines)
+}
+function CalculateScore(lines) {
+  if (lines >= 1 && lines <= 4) {
+    const lineReward = [100, 300, 500, 800]
+    score.value += lineReward[lines - 1] * level.value
+  }
 }
 
 // Collision Lambdas
@@ -175,6 +188,7 @@ function drop() {
   if (!ACTIVE.value) return
 
   for (let i = 0; i < 20; i++) {
+    score.value += 2
     if (CollideBottom()) {
       FixTetramino()
       break
@@ -216,7 +230,6 @@ function rotate() {
 
   for (let i = 0; i < 4; i++) {
     if (Overlap()) {
-      console.log("overlap")
       if (!CollideRight()) {
         currentTetromino.value.x++
         break
@@ -259,12 +272,20 @@ function reset() {
   for (let i = 0; i < board.value.length; i++) {
     board.value[i].fill(0)
   }
+  NextTetramino()
+  NextTetramino()
+
+  //
+  timer.value = null
+  score.value = 0
+  tetraminoCount.value = 0
+  clearedLines.value = 0
+
+
   start()
 }
 
 function start() {
-  NextTetramino()
-  NextTetramino()
 
   gameState.value = states.ACTIVE
 }
@@ -273,6 +294,32 @@ function gameOver() {
   gameState.value = states.GAME_OVER
 }
 
+function startLoop() {
+  timer.value = setInterval(() => {
+    down()
+  }, Math.max(100, 1000 - 75 * level.value))
+}
+
+function stopLoop() {
+  clearInterval(timer.value)
+  timer.value = null
+
+}
+
+watch(ACTIVE, (newValue) => {
+
+  if (newValue) {
+    startLoop()
+  } else {
+    stopLoop()
+  }
+})
+watch(level, (newValue) => {
+  if (ACTIVE) {
+    stopLoop()
+    startLoop()
+  }
+})
 
 // Safe exit
 
@@ -308,38 +355,33 @@ function gameOver() {
   <main>
 
     <div class="tetris">
-      <div class="temp-grid">
-        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>
-      </div>
+      <!--      <div class="temp-grid">-->
+      <!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
+      <!--      </div>-->
       <div id="board">
         <Modal v-if="NOT_ACTIVE"
-               teleport-to="#board"
-               button-text="Start"
-               label-text="Play!"
-               @action="start"
-        />
+               button-text="Play"
+               @action="reset"
+        ><h2>Start</h2></Modal>
         <Modal v-if="PAUSED"
-               teleport-to="#board"
                button-text="Resume"
-               label-text="Paused!"
                @action="resume"
-        />
+        ><h2>Pause</h2></Modal>
         <!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
         <!--    <div v-else>-->
         <Modal v-if="GAME_OVER"
-               teleport-to="#board"
                button-text="Reset"
-               label-text="Game over!"
                @action="reset"
-        />
+        >
+          <h2>Game over!</h2>Your score: {{score}}
+        </Modal>
         <Grid :board :currentTetromino/>
       </div>
       <Stats :next-tetramino="nextTetromino">
-        ({{ currentTetromino.x }}, {{ currentTetromino.y }})
-        <br>
-        {{ tetraminoHeigth }} {{ tetraminoTrueY }}
-        <br>
+        score: {{ score }}<br>
+        level: {{ level }}<br>
         lines: {{ clearedLines }}
+
         <!--      {{ NOT_ACTIVE }}-->
         <!--      {{ ACTIVE }}-->
         <!--      {{ PAUSED }}-->
@@ -359,8 +401,8 @@ function gameOver() {
         />
       </Stats>
     </div>
-    <button class="temp" @click="FixTetramino">Fix</button>
-    <button class="temp" @click="NextTetramino">Next</button>
+    <!--    <button class="temp" @click="FixTetramino">Fix</button>-->
+    <!--    <button class="temp" @click="NextTetramino">Next</button>-->
   </main>
 </template>
 

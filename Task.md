@@ -1,5 +1,5 @@
-- Complete [matrixMerge.js](composables/matrixMerge.js)
-  - Made unit test
+- ~~Complete [matrixMerge.js](composables/matrixMerge.js)~~
+  - ~~Made unit test~~
   - ~~Use it for board display in [grid.vue](components/tetris/grid.vue)~~
 - Complete collide func
   - ~~Complete logic for full tetramino~~
@@ -7,17 +7,18 @@
 
 
 - ~~Add keyboard input~~
-- Make Rotate func
+- ~~Make Rotate func~~
 - Complete info display in [stats.vue](components/tetris/stats.vue)
 
 
-- Make line clearing
-  - Make score system
-- Make game loop
-- Make increasing game speed
+- ~~Make line clearing~~
+  - ~~Make score system~~
+- ~~Make game loop~~
+- ~~Make increasing game speed~~
 - ~~Make game over~~
 - ~~Make reset~~
 
+- make real tetramino posY computed
 
 - Make defineKeydowns macros
 - Separate code

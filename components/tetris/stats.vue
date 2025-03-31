@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import Cell from "~/components/tetris/cell.vue";
 import {arrSum} from "~/composables/arrSum";
 

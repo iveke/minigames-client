@@ -52,11 +52,6 @@ onBeforeUnmount(() => {
     <button @click="emit('drop')" :disabled="!ACTIVE">Drop</button>
     <button @click="emit('rotate')" :disabled="!ACTIVE">Rotate</button>
   </div>
-  {{ gameState }}<br>
-  {{ NOT_ACTIVE }}
-  {{ ACTIVE }}
-  {{ PAUSED }}
-  {{ GAME_OVER }}
   <div class="state-manager">
     <button v-if="ACTIVE" @click="emit('pause')">Pause</button>
 
