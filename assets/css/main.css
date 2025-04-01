@@ -10,3 +10,33 @@
     box-sizing: border-box;
     margin: 0;
 }
+
+body, #__nuxt, .__main {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+.input-fields, .signup-form, .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+}
+
+.signup-form {
+    width: 240px;
+}
+.status-note, .validation-note {
+    font-size: 0.75rem;
+}
+label {
+    width: 100%;
+}

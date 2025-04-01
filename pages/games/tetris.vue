@@ -5,6 +5,9 @@ import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
 import {hasEmptyCell} from "~/composables/hasEmptyCell.js";
 
+useHead({
+  title: 'Тетріс',
+})
 
 const gameState = ref(states.NOT_ACTIVE)
 const clearedLines = ref(0)
@@ -85,6 +88,11 @@ function FixTetramino() {
 }
 
 function ClearLine(y, height) {
+  console.log(`y: ${y}\n height: ${height}`)
+  // temp
+  y = 0
+  height = 20
+  //
   let lines = 0
   for (let i = y; i < y + height; i++) {
     if (!hasEmptyCell(board.value[i])) {
@@ -96,6 +104,7 @@ function ClearLine(y, height) {
   }
   CalculateScore(lines)
 }
+
 function CalculateScore(lines) {
   if (lines >= 1 && lines <= 4) {
     const lineReward = [100, 300, 500, 800]
@@ -352,12 +361,12 @@ watch(level, (newValue) => {
 
 
 <template>
-  <main>
+  <div class="main">
 
     <div class="tetris">
-      <!--      <div class="temp-grid">-->
-      <!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
-      <!--      </div>-->
+      <div class="temp-grid">
+        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>
+      </div>
       <div id="board">
         <Modal v-if="NOT_ACTIVE"
                button-text="Play"
@@ -373,7 +382,7 @@ watch(level, (newValue) => {
                button-text="Reset"
                @action="reset"
         >
-          <h2>Game over!</h2>Your score: {{score}}
+          <h2>Game over!</h2>Your score: {{ score }}
         </Modal>
         <Grid :board :currentTetromino/>
       </div>
@@ -403,7 +412,7 @@ watch(level, (newValue) => {
     </div>
     <!--    <button class="temp" @click="FixTetramino">Fix</button>-->
     <!--    <button class="temp" @click="NextTetramino">Next</button>-->
-  </main>
+  </div>
 </template>
 
 <style scoped>

@@ -23,35 +23,36 @@ function LogIn() {
 </script>
 
 <template>
-  <br>
-  <form action="">
-    <div class="input-fields">
+  <div class="main">
+    <form action="" class="login-form" name="login-form">
+      <div class="input-fields">
         <label for="email">Email </label>
         <input v-model="email" id="email" type="email">
 
         <label for="password">Пароль </label>
         <input v-model="password" id="password" type="password">
-    </div>
+      </div>
 
-    <div class="login-with">
-      <button @click="" type="button"><img src="" alt="">Google</button>
-      <button @click="" type="button"><img src="" alt="">Apple</button>
-    </div>
+      <div class="login-with">
+        <button @click="" type="button"><img src="" alt="">Google</button>
+        <button @click="" type="button"><img src="" alt="">Apple</button>
+      </div>
 
 
-    <div class="status-note">
-      Неправильний логін або пароль
-    </div>
+<!--      <div class="status-note">-->
+<!--        Неправильний логін або пароль-->
+<!--      </div>-->
 
-    <span class="">
+      <span class="">
       Ще не маєте акаунт?
       <NuxtLink to="/signup">Зареєструватися</NuxtLink>
     </span>
 
-    <button @click="LogIn" type="button" :disabled="!(email && password)">Увійти</button>
+      <button @click="LogIn" type="button" :disabled="!(email && password)">Увійти</button>
 
-<!--    <NuxtLink to="/account"><button @click="LogIn" type="submit">Увійти</button></NuxtLink>-->
-  </form>
+      <!--    <NuxtLink to="/account"><button @click="LogIn" type="submit">Увійти</button></NuxtLink>-->
+    </form>
+  </div>
 
 </template>
 

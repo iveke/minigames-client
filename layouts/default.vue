@@ -19,6 +19,9 @@ import Header from "~/components/Header.vue";
 
 </template>
 
-<style>
-
+<style scoped>
+main {
+  display: flex;
+  flex: 1;
+}
 </style>
