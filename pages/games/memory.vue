@@ -104,6 +104,25 @@ function getStatus(index) {
   return 'closed';
 }
 
+const CLOSE_TIMEOUT = 1000;
+const hasTwoCardsOpened = computed(() => openedCards.value.size === 2);
+watch(hasTwoCardsOpened, (areTwoCardsOpened) => {
+  if (!areTwoCardsOpened) {
+    return;
+  }
+
+  setTimeout(() => {
+    openedCards.value.clear()
+  }, CLOSE_TIMEOUT);
+
+  const [firstIndex, secondIndex] = [...openedCards.value.values()];
+  if (cards.value[firstIndex].name === cards.value[secondIndex].name) {
+    matchedCards.value.add(firstIndex);
+    matchedCards.value.add(secondIndex);
+  }
+});
+
+
 resetGame();
 </script>
 
@@ -115,6 +134,9 @@ resetGame();
       <div class="game-info">
         <div>Score: {{ score }}</div>
         <div>Best Score: {{ bestScore }}</div>
+      </div>
+
+      <div class="game-timer">
         <div>Time Left: {{ timer }}s</div>
       </div>
 
@@ -175,6 +197,16 @@ h1 {
   display: flex;
   justify-content: space-between;
   padding: 0 10px;
+  user-select: none; 
+}
+
+.game-timer {
+  width: 100%;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-around;
+  padding: 0 10px;
+  font-weight: 900;
   user-select: none; 
 }
 
