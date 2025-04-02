@@ -56,7 +56,7 @@ defineProps<{
   }
 
   .card-back {
-    background-color: #3498db;
+    background-color: var(--primary-color);
     border: 2px solid #2980b9;
   }
 

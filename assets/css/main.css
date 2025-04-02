@@ -4,6 +4,10 @@
 
     /* Paddings */
     --default-section-padding-X: 5%;
+
+    /* Memory */
+    --primary-color: #522f00;
+    --secondary-color: #fdbf6d;
 }
 
 * {

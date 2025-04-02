@@ -1,12 +1,8 @@
 <script setup lang="ts">
+import {symbols} from '~/assets/images/symbols.ts'
 useHead({
   title: 'Memory',
 })
-
-import { computed, ref } from 'vue';
-import MemoryCard from './MemoryCard.vue';
-import { symbols } from './symbols.ts';
-import { shuffleCards } from './shuffleCards.ts';
 
 const cards = ref([]);
 const moves = ref(0);
@@ -20,7 +16,8 @@ const timer = ref(60);
 const score = ref(0); 
 
 
-const bestScore = ref(Number(localStorage.getItem('bestScore')) || 0);
+// const bestScore = ref(Number(localStorage.getItem('bestScore')) || 0);
+const bestScore = ref(0);
 
 const isGameRunning = ref(false); 
 let timerInterval: NodeJS.Timeout | null = null;
@@ -71,7 +68,7 @@ function endGame() {
 
   if (score.value > bestScore.value) {
     bestScore.value = score.value;
-    localStorage.setItem('bestScore', String(bestScore.value)); 
+    // localStorage.setItem('bestScore', String(bestScore.value));
   }
 }
 
@@ -111,31 +108,34 @@ resetGame();
 </script>
 
 <template>
-  <div id="app">
-    <h1>Memory Game</h1>
+  <div class="main">
+    <div class="game">
+      <h1>Memory Game</h1>
 
-    <div class="game-info">
-      <div>Score: {{ score }}</div>
-      <div>Best Score: {{ bestScore }}</div>
-     <div>Time Left: {{ timer }}s</div>
-    </div>
+      <div class="game-info">
+        <div>Score: {{ score }}</div>
+        <div>Best Score: {{ bestScore }}</div>
+        <div>Time Left: {{ timer }}s</div>
+      </div>
 
-    <div class="board">
-      <memory-card 
-        v-for="(card, index) in cards" 
-        :key="index" 
-        :status="getStatus(index)" 
-        :disabled="hasTwoCardsOpened || !isGameRunning"
-        :image="card.image" 
-        @click="openCard(index)"
-      />
-    </div>
+      <div class="board">
+        <memory-card
+            v-for="(card, index) in cards"
+            :key="index"
+            :status="getStatus(index)"
+            :disabled="hasTwoCardsOpened || !isGameRunning"
+            :image="card.image"
+            @click="openCard(index)"
+        />
+      </div>
 
-    <button v-if="!isGameRunning" @click="startGame">Start Game</button>
-    <button v-else @click="resetGame">Reset Game</button>
+      <button v-if="!isGameRunning" @click="startGame">Start Game</button>
+      <button v-else @click="resetGame">Reset Game</button>
 
-    <div v-if="!isGameRunning && timer.value === 0" class="end-message">
-      Time's up! Your score: {{ score }}
+      <div v-if="!isGameRunning && timer.value === 0" class="end-message">
+        Time's up! Your score: {{ score }}
+      </div>
+
     </div>
 
   </div>
@@ -143,34 +143,25 @@ resetGame();
 
 
 <style scoped>
-:root {
-  --primary-color: #522f00;
-  --secondary-color: #fdbf6d;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
+.main {
   font-family: "Luckiest Guy", cursive;
   background-color: var(--secondary-color);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  padding: 20px;
+
   color: var(--primary-color);
   letter-spacing: 0.15em;
 }
+.game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
 
-#app {
-  width: 100%;
-  max-width: 800px;
-  text-align: center;
 }
+
 
 h1 {
   font-size: 2em;
@@ -179,6 +170,7 @@ h1 {
 }
 
 .game-info {
+  width: 100%;
   margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
