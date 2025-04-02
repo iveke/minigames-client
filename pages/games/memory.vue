@@ -122,7 +122,6 @@ watch(hasTwoCardsOpened, (areTwoCardsOpened) => {
   }
 });
 
-
 resetGame();
 </script>
 
@@ -135,11 +134,10 @@ resetGame();
         <div>Score: {{ score }}</div>
         <div>Best Score: {{ bestScore }}</div>
       </div>
-
       <div class="game-timer">
+        
         <div>Time Left: {{ timer }}s</div>
       </div>
-
       <div class="board">
         <memory-card
             v-for="(card, index) in cards"
@@ -200,17 +198,22 @@ h1 {
   user-select: none; 
 }
 
+.game-info div {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
 .game-timer {
   width: 100%;
   margin-bottom: 20px;
   display: flex;
   justify-content: space-around;
   padding: 0 10px;
-  font-weight: 900;
   user-select: none; 
 }
 
-.game-info div {
+.game-timer div{
   font-size: 1.2rem;
   font-weight: bold;
   color: var(--primary-color);
