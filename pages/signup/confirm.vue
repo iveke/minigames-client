@@ -8,7 +8,6 @@ const router = useRoute();
 const email = router.query.email;
 
 const confirmed = computed(() => {
-  return auth.tempCredentials.confirmed
 })
 
 
