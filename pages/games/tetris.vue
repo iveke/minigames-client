@@ -332,31 +332,31 @@ watch(level, (newValue) => {
 
 // Safe exit
 
-// function safeExit(event) {
-//   if (!NOT_ACTIVE.value)
-//   {
-//     event.preventDefault();
-//   }
-// }
-// onMounted(() => {
-//   window.addEventListener("beforeunload", safeExit)
-// })
-// onBeforeUnmount(() => {
-//   window.addEventListener("beforeunload", safeExit)
-// })
-//
-// onBeforeRouteLeave((to, from, next) => {
-//   if (!NOT_ACTIVE.value) {
-//     const answer = window.confirm('Ви дійсно хочете покинути цю сторінку?')
-//     if (answer) {
-//       next() // Разрешаем переход
-//     } else {
-//       next(false) // Отменяем переход
-//     }
-//   } else {
-//     next()
-//   }
-// })
+function safeExit(event) {
+  if (NOT_ACTIVE.value || GAME_OVER.value) {
+    return
+  }
+  event.preventDefault();
+}
+onMounted(() => {
+  window.addEventListener("beforeunload", safeExit)
+})
+onBeforeUnmount(() => {
+  window.addEventListener("beforeunload", safeExit)
+})
+
+onBeforeRouteLeave((to, from, next) => {
+  if (!NOT_ACTIVE.value) {
+    const answer = window.confirm('Ви дійсно хочете покинути цю сторінку?')
+    if (answer) {
+      next() // Разрешаем переход
+    } else {
+      next(false) // Отменяем переход
+    }
+  } else {
+    next()
+  }
+})
 </script>
 
 
@@ -364,9 +364,9 @@ watch(level, (newValue) => {
   <div class="main">
 
     <div class="tetris">
-      <div class="temp-grid">
-        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>
-      </div>
+<!--      <div class="temp-grid">-->
+<!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
+<!--      </div>-->
       <div id="board">
         <Modal v-if="NOT_ACTIVE"
                button-text="Play"

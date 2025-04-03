@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import {process} from "std-env";
+
 export default defineNuxtConfig({
     compatibilityDate: '2025-03-08',
     ssr: true,
@@ -12,9 +14,6 @@ export default defineNuxtConfig({
     pinia: {
         storesDirs: ['./stores/**'],
     },
-    typescript: {
-        strict: false
-    },
     imports: {
         dirs: [
             'utils/**',
@@ -22,7 +21,6 @@ export default defineNuxtConfig({
             'composables/**',
         ]
     },
-    css: ['~/assets/css/main.css'],
     app: {
         head: {
             title: 'GMini',
@@ -32,5 +30,20 @@ export default defineNuxtConfig({
             ]
         },
 
+    },
+    nitro: {
+        devProxy: {
+            '/api': {
+                target: 'https://minigames-back.onrender.com',
+                changeOrigin: true,
+                prependPath: false
+            }
+        }
+    },
+    runtimeConfig: {
+        public: {
+            API_URL: '/api',
+            // API_URL: process.env.API_BASE,
+        }
     },
 })

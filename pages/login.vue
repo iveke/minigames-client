@@ -8,6 +8,18 @@ const auth = useAuthStore();
 const email = ref('');
 const password = ref('');
 
+const isValidEmail = computed(() => {
+  return email.value.includes('@')
+})
+const isValidPassword = computed(() => {
+  return password.value.length >= 6
+})
+
+
+const isValid = computed(() => {
+  return isValidEmail.value && isValidPassword.value
+})
+
 
 // onBeforeMount(() => {
 //   if (auth.isAuthorized) {
@@ -15,10 +27,7 @@ const password = ref('');
 //   }
 // })
 function LogIn() {
-  auth.login({
-    email: email.value,
-    password: password.value,
-  })
+  auth.login(email.value, password.value)
 }
 </script>
 
@@ -28,9 +37,11 @@ function LogIn() {
       <div class="input-fields">
         <label for="email">Email </label>
         <input v-model="email" id="email" type="email">
+        <span v-if="!isValidEmail" class="validation-note">Емейл повинен містити @</span>
 
         <label for="password">Пароль </label>
         <input v-model="password" id="password" type="password">
+        <span v-if="!isValidPassword" class="validation-note">Пароль має містити хоча б 6 символів</span>
       </div>
 
       <div class="login-with">
@@ -48,7 +59,7 @@ function LogIn() {
       <NuxtLink to="/signup">Зареєструватися</NuxtLink>
     </span>
 
-      <button @click="LogIn" type="button" :disabled="!(email && password)">Увійти</button>
+      <button @click="LogIn" type="button" :disabled="!isValid">Увійти</button>
 
       <!--    <NuxtLink to="/account"><button @click="LogIn" type="submit">Увійти</button></NuxtLink>-->
     </form>

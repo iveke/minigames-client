@@ -61,44 +61,33 @@ Host the server on your local network:
 npm run dev -- -o --host
 ```
 
-* http://192.168.1.68:3000/ on mobile if QR code does not work.
 * `Ctrl + C` to stop the server.
 
 ### Backend
 
-Start the development server on http://localhost::
+Start the server on http://localhost:5096
 ```bash
 cd minigames-back
 ```
 ```bash
 dotnet run
 ```
-[//]: # (## Production)
 
-[//]: # ()
 
-[//]: # (Build the application for production:)
+## Production
 
-[//]: # ()
+Build the application for production:
+```bash
+npm run build
+```
 
-[//]: # (```bash)
+Locally preview production build:
+```bash
+npm run preview
+```
 
-[//]: # (npm run build)
+Deploying to production server:
+```bash
+node .output/server/index.mjs
+```
 
-[//]: # (```)
-
-[//]: # ()
-
-[//]: # (Locally preview production build:)
-
-[//]: # ()
-
-[//]: # (```bash)
-
-[//]: # (npm run preview)
-
-[//]: # (```)
-
-[//]: # ()
-
-[//]: # (Check out the [deployment documentation]&#40;https://nuxt.com/docs/getting-started/deployment&#41; for more information.)

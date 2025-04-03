@@ -18,11 +18,7 @@ const route = useRoute();
 
   route: {{ route.fullPath }} <br>
   <br>
-  user: {{ auth.user }} <br>
   token: {{ auth.token }} <br>
-  <br>
-  password: {{ auth.tempCredentials.password }}<br>
-  nickname: {{ auth.tempCredentials.nick }}<br>
   <br>
   is authorized: {{ auth.isAuthorized }} <br>
   <br>

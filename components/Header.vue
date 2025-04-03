@@ -7,7 +7,7 @@ const auth = useAuthStore();
   <header>
     <div class="logo">
       <NuxtLink to="/">
-        <img src="" alt="" width="120" height="80">
+        <img src="~/assets/svg/logo.svg" alt="" height="56">
       </NuxtLink>
     </div>
     <nav>
