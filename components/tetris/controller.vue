@@ -8,7 +8,7 @@ const ACTIVE = computed(() => gameState === states.ACTIVE)
 const PAUSED = computed(() => gameState === states.PAUSED)
 const GAME_OVER = computed(() => gameState === states.GAME_OVER)
 
-const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause', 'resume', 'reset', 'start'])
+const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate'])
 
 function keyboardController(event) {
   if (!ACTIVE.value) return

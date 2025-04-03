@@ -289,9 +289,6 @@ function reset() {
   score.value = 0
   tetraminoCount.value = 0
   clearedLines.value = 0
-
-
-  start()
 }
 
 function start() {
@@ -342,7 +339,8 @@ onMounted(() => {
   window.addEventListener("beforeunload", safeExit)
 })
 onBeforeUnmount(() => {
-  window.addEventListener("beforeunload", safeExit)
+  window.removeEventListener("beforeunload", safeExit)
+  reset()
 })
 
 onBeforeRouteLeave((to, from, next) => {
@@ -370,7 +368,10 @@ onBeforeRouteLeave((to, from, next) => {
       <div id="board">
         <Modal v-if="NOT_ACTIVE"
                button-text="Play"
-               @action="reset"
+               @action="() => {
+                 reset()
+                 start()
+               }"
         ><h2>Start</h2></Modal>
         <Modal v-if="PAUSED"
                button-text="Resume"
@@ -380,7 +381,10 @@ onBeforeRouteLeave((to, from, next) => {
         <!--    <div v-else>-->
         <Modal v-if="GAME_OVER"
                button-text="Reset"
-               @action="reset"
+               @action="() => {
+                 reset()
+                 start()
+               }"
         >
           <h2>Game over!</h2>Your score: {{ score }}
         </Modal>
@@ -402,11 +406,6 @@ onBeforeRouteLeave((to, from, next) => {
             @right="right"
             @left="left"
             @rotate="rotate"
-
-            @pause="pause"
-            @resume="resume"
-            @reset="reset"
-            @start="start"
         />
       </Stats>
     </div>

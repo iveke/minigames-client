@@ -31,19 +31,19 @@ export default defineNuxtConfig({
         },
 
     },
-    nitro: {
-        devProxy: {
-            '/api': {
-                target: 'https://minigames-back.onrender.com',
-                changeOrigin: true,
-                prependPath: false
-            }
-        }
-    },
+    // nitro: {
+    //     devProxy: {
+    //         '/api': {
+    //             target: 'https://minigames-back.onrender.com',
+    //             changeOrigin: true,
+    //             prependPath: false
+    //         }
+    //     }
+    // },
     runtimeConfig: {
         public: {
-            API_URL: '/api',
-            // API_URL: process.env.API_BASE,
+            // API_URL: '/api',
+            API_URL: process.env.API_BASE,
         }
     },
 })
