@@ -16,8 +16,7 @@ export const useAuthStore = defineStore('auth', {
                 const body = {
                     "username": username,
                     "email": email,
-                    "password": password,
-                    "phone": "+380 12 345 67 89"
+                    "password": password
                 };
                 try {
                     const response = await fetch(`${apiUrl}/auth/register`, {
