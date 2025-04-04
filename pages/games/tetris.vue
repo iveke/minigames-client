@@ -406,6 +406,8 @@ onBeforeRouteLeave((to, from, next) => {
             @right="right"
             @left="left"
             @rotate="rotate"
+
+            @pause="pause"
         />
       </Stats>
     </div>
