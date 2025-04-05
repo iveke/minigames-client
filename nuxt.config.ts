@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     typescript: {
         strict: false
     },
-    modules: ['@pinia/nuxt', '@nuxt/test-utils'],
+    modules: ['@pinia/nuxt', '@nuxt/test-utils', '@nuxtjs/i18n'],
     css: ['~/assets/css/main.css'],
 
     pinia: {
