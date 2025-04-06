@@ -9,6 +9,7 @@ import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 
 import {gameStates} from "~/utils/constants/constants.js";
 import {tetraminos} from "~/utils/constants/tetrisConstants.js";
+import {score_reward} from "~/utils/constants/tetrisConstants.js";
 
 useHead({
   title: 'Тетріс',
@@ -45,19 +46,7 @@ const tetraminoHeight = computed(() => {
   }
   return height
 })
-const tetraminoTrueY = computed(() => {
-  const shape = currentTetromino.value.shape;
-  let trueY = currentTetromino.value.y;
-  for (let i = 0; i < shape.length; i++) {
-    if (arrSum(shape[i]) === 0) {
-      trueY++
-    }
-    if (arrSum(shape[i]) !== 0) {
-      break
-    }
-  }
-  return trueY
-})
+
 const nextTetromino = ref({
   x: 0,
   y: 0,
@@ -69,7 +58,7 @@ function CalcNewPositionX() {
   nextTetromino.value.x = 10 / 2 - Math.floor(nextTetromino.value.shape[0].length / 2)
 }
 
-function NextTetramino() {
+function GenerateNextTetramino() {
   currentTetromino.value = nextTetromino.value
   nextTetromino.value = {
     x: 0,
@@ -91,7 +80,7 @@ function FixTetramino() {
   tetraminoCount.value++
 
   ClearLine(y, tetraminoHeight.value)
-  NextTetramino()
+  GenerateNextTetramino()
 }
 
 function ClearLine(y, height) {
@@ -109,13 +98,24 @@ function ClearLine(y, height) {
       board.value.unshift(Array(10).fill(0))
     }
   }
-  CalculateScore(lines)
+  LineReward(lines)
 }
 
-function CalculateScore(lines) {
+// score reward system
+
+function Reward(baseScores) {
+  score.value += baseScores * level.value
+}
+
+function LineReward(lines) {
   if (lines >= 1 && lines <= 4) {
-    const lineReward = [100, 300, 500, 800]
-    score.value += lineReward[lines - 1] * level.value
+    const lineReward = [
+      score_reward.LINE_CLEAR_1,
+      score_reward.LINE_CLEAR_2,
+      score_reward.LINE_CLEAR_3,
+      score_reward.LINE_CLEAR_4
+    ]
+    Reward(lineReward[lines - 1])
   }
 }
 
@@ -165,14 +165,14 @@ function HardDrop() {
   let isCollide = false
   do {
     isCollide = Down()
-    score.value += 2
+    Reward(score_reward.HARD_DROP)
   } while (isCollide)
   return isCollide
 }
 
 function SoftDrop() {
   if (!ACTIVE.value) return
-  score.value += 1
+  Reward(score_reward.SOFT_DROP)
   return Down()
 }
 
@@ -231,7 +231,6 @@ function Rotate() {
 }
 
 
-
 // Game state functions
 
 function pause() {
@@ -247,8 +246,8 @@ function reset() {
   for (let i = 0; i < board.value.length; i++) {
     board.value[i].fill(0)
   }
-  NextTetramino()
-  NextTetramino()
+  GenerateNextTetramino()
+  GenerateNextTetramino()
 
   //
   timer.value = null
@@ -378,7 +377,7 @@ onBeforeRouteLeave((to, from, next) => {
       </Stats>
     </div>
     <!--    <button class="temp" @click="FixTetramino">Fix</button>-->
-    <!--    <button class="temp" @click="NextTetramino">Next</button>-->
+    <!--    <button class="temp" @click="GenerateNextTetramino">Next</button>-->
   </div>
 </template>
 

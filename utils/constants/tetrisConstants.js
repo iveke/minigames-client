@@ -1,3 +1,13 @@
+export const score_reward = {
+    LINE_CLEAR_1: 100,
+    LINE_CLEAR_2: 300,
+    LINE_CLEAR_3: 500,
+    LINE_CLEAR_4: 800,
+    HARD_DROP: 2,
+    SOFT_DROP: 1,
+}
+
+
 export const tetraminos = [
     // S
     {
