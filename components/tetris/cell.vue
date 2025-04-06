@@ -2,7 +2,7 @@
 const {number} = defineProps({
   number: Number,
 })
-const colorVars = [
+const CELL_COLOR_VARS = [
   '--empty-color',
   '--S-color',
   '--Z-color',
@@ -15,7 +15,7 @@ const colorVars = [
 const cell = ref(null)
 const cellStyle = computed(() => {
   return {
-    backgroundColor: `var(${colorVars[number]})`
+    backgroundColor: `var(${CELL_COLOR_VARS[number]})`
   }
 })
 

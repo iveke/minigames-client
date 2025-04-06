@@ -5,11 +5,14 @@ import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
 import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 
+import {gameStates} from "~/utils/constants/constants.js";
+import {tetraminos} from "~/utils/constants/tetrisConstants.js";
+
 useHead({
   title: 'Тетріс',
 })
 
-const gameState = ref(states.NOT_ACTIVE)
+const gameState = ref(gameStates.NOT_ACTIVE)
 const clearedLines = ref(0)
 const tetraminoCount = ref(0)
 const level = computed(() => {
@@ -19,10 +22,10 @@ const score = ref(0)
 
 const timer = ref(0)
 
-const ACTIVE = computed(() => gameState.value === states.ACTIVE)
-const PAUSED = computed(() => gameState.value === states.PAUSED)
-const GAME_OVER = computed(() => gameState.value === states.GAME_OVER)
-const NOT_ACTIVE = computed(() => gameState.value === states.NOT_ACTIVE)
+const ACTIVE = computed(() => gameState.value === gameStates.ACTIVE)
+const PAUSED = computed(() => gameState.value === gameStates.PAUSED)
+const GAME_OVER = computed(() => gameState.value === gameStates.GAME_OVER)
+const NOT_ACTIVE = computed(() => gameState.value === gameStates.NOT_ACTIVE)
 
 const board = ref(Array(20).fill().map(() => Array(10).fill(0)))
 const currentTetromino = ref({
@@ -271,15 +274,15 @@ function rotate() {
 // Game state functions
 
 function pause() {
-  gameState.value = states.PAUSED
+  gameState.value = gameStates.PAUSED
 }
 
 function resume() {
-  gameState.value = states.ACTIVE
+  gameState.value = gameStates.ACTIVE
 }
 
 function reset() {
-  gameState.value = states.NOT_ACTIVE
+  gameState.value = gameStates.NOT_ACTIVE
   for (let i = 0; i < board.value.length; i++) {
     board.value[i].fill(0)
   }
@@ -295,11 +298,11 @@ function reset() {
 
 function start() {
 
-  gameState.value = states.ACTIVE
+  gameState.value = gameStates.ACTIVE
 }
 
 function gameOver() {
-  gameState.value = states.GAME_OVER
+  gameState.value = gameStates.GAME_OVER
 }
 
 function startLoop() {

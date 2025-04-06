@@ -1,12 +1,15 @@
 <script setup>
+import {gameStates} from "~/utils/constants/constants.js";
+
+
 const {gameState} = defineProps({
   gameState: Number
 })
-const NOT_ACTIVE = computed(() => gameState === states.NOT_ACTIVE)
+const NOT_ACTIVE = computed(() => gameState === gameStates.NOT_ACTIVE)
 
-const ACTIVE = computed(() => gameState === states.ACTIVE)
-const PAUSED = computed(() => gameState === states.PAUSED)
-const GAME_OVER = computed(() => gameState === states.GAME_OVER)
+const ACTIVE = computed(() => gameState === gameStates.ACTIVE)
+const PAUSED = computed(() => gameState === gameStates.PAUSED)
+const GAME_OVER = computed(() => gameState === gameStates.GAME_OVER)
 
 const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause'])
 
