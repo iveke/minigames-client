@@ -8,6 +8,19 @@
     /* Memory */
     --primary-color: #522f00;
     --secondary-color: #fdbf6d;
+
+
+    /* Tetris */
+    --grid-bg: #13111E;
+
+    --empty-color: #1D1A2D;
+    --S-color: red;
+    --Z-color: green;
+    --J-color: magenta;
+    --L-color: cyan;
+    --O-color: yellow;
+    --I-color: blue;
+    --T-color: purple;
 }
 
 * {

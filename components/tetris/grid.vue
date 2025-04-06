@@ -15,9 +15,6 @@ const {board, currentTetromino} = defineProps({
 
 const displayedBoard = computed(() => {
   const newBoard = matrixMerge(board, currentTetromino.shape, currentTetromino.x, currentTetromino.y)
-  // console.log("newBoard", newBoard)
-
-  // console.log("board", board)
   return newBoard.flat()
 })
 
@@ -34,7 +31,7 @@ const displayedBoard = computed(() => {
 
 <style scoped>
 .grid {
-  background-color: #13111E;
+  background-color: var(--grid-bg);
 
   width: fit-content;
   height: fit-content;

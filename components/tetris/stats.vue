@@ -5,18 +5,14 @@ import {arrSum} from "~/composables/arrSum";
 const props = defineProps({
   nextTetramino: Object
 })
-const displayedNextTetramino = computed(() => {
-  return props.nextTetramino.shape
-})
 
 </script>
 
 <template>
   <div class="stats">
-    <div class=""></div>
     <div class="next">
       <div class="grid">
-        <div v-for="row  in displayedNextTetramino"
+        <div v-for="row  in nextTetramino.shape"
              class="row">
           <Cell v-if="arrSum(row) > 0"
                 v-for="(cell, i) in row"
@@ -59,7 +55,7 @@ const displayedNextTetramino = computed(() => {
 
 
 .next {
-  background-color: #13111E;
+  background-color: var(--grid-bg);
   display: flex;
   width: calc(24px * 4 + 4px * 6 + 8px * 2);
   aspect-ratio: 1/1;
