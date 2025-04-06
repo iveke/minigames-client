@@ -3,7 +3,7 @@ import Grid from "~/components/tetris/grid.vue";
 import Stats from "~/components/tetris/stats.vue";
 import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
-import {hasEmptyCell} from "~/composables/hasEmptyCell.js";
+import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 
 useHead({
   title: 'Тетріс',
@@ -81,8 +81,10 @@ function NextTetramino() {
 
 function FixTetramino() {
   board.value = matrixMerge(board.value, currentTetromino.value.shape, currentTetromino.value.x, currentTetromino.value.y)
+
   const y = currentTetromino.value.y
   tetraminoCount.value++
+
   ClearLine(y, tetraminoHeigth.value)
   NextTetramino()
 }
@@ -95,7 +97,7 @@ function ClearLine(y, height) {
   //
   let lines = 0
   for (let i = y; i < y + height; i++) {
-    if (!hasEmptyCell(board.value[i])) {
+    if (!arrHasEmptyValue(board.value[i])) {
       lines++
       clearedLines.value++
       board.value.splice(i, 1)
