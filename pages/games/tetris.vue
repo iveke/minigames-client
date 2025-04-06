@@ -268,7 +268,7 @@ function gameOver() {
 function startLoop() {
   timer.value = setInterval(() => {
     Down()
-  }, Math.max(100, 1000 - 75 * level.value))
+  }, Math.min(1000, 1000 / Math.sqrt(level.value)))
 }
 
 function stopLoop() {
