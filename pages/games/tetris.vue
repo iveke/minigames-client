@@ -7,6 +7,7 @@ import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 
 import {gameStates} from "~/utils/constants/constants.js";
 import {tetraminos} from "~/utils/constants/tetrisConstants.js";
+import {matrixRotate} from "~/composables/matrixRotate.js";
 
 useHead({
   title: 'Тетріс',
@@ -240,7 +241,7 @@ function left() {
 function rotate() {
   if (!ACTIVE.value) return
 
-  currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+  currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
 
   for (let i = 0; i < 4; i++) {
     if (Overlap()) {
@@ -256,7 +257,7 @@ function rotate() {
           break
         } else {
           currentTetromino.value.y++
-          currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+          currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
         }
       }
     }
@@ -266,7 +267,7 @@ function rotate() {
   //   currentTetromino.value.y++
   // // }
   // else {
-  //   currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+  //   currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
   // }
 }
 
