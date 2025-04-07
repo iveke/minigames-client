@@ -4,3 +4,7 @@ export const gameStates = {
     PAUSED: 2,
     GAME_OVER: 3,
 }
+export const games = {
+    Tetris: 1,
+
+}

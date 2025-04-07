@@ -16,7 +16,6 @@ export const tetraminos = [
             [1, 1, 0],
             [0, 0, 0]
         ],
-        color: 1
     },
     // Z
     {
@@ -25,7 +24,6 @@ export const tetraminos = [
             [0, 2, 2],
             [0, 0, 0]
         ],
-        color: 2
     },
     // J
     {
@@ -34,7 +32,6 @@ export const tetraminos = [
             [3, 3, 3],
             [0, 0, 0]
         ],
-        color: 3
     },
     // L
     {
@@ -43,7 +40,6 @@ export const tetraminos = [
             [4, 4, 4],
             [0, 0, 0]
         ],
-        color: 4
     },
     // O
     {
@@ -51,7 +47,6 @@ export const tetraminos = [
             [5, 5],
             [5, 5]
         ],
-        color: 5
     },
     // I
     {
@@ -61,7 +56,6 @@ export const tetraminos = [
             [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
-        color: 6
     },
     // T
     {
@@ -70,6 +64,5 @@ export const tetraminos = [
             [7, 7, 7],
             [0, 0, 0]
         ],
-        color: 7
     }
 ]

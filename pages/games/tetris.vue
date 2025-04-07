@@ -6,32 +6,46 @@ import {matrixMerge} from "~/composables/matrixMerge.js";
 import {matrixRotate} from "~/composables/matrixRotate.js";
 import {MatrixOverlap} from "~/composables/matrixOverlap.js";
 import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
-
-import {gameStates} from "~/utils/constants/constants.js";
-import {tetraminos} from "~/utils/constants/tetrisConstants.js";
-import {points_reward} from "~/utils/constants/tetrisConstants.js";
-import {useFormatNumbers} from "~/composables/useFormatNumbers.js";
+import {tetraminos, points_reward} from "~/utils/constants/tetrisConstants.js";
+import {games} from "~/utils/constants/constants.js";
+import {useGameStore} from "~/stores/game.js";
 
 useHead({
   title: 'Тетріс',
 })
 
-const gameState = ref(gameStates.NOT_ACTIVE)
+
+//
+const game = useGameStore()
+// game.DefineGameID(games.Tetris)
+
+function LineReward(lines) {
+  if (lines >= 1 && lines <= 4) {
+    const lineReward = [
+      points_reward.LINE_CLEAR_1,
+      points_reward.LINE_CLEAR_2,
+      points_reward.LINE_CLEAR_3,
+      points_reward.LINE_CLEAR_4
+    ]
+    game.Reward(lineReward[lines - 1])
+  }
+}
+
 const clearedLines = ref(0)
 const tetraminoCount = ref(0)
-const level = computed(() => {
-  return Math.floor(tetraminoCount.value / 10) + 1
+
+// level calculation
+watch(tetraminoCount, (newValue) => {
+    game.level = Math.floor(newValue / 10) + 1
 })
-const points = ref(0)
+
+
 
 const timer = ref(0)
 
-const ACTIVE = computed(() => gameState.value === gameStates.ACTIVE)
-const PAUSED = computed(() => gameState.value === gameStates.PAUSED)
-const GAME_OVER = computed(() => gameState.value === gameStates.GAME_OVER)
-const NOT_ACTIVE = computed(() => gameState.value === gameStates.NOT_ACTIVE)
-
 const board = ref(Array(20).fill().map(() => Array(10).fill(0)))
+
+
 const currentTetromino = ref({
   x: 0,
   y: 0,
@@ -102,23 +116,6 @@ function ClearLine(y, height) {
   LineReward(lines)
 }
 
-// points reward system
-
-function Reward(basePoints) {
-  points.value += basePoints * level.value
-}
-
-function LineReward(lines) {
-  if (lines >= 1 && lines <= 4) {
-    const lineReward = [
-      points_reward.LINE_CLEAR_1,
-      points_reward.LINE_CLEAR_2,
-      points_reward.LINE_CLEAR_3,
-      points_reward.LINE_CLEAR_4
-    ]
-    Reward(lineReward[lines - 1])
-  }
-}
 
 
 // Tetramino collision functions
@@ -162,23 +159,23 @@ function tetraminoCollider() {
 // Tetramino controller Functions
 
 function HardDrop() {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
   let isCollide = false
   do {
     isCollide = Down()
-    Reward(points_reward.HARD_DROP)
+    game.Reward(points_reward.HARD_DROP)
   } while (isCollide)
   return isCollide
 }
 
 function SoftDrop() {
-  if (!ACTIVE.value) return
-  Reward(points_reward.SOFT_DROP)
+  if (!game.isActive) return
+  game.Reward(points_reward.SOFT_DROP)
   return Down()
 }
 
 function Down() {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
   if (tetraminoCollider().CollideBottom()) {
     FixTetramino()
     return false
@@ -188,7 +185,7 @@ function Down() {
 }
 
 function Right() {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
   if (tetraminoCollider().CollideRight()) return false
 
   currentTetromino.value.x++;
@@ -196,7 +193,7 @@ function Right() {
 }
 
 function Left() {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
   if (tetraminoCollider().CollideLeft()) return false
 
   currentTetromino.value.x--;
@@ -204,7 +201,7 @@ function Left() {
 }
 
 function Top() {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
   if (tetraminoCollider().CollideTop()) return false
 
   currentTetromino.value.y--;
@@ -212,7 +209,7 @@ function Top() {
 }
 
 function Rotate() {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
   currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
 
   for (let i = 0; i < 4; i++) {
@@ -235,40 +232,36 @@ function Rotate() {
 // Game state functions
 
 function pause() {
-  gameState.value = gameStates.PAUSED
+  game.Pause()
 }
 
-function resume() {
-  gameState.value = gameStates.ACTIVE
-}
 
 function reset() {
-  gameState.value = gameStates.NOT_ACTIVE
-  for (let i = 0; i < board.value.length; i++) {
-    board.value[i].fill(0)
-  }
-  GenerateNextTetramino()
-  GenerateNextTetramino()
+  game.Reset(()=> {
+    for (let i = 0; i < board.value.length; i++) {
+      board.value[i].fill(0)
+    }
+    GenerateNextTetramino()
+    GenerateNextTetramino()
 
-  //
-  timer.value = null
-  points.value = 0
-  tetraminoCount.value = 0
-  clearedLines.value = 0
+    timer.value = null
+    tetraminoCount.value = 0
+    clearedLines.value = 0
+  })
 }
 
 function start() {
-  gameState.value = gameStates.ACTIVE
+  game.Play()
 }
 
 function gameOver() {
-  gameState.value = gameStates.GAME_OVER
+  game.GameOver()
 }
 
 function startLoop() {
   timer.value = setInterval(() => {
     Down()
-  }, Math.min(1000, 1000 / Math.sqrt(level.value)))
+  }, Math.min(1000, 1000 / Math.sqrt(game.level)))
 }
 
 function stopLoop() {
@@ -277,7 +270,7 @@ function stopLoop() {
 
 }
 
-watch(ACTIVE, (newValue) => {
+watch(() => game.isActive, (newValue) => {
 
   if (newValue) {
     startLoop()
@@ -285,8 +278,8 @@ watch(ACTIVE, (newValue) => {
     stopLoop()
   }
 })
-watch(level, (newValue) => {
-  if (ACTIVE) {
+watch(() => game.level, () => {
+  if (game.isActive) {
     stopLoop()
     startLoop()
   }
@@ -295,7 +288,7 @@ watch(level, (newValue) => {
 // Safe exit
 
 function safeExit(event) {
-  if (NOT_ACTIVE.value || GAME_OVER.value) {
+  if (game.isNotActive || game.isGameOver) {
     return
   }
   event.preventDefault();
@@ -309,17 +302,11 @@ onBeforeUnmount(() => {
   reset()
 })
 
-onBeforeRouteLeave((to, from, next) => {
-  if (!NOT_ACTIVE.value) {
-    const answer = window.confirm('Ви дійсно хочете покинути цю сторінку?')
-    if (answer) {
-      next() // Разрешаем переход
-    } else {
-      next(false) // Отменяем переход
-    }
-  } else {
-    next()
+onBeforeRouteLeave((next) => {
+  if (!game.isNotActive && !game.isGameOver) {
+    return window.confirm('Ви дійсно хочете покинути цю сторінку?')
   }
+  return true
 })
 </script>
 
@@ -332,33 +319,33 @@ onBeforeRouteLeave((to, from, next) => {
       <!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
       <!--      </div>-->
       <div id="board">
-        <Modal v-if="NOT_ACTIVE"
+        <Modal v-if="game.isNotActive"
                button-text="Play"
                @action="() => {
                  reset()
                  start()
                }"
         ><h2>Start</h2></Modal>
-        <Modal v-if="PAUSED"
+        <Modal v-if="game.isPaused"
                button-text="Resume"
-               @action="resume"
+               @action="start"
         ><h2>Pause</h2></Modal>
         <!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
         <!--    <div v-else>-->
-        <Modal v-if="GAME_OVER"
+        <Modal v-if="game.isGameOver"
                button-text="Reset"
                @action="() => {
                  reset()
                  start()
                }"
         >
-          <h2>Game over!</h2>Your points: {{ useFormatNumbers(points) }}
+          <h2>Game over!</h2>Your points: {{ game.formattedPoints }}
         </Modal>
         <Grid :board :currentTetromino/>
       </div>
       <Stats :next-tetramino="nextTetromino">
-        points: {{ useFormatNumbers(points) }}<br>
-        level: {{ level }}<br>
+        points: {{ game.formattedPoints }}<br>
+        level: {{ game.level }}<br>
         lines: {{ clearedLines }}
 
         <!--      {{ NOT_ACTIVE }}-->
@@ -366,7 +353,6 @@ onBeforeRouteLeave((to, from, next) => {
         <!--      {{ PAUSED }}-->
         <!--      {{ GAME_OVER }}-->
         <Controller
-            :gameState
             @down="SoftDrop"
             @drop="HardDrop"
             @right="Right"
@@ -383,22 +369,7 @@ onBeforeRouteLeave((to, from, next) => {
 </template>
 
 <style scoped>
-.temp-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 4px;
-}
 
-.temp-cell {
-  width: 24px;
-  height: 24px;
-  background-color: #1D1A2D;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 main {
   display: flex;
@@ -418,11 +389,4 @@ main {
   gap: 16px;
 }
 
-.temp {
-  background-color: #333333;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 </style>
