@@ -17,7 +17,7 @@ useHead({
 
 //
 const game = useGameStore()
-// game.DefineGameID(games.Tetris)
+game.DefineGameID(games.Tetris)
 
 function LineReward(lines) {
   if (lines >= 1 && lines <= 4) {
@@ -302,7 +302,7 @@ onBeforeUnmount(() => {
   reset()
 })
 
-onBeforeRouteLeave((next) => {
+onBeforeRouteLeave(() => {
   if (!game.isNotActive && !game.isGameOver) {
     return window.confirm('Ви дійсно хочете покинути цю сторінку?')
   }

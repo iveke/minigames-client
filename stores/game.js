@@ -31,10 +31,6 @@ export const useGameStore = defineStore('game', {
         DefineGameID(gameID) {
             this.gameID = gameID
         },
-        DefineUserID() {
-
-        },
-
 
         // Points
         Reward(basePoints) {
@@ -85,7 +81,7 @@ export const useGameStore = defineStore('game', {
             const authStore = useAuthStore()
 
             if (authStore.isAuthorized) {
-                // const response = this.SaveResult(authStore.token)
+                const response = this.SaveResult(authStore.token)
                 console.log(response)
             }
 
@@ -108,29 +104,29 @@ export const useGameStore = defineStore('game', {
 
 
         // API request
-        // async SaveResult(token) {
-        //     const dateTime = new Date().toISOString()
-        //
-        //     const jwtBearer = `Bearer ${token}`
-        //     const body = {
-        //         gameId: this.gameID,
-        //         userId: this.userId,
-        //         playtime: dateTime,
-        //         points: this.points,
-        //         duration: this.duration,
-        //         level: this.level,
-        //     }
-        //
-        //
-        //     return({
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'Authorization': jwtBearer
-        //         },
-        //         data: body,
-        //     })
-        //
-        // }
+        async SaveResult(token) {
+            const dateTime = new Date().toISOString()
+
+            const jwtBearer = `Bearer ${token}`
+            const body = {
+                gameId: this.gameID,
+                userId: this.userId,
+                playtime: dateTime,
+                points: this.points,
+                duration: this.duration,
+                level: this.level,
+            }
+
+
+            return({
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': jwtBearer
+                },
+                data: body,
+            })
+
+        }
 
 
         // Safe exit
