@@ -1,4 +1,4 @@
-export const score_reward = {
+export const points_reward = {
     LINE_CLEAR_1: 100,
     LINE_CLEAR_2: 300,
     LINE_CLEAR_3: 500,

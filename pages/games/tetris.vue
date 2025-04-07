@@ -9,7 +9,8 @@ import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 
 import {gameStates} from "~/utils/constants/constants.js";
 import {tetraminos} from "~/utils/constants/tetrisConstants.js";
-import {score_reward} from "~/utils/constants/tetrisConstants.js";
+import {points_reward} from "~/utils/constants/tetrisConstants.js";
+import {useFormatNumbers} from "~/composables/useFormatNumbers.js";
 
 useHead({
   title: 'Тетріс',
@@ -21,7 +22,7 @@ const tetraminoCount = ref(0)
 const level = computed(() => {
   return Math.floor(tetraminoCount.value / 10) + 1
 })
-const score = ref(0)
+const points = ref(0)
 
 const timer = ref(0)
 
@@ -101,19 +102,19 @@ function ClearLine(y, height) {
   LineReward(lines)
 }
 
-// score reward system
+// points reward system
 
-function Reward(baseScores) {
-  score.value += baseScores * level.value
+function Reward(basePoints) {
+  points.value += basePoints * level.value
 }
 
 function LineReward(lines) {
   if (lines >= 1 && lines <= 4) {
     const lineReward = [
-      score_reward.LINE_CLEAR_1,
-      score_reward.LINE_CLEAR_2,
-      score_reward.LINE_CLEAR_3,
-      score_reward.LINE_CLEAR_4
+      points_reward.LINE_CLEAR_1,
+      points_reward.LINE_CLEAR_2,
+      points_reward.LINE_CLEAR_3,
+      points_reward.LINE_CLEAR_4
     ]
     Reward(lineReward[lines - 1])
   }
@@ -165,14 +166,14 @@ function HardDrop() {
   let isCollide = false
   do {
     isCollide = Down()
-    Reward(score_reward.HARD_DROP)
+    Reward(points_reward.HARD_DROP)
   } while (isCollide)
   return isCollide
 }
 
 function SoftDrop() {
   if (!ACTIVE.value) return
-  Reward(score_reward.SOFT_DROP)
+  Reward(points_reward.SOFT_DROP)
   return Down()
 }
 
@@ -251,7 +252,7 @@ function reset() {
 
   //
   timer.value = null
-  score.value = 0
+  points.value = 0
   tetraminoCount.value = 0
   clearedLines.value = 0
 }
@@ -351,12 +352,12 @@ onBeforeRouteLeave((to, from, next) => {
                  start()
                }"
         >
-          <h2>Game over!</h2>Your score: {{ score }}
+          <h2>Game over!</h2>Your points: {{ useFormatNumbers(points) }}
         </Modal>
         <Grid :board :currentTetromino/>
       </div>
       <Stats :next-tetramino="nextTetromino">
-        score: {{ score }}<br>
+        points: {{ useFormatNumbers(points) }}<br>
         level: {{ level }}<br>
         lines: {{ clearedLines }}
 
