@@ -4,11 +4,13 @@ import Stats from "~/components/tetris/stats.vue";
 import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
 import {matrixRotate} from "~/composables/matrixRotate.js";
-import {MatrixOverlap} from "~/composables/matrixOverlap.js";
+import {matrixOverlap} from "~/composables/matrixOverlap.js";
 import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 import {tetraminos, points_reward} from "~/utils/constants/tetrisConstants.js";
 import {games} from "~/utils/constants/constants.js";
 import {useGameStore} from "~/stores/game.js";
+import {computed} from "vue";
+import {matrixTrim} from "~/composables/matrixTrim.js";
 
 useHead({
   title: 'Тетріс',
@@ -36,30 +38,24 @@ const tetraminoCount = ref(0)
 
 // level calculation
 watch(tetraminoCount, (newValue) => {
-    game.level = Math.floor(newValue / 10) + 1
+  game.level = Math.floor(newValue / 10) + 1
 })
 
 
-
 const timer = ref(0)
-
 const board = ref(Array(20).fill().map(() => Array(10).fill(0)))
-
 
 const currentTetromino = ref({
   x: 0,
   y: 0,
   shape: [[0]]
 })
-const tetraminoHeight = computed(() => {
-  const shape = currentTetromino.value.shape;
-  let height = 0;
-  for (let i = 0; i < shape.length; i++) {
-    if (arrSum(shape[i]) !== 0) {
-      height++
-    }
+const tetraminoParameters = computed(() => {
+  const trimmed = matrixTrim(currentTetromino.value.shape)
+  return {
+    OffsetY: trimmed.top,
+    Height: trimmed.bottom - trimmed.top,
   }
-  return height
 })
 
 const nextTetromino = ref({
@@ -93,19 +89,15 @@ function FixTetramino() {
 
   const y = currentTetromino.value.y
   tetraminoCount.value++
-
-  ClearLine(y, tetraminoHeight.value)
+  ClearLine(y + tetraminoParameters.value.OffsetY, tetraminoParameters.value.Height)
   GenerateNextTetramino()
 }
 
 function ClearLine(y, height) {
   console.log(`y: ${y}\n height: ${height}`)
-  // temp
-  y = 0
-  height = 20
-  //
+
   let lines = 0
-  for (let i = y; i < y + height; i++) {
+  for (let i = y; i <= y + height; i++) {
     if (!arrHasEmptyValue(board.value[i])) {
       lines++
       clearedLines.value++
@@ -117,7 +109,6 @@ function ClearLine(y, height) {
 }
 
 
-
 // Tetramino collision functions
 
 function tetraminoCollider() {
@@ -127,23 +118,23 @@ function tetraminoCollider() {
   const base = board.value
 
   function Overlap() {
-    return MatrixOverlap(base, shape, [x, y], [false, true, true, true])
+    return matrixOverlap(base, shape, [x, y], [false, true, true, true])
   }
 
   function CollideTop() {
-    return MatrixOverlap(base, shape, [x, y - 1], [false, true, true, true])
+    return matrixOverlap(base, shape, [x, y - 1], [false, true, true, true])
   }
 
   function CollideBottom() {
-    return MatrixOverlap(base, shape, [x, y + 1], [false, true, true, true])
+    return matrixOverlap(base, shape, [x, y + 1], [false, true, true, true])
   }
 
   function CollideLeft() {
-    return MatrixOverlap(base, shape, [x - 1, y], [false, true, true, true])
+    return matrixOverlap(base, shape, [x - 1, y], [false, true, true, true])
   }
 
   function CollideRight() {
-    return MatrixOverlap(base, shape, [x + 1, y], [false, true, true, true])
+    return matrixOverlap(base, shape, [x + 1, y], [false, true, true, true])
   }
 
   return {
@@ -237,13 +228,14 @@ function pause() {
 
 
 function reset() {
-  game.Reset(()=> {
+  game.Reset(() => {
     for (let i = 0; i < board.value.length; i++) {
       board.value[i].fill(0)
     }
     GenerateNextTetramino()
     GenerateNextTetramino()
 
+    clearInterval(timer.value)
     timer.value = null
     tetraminoCount.value = 0
     clearedLines.value = 0

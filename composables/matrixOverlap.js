@@ -6,7 +6,7 @@
  * @param sides - [top, right, bottom, left] - toggle
  * @returns {boolean} - true if there is a collision
  */
-export const MatrixOverlap = (matrixBase, matrixAbove, offset = [0, 0], sides = [true, true, true, true]) => {
+export const matrixOverlap = (matrixBase, matrixAbove, offset = [0, 0], sides = [true, true, true, true]) => {
     if (offset.length !== 2 || sides.length !== 4) {
         throw new Error('Offset must be an array of two numbers')
     }

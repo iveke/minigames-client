@@ -1,4 +1,6 @@
-export const matrixRotate = (matrix, clockwise=true) => {
+export const matrixRotate = (matrix, clockwise = true) => {
+    if (matrix?.length === 0) return matrix
+    if (matrix[0]?.length === 0) return matrix
     let rotatedMatrix;
 
     if (clockwise) {

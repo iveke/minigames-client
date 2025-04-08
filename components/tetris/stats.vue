@@ -1,21 +1,27 @@
 <script setup>
 import Cell from "~/components/tetris/cell.vue";
 import {arrSum} from "~/composables/arrSum";
+import {matrixTrim} from "~/composables/matrixTrim.js";
+import {computed} from "vue";
 
 const props = defineProps({
   nextTetramino: Object
 })
 
+const trimmedShape = computed(() => {
+  return matrixTrim(props.nextTetramino.shape).newMatrix
+})
+
+
 </script>
 
 <template>
+
   <div class="stats">
     <div class="next">
       <div class="grid">
-        <div v-for="row  in nextTetramino.shape"
-             class="row">
-          <Cell v-if="arrSum(row) > 0"
-                v-for="(cell, i) in row"
+        <div v-for="row in trimmedShape" class="row">
+          <Cell v-for="(cell, i) in row"
                 :number="cell"
                 :key="i"
           />
