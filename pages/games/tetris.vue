@@ -8,15 +8,13 @@ import {matrixOverlap} from "~/composables/matrixOverlap.js";
 import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
 import {tetraminos, points_reward} from "~/utils/constants/tetrisConstants.js";
 import {games} from "~/utils/constants/constants.js";
+import Queue from "~/utils/queue.js";
 import {useGameStore} from "~/stores/game.js";
-import {computed} from "vue";
 import {matrixTrim} from "~/composables/matrixTrim.js";
 
 useHead({
   title: 'Тетріс',
 })
-
-
 //
 const game = useGameStore()
 game.DefineGameID(games.Tetris)
@@ -58,25 +56,30 @@ const tetraminoParameters = computed(() => {
   }
 })
 
-const nextTetromino = ref({
+
+const next = ref(new Queue())
+next.value.Enqueue({
   x: 0,
   y: 0,
   shape: [[0]]
 })
 
 
-function CalcNewPositionX() {
-  nextTetromino.value.x = 10 / 2 - Math.floor(nextTetromino.value.shape[0].length / 2)
-}
-
-function GenerateNextTetramino() {
-  currentTetromino.value = nextTetromino.value
-  nextTetromino.value = {
+function GetRandomTetramino() {
+  const randomTetramino = {
+    shape: tetraminos[Math.floor(Math.random() * tetraminos.length)].shape,
     x: 0,
     y: 0,
-    ...tetraminos[Math.floor(Math.random() * tetraminos.length)]
   }
-  CalcNewPositionX()
+  randomTetramino.x = 10 / 2 - Math.floor(randomTetramino.shape[0].length / 2)
+  return randomTetramino
+}
+function GenerateNextTetramino() {
+  const nextTetramino = GetRandomTetramino()
+
+  next.value.Enqueue(nextTetramino)
+  currentTetromino.value = next.value.Dequeue()
+
 
   if (tetraminoCollider().Overlap()) {
     gameOver()
@@ -94,8 +97,6 @@ function FixTetramino() {
 }
 
 function ClearLine(y, height) {
-  console.log(`y: ${y}\n height: ${height}`)
-
   let lines = 0
   for (let i = y; i <= y + height; i++) {
     if (!arrHasEmptyValue(board.value[i])) {
@@ -335,7 +336,7 @@ onBeforeRouteLeave(() => {
         </Modal>
         <Grid :board :currentTetromino/>
       </div>
-      <Stats :next-tetramino="nextTetromino">
+      <Stats :next-tetramino="next.Peek()">
         points: {{ game.formattedPoints }}<br>
         level: {{ game.level }}<br>
         lines: {{ clearedLines }}
