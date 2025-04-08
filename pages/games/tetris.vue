@@ -82,7 +82,7 @@ function GenerateNextTetramino() {
 
 
   if (tetraminoCollider().Overlap()) {
-    gameOver()
+    game.GameOver()
   }
 }
 
@@ -223,11 +223,6 @@ function Rotate() {
 
 // Game state functions
 
-function pause() {
-  game.Pause()
-}
-
-
 function reset() {
   game.Reset(() => {
     for (let i = 0; i < board.value.length; i++) {
@@ -243,13 +238,10 @@ function reset() {
   })
 }
 
-function start() {
-  game.Play()
-}
 
-function gameOver() {
-  game.GameOver()
-}
+
+
+// Game loop
 
 function startLoop() {
   timer.value = setInterval(() => {
@@ -277,6 +269,7 @@ watch(() => game.level, () => {
     startLoop()
   }
 })
+
 
 // Safe exit
 
@@ -316,12 +309,12 @@ onBeforeRouteLeave(() => {
                button-text="Play"
                @action="() => {
                  reset()
-                 start()
+                 game.Play()
                }"
         ><h2>Start</h2></Modal>
         <Modal v-if="game.isPaused"
                button-text="Resume"
-               @action="start"
+               @action="game.Play()"
         ><h2>Pause</h2></Modal>
         <!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
         <!--    <div v-else>-->
@@ -329,7 +322,7 @@ onBeforeRouteLeave(() => {
                button-text="Reset"
                @action="() => {
                  reset()
-                 start()
+                 game.Play()
                }"
         >
           <h2>Game over!</h2>Your points: {{ game.formattedPoints }}
@@ -352,7 +345,7 @@ onBeforeRouteLeave(() => {
             @left="Left"
             @rotate="Rotate"
 
-            @pause="pause"
+            @pause="game.Pause()"
         />
       </Stats>
     </div>
