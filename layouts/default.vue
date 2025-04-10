@@ -9,6 +9,7 @@ import Header from "~/components/Header.vue";
 <template>
 
   <Header/>
+  test
 
   <main>
     <slot></slot>
