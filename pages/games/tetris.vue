@@ -17,7 +17,7 @@ useHead({
 })
 //
 const game = useGameStore()
-game.DefineGameID(games.Tetris)
+game.DefineGameID(games.tetris)
 
 function LineReward(lines) {
   if (lines >= 1 && lines <= 4) {
@@ -213,7 +213,6 @@ function Rotate() {
       } else if (Top()) {
         break
       } else {
-        Down()
         currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
       }
     }
@@ -222,21 +221,20 @@ function Rotate() {
 
 
 // Game state functions
+game.DefineCustom('Reset', () => {
+  for (let i = 0; i < board.value.length; i++) {
+    board.value[i].fill(0)
+  }
+  GenerateNextTetramino()
+  GenerateNextTetramino()
 
-function reset() {
-  game.Reset(() => {
-    for (let i = 0; i < board.value.length; i++) {
-      board.value[i].fill(0)
-    }
-    GenerateNextTetramino()
-    GenerateNextTetramino()
+  clearInterval(timer.value)
+  timer.value = null
+  tetraminoCount.value = 0
+  clearedLines.value = 0
+  console.log(1234)
+})
 
-    clearInterval(timer.value)
-    timer.value = null
-    tetraminoCount.value = 0
-    clearedLines.value = 0
-  })
-}
 
 
 
@@ -272,7 +270,6 @@ watch(() => game.level, () => {
 
 
 // Safe exit
-
 function safeExit(event) {
   if (game.isNotActive || game.isGameOver) {
     return
@@ -285,7 +282,7 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   window.removeEventListener("beforeunload", safeExit)
-  reset()
+  game.Reset()
 })
 
 onBeforeRouteLeave(() => {
@@ -308,7 +305,7 @@ onBeforeRouteLeave(() => {
         <Modal v-if="game.isNotActive"
                button-text="Play"
                @action="() => {
-                 reset()
+                 game.Reset()
                  game.Play()
                }"
         ><h2>Start</h2></Modal>
@@ -316,12 +313,10 @@ onBeforeRouteLeave(() => {
                button-text="Resume"
                @action="game.Play()"
         ><h2>Pause</h2></Modal>
-        <!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
-        <!--    <div v-else>-->
         <Modal v-if="game.isGameOver"
                button-text="Reset"
                @action="() => {
-                 reset()
+                 game.Reset()
                  game.Play()
                }"
         >

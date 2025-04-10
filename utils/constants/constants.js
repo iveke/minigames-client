@@ -5,6 +5,15 @@ export const gameStates = {
     GAME_OVER: 3,
 }
 export const games = {
-    Tetris: 1,
+    tetris: 1,
 
 }
+
+// export const gamesTemp = {
+//     tetris: {
+//         name: 'Tetris',
+//         id: 1,
+//         route: '/tetris',
+//     },
+//
+// }

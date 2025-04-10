@@ -12,6 +12,8 @@ export const useGameStore = defineStore('game', {
         startTime: null,
         endTime: null,
         duration: 0,
+
+        // customReset: () => {},
     }),
     getters: {
         isActive: (state) => state.gameState === gameStates.ACTIVE,
@@ -27,6 +29,36 @@ export const useGameStore = defineStore('game', {
         formattedPoints: (state) => useFormatNumbers(state.points)
     },
     actions: {
+        // custom functions
+        CustomReset() {},
+        CustomPlay() {},
+        CustomPause() {},
+        CustomGameOver() {},
+
+
+        CustomStartLoop() {},
+        CustomStopLoop() {},
+        CustomResetLoop() {},
+
+        DefineCustom(name, func = () => {
+        }) {
+            switch (name) {
+                case 'Reset':
+                case 'Play':
+                case 'Pause':
+                case 'GameOver':
+                case 'StartLoop':
+                case 'StopLoop':
+                case 'ResetLoop':
+                    const key = 'Custom' + name
+                    this[key] = func.bind(this)
+                    break
+                default:
+                    console.error(`Unknown custom function name: ${name}`)
+                    break
+            }
+        },
+
         // Define static info
         DefineGameID(gameID) {
             this.gameID = gameID
@@ -48,9 +80,9 @@ export const useGameStore = defineStore('game', {
         },
 
 
-
         // Game state
-        Reset(customLogic = () => {}) {
+
+        Reset() {
             this.gameState = gameStates.NOT_ACTIVE
 
             this.points = 0
@@ -60,23 +92,22 @@ export const useGameStore = defineStore('game', {
             this.endTime = null
             this.duration = 0
 
-            customLogic()
+            this.CustomReset()
         },
-        Play(customLogic = () => {}) {
+        Play() {
             this.gameState = gameStates.ACTIVE
             this.SetStartTimeStamp()
-            customLogic()
-
+            this.CustomPlay()
         },
-        Pause(customLogic = () => {}) {
+        Pause() {
             this.gameState = gameStates.PAUSED
             this.SetPauseTimeStamp()
-            customLogic()
+            this.CustomPause()
         },
-        GameOver(customLogic = () => {}) {
+        GameOver() {
             this.gameState = gameStates.GAME_OVER
             this.SetPauseTimeStamp()
-            customLogic()
+            this.CustomGameOver()
 
             const authStore = useAuthStore()
 
@@ -84,22 +115,47 @@ export const useGameStore = defineStore('game', {
                 const response = this.SaveResult(authStore.token)
                 console.log(response)
             }
-
         },
 
+
+        // Tick game loop
+        // CustomPreventTick() {},
+        // CustomNextTick() {},
+        //
+        // PreventTick() {
+        //     let ifPrevent = !this.isActive
+        //
+        //     if (!ifPrevent) {
+        //         ifPrevent = this.CustomPreventTick()
+        //     }
+        //     return ifPrevent
+        // },
+        //
+        // NextTick(time = 1000) {
+        //     if (!this.PreventTick()) return false
+        //
+        //     this.CustomNextTick()
+        //
+        //     setTimeout(() => {
+        //         this.NextTick()
+        //     }, time)
+        // },
 
         // Game loop
-        StartGameLoop(customLogic = () => {}) {
 
+        StartLoop() {
+            this.CustomStartLoop()
         },
-        StopLoop(customLogic = () => {}) {
 
+        StopLoop() {
+            this.CustomStopLoop()
         },
-        RestartGameLoop() {
+        RestartLoop() {
             this.StopLoop()
-            this.StartGameLoop()
+            this.StartLoop()
         },
-        ResetGameLoop() {
+        ResetLoop() {
+            this.CustomResetLoop()
         },
 
 
@@ -118,7 +174,7 @@ export const useGameStore = defineStore('game', {
             }
 
 
-            return({
+            return ({
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': jwtBearer
@@ -126,10 +182,11 @@ export const useGameStore = defineStore('game', {
                 data: body,
             })
 
-        }
+        },
 
 
         // Safe exit
+
 
     }
 })
