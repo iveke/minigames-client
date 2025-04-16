@@ -1,5 +1,9 @@
 {
-  "name": "nuxt-app",
+  "name": "@iveke/g-mini",
+  "version": "0.1.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "private": true,
   "type": "module",
   "scripts": {

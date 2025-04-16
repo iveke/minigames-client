@@ -1,54 +1,33 @@
 <script setup>
-defineProps({
+const {number} = defineProps({
   number: Number,
 })
+const CELL_COLOR_VARS = [
+  '--empty-color',
+  '--S-color',
+  '--Z-color',
+  '--J-color',
+  '--L-color',
+  '--O-color',
+  '--I-color',
+  '--T-color'
+]
+const cell = ref(null)
+const cellStyle = computed(() => {
+  return {
+    backgroundColor: `var(${CELL_COLOR_VARS[number]})`
+  }
+})
+
 </script>
 
 <template>
-  <div class="cell"
-       :class="number === 0 ? 'empty' : 'piece-' + number"
-
-  >
-
-  </div>
+  <div ref="cell" class="cell" :style="cellStyle"></div>
 </template>
 
 <style scoped>
 .cell {
   width: 24px;
   height: 24px;
-  color: white; /* temp */
-}
-
-.empty {
-  background-color: #1D1A2D;
-}
-
-.piece-1 {
-  background-color: red;
-}
-
-.piece-2 {
-  background-color: green;
-}
-
-.piece-3 {
-  background-color: magenta;
-}
-
-.piece-4 {
-  background-color: cyan;
-}
-
-.piece-5 {
-  background-color: yellow;
-}
-
-.piece-6 {
-  background-color: blue;
-}
-
-.piece-7 {
-  background-color: purple;
 }
 </style>

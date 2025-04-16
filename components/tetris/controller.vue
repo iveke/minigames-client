@@ -1,17 +1,12 @@
 <script setup>
-const {gameState} = defineProps({
-  gameState: Number
-})
-const NOT_ACTIVE = computed(() => gameState === states.NOT_ACTIVE)
-
-const ACTIVE = computed(() => gameState === states.ACTIVE)
-const PAUSED = computed(() => gameState === states.PAUSED)
-const GAME_OVER = computed(() => gameState === states.GAME_OVER)
+import {useGameStore} from "~/stores/game.js";
 
 const emit = defineEmits(['left', 'right', 'down', 'drop', 'rotate', 'pause'])
 
+const game = useGameStore()
+
 function keyboardController(event) {
-  if (!ACTIVE.value) return
+  if (!game.isActive) return
 
   event.preventDefault()
   // if (event.ctrlKey || event.altKey || event.metaKey || event.key === ' ') {
@@ -46,14 +41,14 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="controller">
-    <button @click="emit('left')" :disabled="!ACTIVE">Left</button>
-    <button @click="emit('right')" :disabled="!ACTIVE">Right</button>
-    <button @click="emit('down')" :disabled="!ACTIVE">Down</button>
-    <button @click="emit('drop')" :disabled="!ACTIVE">Drop</button>
-    <button @click="emit('rotate')" :disabled="!ACTIVE">Rotate</button>
+    <button @click="emit('left')" :disabled="!game.isActive">Left</button>
+    <button @click="emit('right')" :disabled="!game.isActive">Right</button>
+    <button @click="emit('down')" :disabled="!game.isActive">Down</button>
+    <button @click="emit('drop')" :disabled="!game.isActive">Drop</button>
+    <button @click="emit('rotate')" :disabled="!game.isActive">Rotate</button>
   </div>
   <div class="state-manager">
-    <button v-if="ACTIVE" @click="emit('pause')">Pause</button>
+    <button v-if="game.isActive" @click="emit('pause')">Pause</button>
 
 <!--    </div>-->
   </div>

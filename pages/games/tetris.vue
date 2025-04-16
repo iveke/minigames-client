@@ -3,307 +3,248 @@ import Grid from "~/components/tetris/grid.vue";
 import Stats from "~/components/tetris/stats.vue";
 import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
-import {hasEmptyCell} from "~/composables/hasEmptyCell.js";
+import {matrixRotate} from "~/composables/matrixRotate.js";
+import {matrixOverlap} from "~/composables/matrixOverlap.js";
+import {arrHasEmptyValue} from "~/composables/arrHasEmptyValue.js";
+import {tetraminos, points_reward} from "~/utils/constants/tetrisConstants.js";
+import {games} from "~/utils/constants/constants.js";
+import Queue from "~/utils/queue.js";
+import {useGameStore} from "~/stores/game.js";
+import {matrixTrim} from "~/composables/matrixTrim.js";
 
 useHead({
   title: 'Тетріс',
 })
+//
+const game = useGameStore()
+game.DefineGameID(games.tetris)
 
-const gameState = ref(states.NOT_ACTIVE)
+function LineReward(lines) {
+  if (lines >= 1 && lines <= 4) {
+    const lineReward = [
+      points_reward.LINE_CLEAR_1,
+      points_reward.LINE_CLEAR_2,
+      points_reward.LINE_CLEAR_3,
+      points_reward.LINE_CLEAR_4
+    ]
+    game.Reward(lineReward[lines - 1])
+  }
+}
+
 const clearedLines = ref(0)
 const tetraminoCount = ref(0)
-const level = computed(() => {
-  return Math.floor(tetraminoCount.value / 10) + 1
+
+// level calculation
+watch(tetraminoCount, (newValue) => {
+  game.level = Math.floor(newValue / 10) + 1
 })
-const score = ref(0)
+
 
 const timer = ref(0)
-
-const ACTIVE = computed(() => gameState.value === states.ACTIVE)
-const PAUSED = computed(() => gameState.value === states.PAUSED)
-const GAME_OVER = computed(() => gameState.value === states.GAME_OVER)
-const NOT_ACTIVE = computed(() => gameState.value === states.NOT_ACTIVE)
-
 const board = ref(Array(20).fill().map(() => Array(10).fill(0)))
+
 const currentTetromino = ref({
   x: 0,
   y: 0,
   shape: [[0]]
 })
-const tetraminoHeigth = computed(() => {
-  const shape = currentTetromino.value.shape;
-  let height = 0;
-  for (let i = 0; i < shape.length; i++) {
-    if (arrSum(shape[i]) !== 0) {
-      height++
-    }
+const tetraminoParameters = computed(() => {
+  const trimmed = matrixTrim(currentTetromino.value.shape)
+  return {
+    OffsetY: trimmed.top,
+    Height: trimmed.bottom - trimmed.top,
   }
-  return height
 })
-const tetraminoTrueY = computed(() => {
-  const shape = currentTetromino.value.shape;
-  let trueY = currentTetromino.value.y;
-  for (let i = 0; i < shape.length; i++) {
-    if (arrSum(shape[i]) === 0) {
-      trueY++
-    }
-    if (arrSum(shape[i]) !== 0) {
-      break
-    }
-  }
-  return trueY
-})
-const nextTetromino = ref({
+
+
+const next = ref(new Queue())
+next.value.Enqueue({
   x: 0,
   y: 0,
   shape: [[0]]
 })
 
 
-function CalcNewPositionX() {
-  nextTetromino.value.x = 10 / 2 - Math.floor(nextTetromino.value.shape[0].length / 2)
-}
-
-function NextTetramino() {
-  currentTetromino.value = nextTetromino.value
-  nextTetromino.value = {
+function GetRandomTetramino() {
+  const randomTetramino = {
+    shape: tetraminos[Math.floor(Math.random() * tetraminos.length)].shape,
     x: 0,
     y: 0,
-    ...tetraminos[Math.floor(Math.random() * tetraminos.length)]
   }
-  CalcNewPositionX()
+  randomTetramino.x = 10 / 2 - Math.floor(randomTetramino.shape[0].length / 2)
+  return randomTetramino
+}
+function GenerateNextTetramino() {
+  const nextTetramino = GetRandomTetramino()
 
-  if (Overlap()) {
-    gameOver()
+  next.value.Enqueue(nextTetramino)
+  currentTetromino.value = next.value.Dequeue()
+
+
+  if (tetraminoCollider().Overlap()) {
+    game.GameOver()
   }
 }
 
 
 function FixTetramino() {
   board.value = matrixMerge(board.value, currentTetromino.value.shape, currentTetromino.value.x, currentTetromino.value.y)
+
   const y = currentTetromino.value.y
   tetraminoCount.value++
-  ClearLine(y, tetraminoHeigth.value)
-  NextTetramino()
+  ClearLine(y + tetraminoParameters.value.OffsetY, tetraminoParameters.value.Height)
+  GenerateNextTetramino()
 }
 
 function ClearLine(y, height) {
-  console.log(`y: ${y}\n height: ${height}`)
-  // temp
-  y = 0
-  height = 20
-  //
   let lines = 0
-  for (let i = y; i < y + height; i++) {
-    if (!hasEmptyCell(board.value[i])) {
+  for (let i = y; i <= y + height; i++) {
+    if (!arrHasEmptyValue(board.value[i])) {
       lines++
       clearedLines.value++
       board.value.splice(i, 1)
       board.value.unshift(Array(10).fill(0))
     }
   }
-  CalculateScore(lines)
+  LineReward(lines)
 }
 
-function CalculateScore(lines) {
-  if (lines >= 1 && lines <= 4) {
-    const lineReward = [100, 300, 500, 800]
-    score.value += lineReward[lines - 1] * level.value
-  }
-}
 
-// Collision Lambdas
-const Overlap = () => {
+// Tetramino collision functions
+
+function tetraminoCollider() {
   const x = currentTetromino.value.x
   const y = currentTetromino.value.y
   const shape = currentTetromino.value.shape
-  let isOverlap = false
+  const base = board.value
 
-  for (let i = 0; i < shape.length; i++) {
-    for (let j = 0; j < shape[0].length; j++) {
-      if (shape[i][j] !== 0) {
-        if (y + i >= 20
-            || board.value[y + i][x + j] !== 0) {
-          isOverlap = true
-        }
-      }
-    }
+  function Overlap() {
+    return matrixOverlap(base, shape, [x, y], [false, true, true, true])
   }
 
-  return isOverlap
-}
-const CollideBottom = () => {
-  const x = currentTetromino.value.x
-  const y = currentTetromino.value.y
-  const shape = currentTetromino.value.shape
-  let isCollide = false
-
-  for (let i = 0; i < shape.length; i++) {
-    for (let j = 0; j < shape[0].length; j++) {
-      if (shape[i][j] !== 0) {
-        if (y + i + 1 >= 20
-            || board.value[y + i + 1][x + j] !== 0) {
-          isCollide = true
-        }
-      }
-    }
+  function CollideTop() {
+    return matrixOverlap(base, shape, [x, y - 1], [false, true, true, true])
   }
 
-  return isCollide
-}
-const CollideLeft = () => {
-  const x = currentTetromino.value.x
-  const y = currentTetromino.value.y
-  const shape = currentTetromino.value.shape
-  let isCollide = false
-
-  for (let i = 0; i < shape.length; i++) {
-    for (let j = 0; j < shape[0].length; j++) {
-      if (shape[i][j] !== 0) {
-        if (x + j - 1 < 0
-            || board.value[y + i][x + j - 1] !== 0) {
-          isCollide = true
-        }
-      }
-    }
+  function CollideBottom() {
+    return matrixOverlap(base, shape, [x, y + 1], [false, true, true, true])
   }
 
-  return isCollide
-}
-const CollideRight = () => {
-  const x = currentTetromino.value.x
-  const y = currentTetromino.value.y
-  const shape = currentTetromino.value.shape
-  let isCollide = false
-
-  for (let i = 0; i < shape.length; i++) {
-    for (let j = 0; j < shape[0].length; j++) {
-      if (shape[i][j] !== 0) {
-        if (x + j + 1 >= 10
-            || board.value[y + i][x + j + 1] !== 0) {
-          isCollide = true
-        }
-      }
-    }
+  function CollideLeft() {
+    return matrixOverlap(base, shape, [x - 1, y], [false, true, true, true])
   }
 
-  return isCollide
+  function CollideRight() {
+    return matrixOverlap(base, shape, [x + 1, y], [false, true, true, true])
+  }
+
+  return {
+    Overlap,
+    CollideTop,
+    CollideBottom,
+    CollideLeft,
+    CollideRight
+  }
 }
 
 
 // Tetramino controller Functions
 
-function drop() {
-  if (!ACTIVE.value) return
-
-  for (let i = 0; i < 20; i++) {
-    score.value += 2
-    if (CollideBottom()) {
-      FixTetramino()
-      break
-    }
-
-    currentTetromino.value.y++;
-  }
-
+function HardDrop() {
+  if (!game.isActive) return
+  let isCollide = false
+  do {
+    isCollide = Down()
+    game.Reward(points_reward.HARD_DROP)
+  } while (isCollide)
+  return isCollide
 }
 
-function down() {
-  if (!ACTIVE.value) return
-  if (CollideBottom()) {
+function SoftDrop() {
+  if (!game.isActive) return
+  game.Reward(points_reward.SOFT_DROP)
+  return Down()
+}
+
+function Down() {
+  if (!game.isActive) return
+  if (tetraminoCollider().CollideBottom()) {
     FixTetramino()
-    return
+    return false
   }
-
-  currentTetromino.value.y++;
+  currentTetromino.value.y++
+  return true
 }
 
-function right() {
-  if (!ACTIVE.value) return
-  if (CollideRight()) return
+function Right() {
+  if (!game.isActive) return
+  if (tetraminoCollider().CollideRight()) return false
 
   currentTetromino.value.x++;
+  return true
 }
 
-function left() {
-  if (!ACTIVE.value) return
-  if (CollideLeft()) return
+function Left() {
+  if (!game.isActive) return
+  if (tetraminoCollider().CollideLeft()) return false
 
   currentTetromino.value.x--;
+  return true
 }
 
-function rotate() {
-  if (!ACTIVE.value) return
+function Top() {
+  if (!game.isActive) return
+  if (tetraminoCollider().CollideTop()) return false
 
-  currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
+  currentTetromino.value.y--;
+  return true
+}
+
+function Rotate() {
+  if (!game.isActive) return
+  currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
 
   for (let i = 0; i < 4; i++) {
-    if (Overlap()) {
-      if (!CollideRight()) {
-        currentTetromino.value.x++
+    if (tetraminoCollider().Overlap()) {
+      if (Right()) {
         break
-      } else if (!CollideLeft()) {
-        currentTetromino.value.x--
+      } else if (Left()) {
+        break
+      } else if (Top()) {
         break
       } else {
-        currentTetromino.value.y--
-        if (!Overlap()) {
-          break
-        } else {
-          currentTetromino.value.y++
-          currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
-        }
+        currentTetromino.value.shape = matrixRotate(currentTetromino.value.shape)
       }
     }
   }
-  // currentTetromino.value.y--
-  // if (!CollideBottom()) {
-  //   currentTetromino.value.y++
-  // // }
-  // else {
-  //   currentTetromino.value.shape = rotateMatrix(currentTetromino.value.shape)
-  // }
 }
 
 
 // Game state functions
-
-function pause() {
-  gameState.value = states.PAUSED
-}
-
-function resume() {
-  gameState.value = states.ACTIVE
-}
-
-function reset() {
-  gameState.value = states.NOT_ACTIVE
+game.DefineCustom('Reset', () => {
   for (let i = 0; i < board.value.length; i++) {
     board.value[i].fill(0)
   }
-  NextTetramino()
-  NextTetramino()
+  GenerateNextTetramino()
+  GenerateNextTetramino()
 
-  //
+  clearInterval(timer.value)
   timer.value = null
-  score.value = 0
   tetraminoCount.value = 0
   clearedLines.value = 0
-}
+  console.log(1234)
+})
 
-function start() {
 
-  gameState.value = states.ACTIVE
-}
 
-function gameOver() {
-  gameState.value = states.GAME_OVER
-}
+
+
+// Game loop
 
 function startLoop() {
   timer.value = setInterval(() => {
-    down()
-  }, Math.max(100, 1000 - 75 * level.value))
+    Down()
+  }, Math.min(1000, 1000 / Math.sqrt(game.level)))
 }
 
 function stopLoop() {
@@ -312,7 +253,7 @@ function stopLoop() {
 
 }
 
-watch(ACTIVE, (newValue) => {
+watch(() => game.isActive, (newValue) => {
 
   if (newValue) {
     startLoop()
@@ -320,40 +261,35 @@ watch(ACTIVE, (newValue) => {
     stopLoop()
   }
 })
-watch(level, (newValue) => {
-  if (ACTIVE) {
+watch(() => game.level, () => {
+  if (game.isActive) {
     stopLoop()
     startLoop()
   }
 })
 
-// Safe exit
 
+// Safe exit
 function safeExit(event) {
-  if (NOT_ACTIVE.value || GAME_OVER.value) {
+  if (game.isNotActive || game.isGameOver) {
     return
   }
   event.preventDefault();
 }
+
 onMounted(() => {
   window.addEventListener("beforeunload", safeExit)
 })
 onBeforeUnmount(() => {
   window.removeEventListener("beforeunload", safeExit)
-  reset()
+  game.Reset()
 })
 
-onBeforeRouteLeave((to, from, next) => {
-  if (!NOT_ACTIVE.value) {
-    const answer = window.confirm('Ви дійсно хочете покинути цю сторінку?')
-    if (answer) {
-      next() // Разрешаем переход
-    } else {
-      next(false) // Отменяем переход
-    }
-  } else {
-    next()
+onBeforeRouteLeave(() => {
+  if (!game.isNotActive && !game.isGameOver) {
+    return window.confirm('Ви дійсно хочете покинути цю сторінку?')
   }
+  return true
 })
 </script>
 
@@ -362,37 +298,35 @@ onBeforeRouteLeave((to, from, next) => {
   <div class="main">
 
     <div class="tetris">
-<!--      <div class="temp-grid">-->
-<!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
-<!--      </div>-->
+      <!--      <div class="temp-grid">-->
+      <!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
+      <!--      </div>-->
       <div id="board">
-        <Modal v-if="NOT_ACTIVE"
+        <Modal v-if="game.isNotActive"
                button-text="Play"
                @action="() => {
-                 reset()
-                 start()
+                 game.Reset()
+                 game.Play()
                }"
         ><h2>Start</h2></Modal>
-        <Modal v-if="PAUSED"
+        <Modal v-if="game.isPaused"
                button-text="Resume"
-               @action="resume"
+               @action="game.Play()"
         ><h2>Pause</h2></Modal>
-        <!--    <button v-else-if="PAUSED" @click="emit('resume')">Resume</button>-->
-        <!--    <div v-else>-->
-        <Modal v-if="GAME_OVER"
+        <Modal v-if="game.isGameOver"
                button-text="Reset"
                @action="() => {
-                 reset()
-                 start()
+                 game.Reset()
+                 game.Play()
                }"
         >
-          <h2>Game over!</h2>Your score: {{ score }}
+          <h2>Game over!</h2>Your points: {{ game.formattedPoints }}
         </Modal>
         <Grid :board :currentTetromino/>
       </div>
-      <Stats :next-tetramino="nextTetromino">
-        score: {{ score }}<br>
-        level: {{ level }}<br>
+      <Stats :next-tetramino="next.Peek()">
+        points: {{ game.formattedPoints }}<br>
+        level: {{ game.level }}<br>
         lines: {{ clearedLines }}
 
         <!--      {{ NOT_ACTIVE }}-->
@@ -400,39 +334,23 @@ onBeforeRouteLeave((to, from, next) => {
         <!--      {{ PAUSED }}-->
         <!--      {{ GAME_OVER }}-->
         <Controller
-            :gameState
-            @down="down"
-            @drop="drop"
-            @right="right"
-            @left="left"
-            @rotate="rotate"
+            @down="SoftDrop"
+            @drop="HardDrop"
+            @right="Right"
+            @left="Left"
+            @rotate="Rotate"
 
-            @pause="pause"
+            @pause="game.Pause()"
         />
       </Stats>
     </div>
     <!--    <button class="temp" @click="FixTetramino">Fix</button>-->
-    <!--    <button class="temp" @click="NextTetramino">Next</button>-->
+    <!--    <button class="temp" @click="GenerateNextTetramino">Next</button>-->
   </div>
 </template>
 
 <style scoped>
-.temp-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 4px;
-}
 
-.temp-cell {
-  width: 24px;
-  height: 24px;
-  background-color: #1D1A2D;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 
 main {
   display: flex;
@@ -452,11 +370,4 @@ main {
   gap: 16px;
 }
 
-.temp {
-  background-color: #333333;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 </style>
