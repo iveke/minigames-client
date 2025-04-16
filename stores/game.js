@@ -13,6 +13,8 @@ export const useGameStore = defineStore('game', {
         endTime: null,
         duration: 0,
 
+
+        speed: 1000,
         // customReset: () => {},
     }),
     getters: {
@@ -30,15 +32,22 @@ export const useGameStore = defineStore('game', {
     },
     actions: {
         // custom functions
-        CustomReset() {},
-        CustomPlay() {},
-        CustomPause() {},
-        CustomGameOver() {},
+        CustomReset() {
+        },
+        CustomPlay() {
+        },
+        CustomPause() {
+        },
+        CustomGameOver() {
+        },
 
 
-        CustomStartLoop() {},
-        CustomStopLoop() {},
-        CustomResetLoop() {},
+        CustomStartLoop() {
+        },
+        CustomStopLoop() {
+        },
+        CustomResetLoop() {
+        },
 
         DefineCustom(name, func = () => {
         }) {
@@ -76,7 +85,7 @@ export const useGameStore = defineStore('game', {
         },
         SetPauseTimeStamp() {
             this.endTime = new Date()
-            this.duration += Math.floor((this.endTime - this.startTime) / 1000)
+            this.duration += Math.floor((this.endTime - this.startTime))
         },
 
 
@@ -143,10 +152,23 @@ export const useGameStore = defineStore('game', {
 
         // Game loop
 
-        StartLoop() {
+        NextTick() {
+            const startTime = performance.now()
+
             this.CustomStartLoop()
+
+            const executionTime = performance.now() - startTime
+            let delay = this.speed - executionTime
+            if (delay < 0) {
+                delay = 0;
+            }
+
+            setTimeout(this.NextTick, delay);
+
         },
 
+        StartLoop() {
+        },
         StopLoop() {
             this.CustomStopLoop()
         },
