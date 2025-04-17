@@ -1,8 +1,12 @@
 import {config} from "@vue/test-utils";
+import {emailConfirmStatus} from "~/utils/constants/constants.js";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: null,
+        tempToken: null,
+        emailStatus: emailConfirmStatus.NOT_CONFIRMED,
+        requestCodeTimeout: null
 
         // {nickname: '', email: '', password: '', token: ''}
     }),
@@ -31,25 +35,75 @@ export const useAuthStore = defineStore('auth', {
                         console.error(errorData)
                     }
                     const data = await response.json();
-                    this.token = data.token;
+                    this.tempToken = data.token;
 
-                    navigateTo('/account');
+                    this.emailStatus = emailConfirmStatus.PENDING
+
+                    // navigateTo('/account');
                 } catch (e) {
                     console.error("Error during registration", e)
                 }
             }
         },
-        confirmEmail(email) {
+        async confirmEmail(code) {
+            if (code < 10000 && code > 99999) {
+                console.error("Code is not valid")
+                return
+            }
+            if (this.emailStatus === emailConfirmStatus.PENDING) {
 
-            // if (email === this.tempCredentials.email) {
-            //     this.tempCredentials.confirmed = true
-            //     this.tempCredentials.token = 'test-token'
-            //
-            //     this.login(this.tempCredentials)
-            //
-            //     // this.initAuth()
-            //
-            // }
+
+            }
+
+            const apiUrl = useRuntimeConfig().public.API_URL
+            const jwtBearer = `Bearer ${this.tempToken}`
+            try {
+                const response = await fetch(`${apiUrl}/user/confirmEmail/${code}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': jwtBearer
+                    },
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(errorData)
+                }
+                const data = await response.json();
+                console.log(data)
+
+                this.emailStatus = emailConfirmStatus.CONFIRMED
+                this.token = this.tempToken;
+                this.tempToken = null;
+
+                navigateTo('/account');
+            } catch (e) {
+                console.error("Error during registration", e)
+            }
+
+
+        },
+
+        async requestCode() {
+            if (this.emailStatus === emailConfirmStatus.PENDING) {
+                if (this.requestCodeTimeout < Date.now()) {
+                    this.setRequestCodeTimeout(1)
+                    this.emailStatus = emailConfirmStatus.PENDING
+
+                    const apiUrl = useRuntimeConfig().public.API_URL
+                    const jwtBearer = `Bearer ${this.tempToken}`
+                    try {
+                        const response = await fetch(`${apiUrl}/auth/generateConfirmEmailCode`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': jwtBearer
+                            },
+                        })
+                    } catch (e) {
+                        console.error("Error during asking request", e)
+                    }
+
+                }
+            }
         },
 
         async login(email, password) {
@@ -85,14 +139,15 @@ export const useAuthStore = defineStore('auth', {
 
         logout() {
             this.token = null;
+            this.isConfirmedEmail = null
+            this.requestCodeTimeout = null;
             navigateTo('/');
         },
 
-        // initAuth() {
-        //     const token = localStorage.getItem('token')
-        //     if (token) {
-        //         this.token = token;
-        //     }
-        // }
+
+        setRequestCodeTimeout(minutes = 1) {
+            const nextAllowedTime = Date.now() + 1000 * 60 * minutes
+            this.requestCodeTimeout = nextAllowedTime
+        }
     }
 })

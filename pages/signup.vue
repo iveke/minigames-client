@@ -9,7 +9,7 @@ const email = ref('');
 const password = ref('');
 const username = ref('');
 
-
+const code = ref('');
 
 
 const isValidEmail = computed(() => {
@@ -22,6 +22,9 @@ const isValidUsername = computed(() => {
   return username.value.length >= 3
 })
 
+const isValidCode = computed(() => {
+  return code.value >= 10000 && code.value <= 99999
+})
 
 
 const isValid = computed(() => {
@@ -34,8 +37,31 @@ function SignUp() {
 }
 
 function Confirm() {
-  auth.confirmEmail(email.value)
+  auth.confirmEmail(code.value)
 }
+function requestCode() {
+  auth.requestCode()
+  RunTimeoutTimer()
+}
+
+const requestTimer = ref(0)
+const requestTime = ref(null)
+const isAllowedToRequestCode = ref(true)
+
+async function RunTimeoutTimer() {
+  isAllowedToRequestCode.value = false
+
+  requestTimer.value = setInterval(() => {
+    if (auth.requestCodeTimeout < Date.now()) {
+      clearInterval(requestTimer.value)
+      requestTime.value = null
+      isAllowedToRequestCode.value = true
+      return
+    }
+    requestTime.value = new Date(auth.requestCodeTimeout - Date.now()).getSeconds()
+  }, 1000)
+}
+
 
 // TEMP
 // TEMP
@@ -96,11 +122,14 @@ function SignUpFast() {
 
     </form>
     <br>
-    <NuxtLink to="/account">
-      <button @click="Confirm">Підтвердити емейл</button>
-    </NuxtLink>
-    <button @click="SignUpFast" type="button">Шустрий рег</button> <!-- TEMP -->
-
+    <input v-model="code" type="number" placeholder="Введіть код підтвердження">
+    <br>
+    <span v-if="!isAllowedToRequestCode" class="validation-note">Кож можна буде відправити ще раз через {{ requestTime }}</span>
+    <br>
+    <button @click="requestCode" :disabled="!isAllowedToRequestCode">Запросити код ще раз</button>
+    <br>
+    <button @click="Confirm" :disabled="!isValidCode">Підтвердити емейл</button>
+{{ auth.emailStatus}}
     <br>
 <!--    {{ isValidUsername}}-->
 <!--    <br>-->

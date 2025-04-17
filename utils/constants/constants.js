@@ -9,6 +9,17 @@ export const games = {
 
 }
 
+
+
+export const emailConfirmStatus = {
+    NOT_CONFIRMED: 0,
+    PENDING: 1,
+    CONFIRMED: 3,
+
+
+
+}
+
 // export const gamesTemp = {
 //     tetris: {
 //         name: 'Tetris',
