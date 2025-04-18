@@ -1,4 +1,6 @@
 <script setup>
+import {useValidation} from "~/composables/useValidation.js";
+
 useHead({
   title: 'Реєстрація',
 })
@@ -28,7 +30,18 @@ const isValidCode = computed(() => {
 
 
 const isValid = computed(() => {
-  return isValidEmail.value && isValidPassword.value && isValidUsername
+  const validator = useValidation()
+  const Email = validator.Email(email.value)
+  const Password = validator.Password(password.value)
+  const Username = validator.Username(username.value)
+  const All = Email && Password && Username
+
+  return {
+    All,
+    Email,
+    Password,
+    Username,
+  }
 })
 
 
@@ -39,6 +52,7 @@ function SignUp() {
 function Confirm() {
   auth.confirmEmail(code.value)
 }
+
 function requestCode() {
   auth.requestCode()
   RunTimeoutTimer()
@@ -67,13 +81,17 @@ async function RunTimeoutTimer() {
 // TEMP
 // TEMP
 function SignUpFast() {
-  auth.register("pryadka18@gmail.com","123456", `test${Date.now()}`)
+  auth.register("pryadka18@gmail.com", "123456", `test${Date.now()}`)
 }
 </script>
 
 <template>
 
   <div class="main">
+    {{ isValid.Email }}<br>
+    {{ isValid.Password }}<br>
+    {{ isValid.Username }}<br>
+    {{ isValid.All }}<br>
 
     <form action="" class="signup-form" name="signup-form">
       <div class="input-fields">
@@ -97,9 +115,9 @@ function SignUpFast() {
       </div>
 
 
-<!--      <div class="status-note">-->
-<!--        Користувач з таким емейлом вже зареєстрований-->
-<!--      </div>-->
+      <!--      <div class="status-note">-->
+      <!--        Користувач з таким емейлом вже зареєстрований-->
+      <!--      </div>-->
 
 
       <span class="">
@@ -124,18 +142,20 @@ function SignUpFast() {
     <br>
     <input v-model="code" type="number" placeholder="Введіть код підтвердження">
     <br>
-    <span v-if="!isAllowedToRequestCode" class="validation-note">Кож можна буде відправити ще раз через {{ requestTime }}</span>
+    <span v-if="!isAllowedToRequestCode" class="validation-note">Кож можна буде відправити ще раз через {{
+        requestTime
+      }}</span>
     <br>
     <button @click="requestCode" :disabled="!isAllowedToRequestCode">Запросити код ще раз</button>
     <br>
     <button @click="Confirm" :disabled="!isValidCode">Підтвердити емейл</button>
-{{ auth.emailStatus}}
+    {{ auth.emailStatus }}
     <br>
-<!--    {{ isValidUsername}}-->
-<!--    <br>-->
-<!--    {{ isValidEmail}}-->
-<!--    <br>-->
-<!--    {{ isValidPassword}}-->
+    <!--    {{ isValidUsername}}-->
+    <!--    <br>-->
+    <!--    {{ isValidEmail}}-->
+    <!--    <br>-->
+    <!--    {{ isValidPassword}}-->
 
 
   </div>
