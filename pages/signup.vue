@@ -6,14 +6,14 @@ useHead({
 })
 
 const auth = useAuthStore();
-
+//
 const email = ref('');
 const password = ref('');
 const username = ref('');
-
+//
 const code = ref('');
-
-
+//
+//
 const isValidEmail = computed(() => {
   return email.value.includes('@')
 })
@@ -43,8 +43,8 @@ const isValid = computed(() => {
     Username,
   }
 })
-
-
+//
+//
 function SignUp() {
   auth.register(email.value, password.value, username.value)
 }
@@ -80,9 +80,7 @@ async function RunTimeoutTimer() {
 // TEMP
 // TEMP
 // TEMP
-function SignUpFast() {
-  auth.register("pryadka18@gmail.com", "123456", `test${Date.now()}`)
-}
+
 </script>
 
 <template>

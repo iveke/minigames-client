@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Stalinist+One:wght@400&display=swap');
+
+body {
+    font-family: Nunito, sans-serif;
+    color: var(--black);
+}
+
+
+label {
+    font-weight: 500;
+}
+input {
+    font-size: 1rem;
+    font-weight: 400;
+}
+.field__status-note {
+    font-size: 0.875rem;
+}
+.field__note {
+    font-size: 0.875rem;
+    opacity: 0.5;
+}
+.code-field__input {
+    font-size: 1.5rem;
+}
+

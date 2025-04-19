@@ -1,0 +1,115 @@
+.field {
+    margin-top: 1rem;
+}
+.field label {
+    position: relative;
+}
+
+.field__input {
+    position: relative;
+    margin-top: 0.5rem;
+}
+
+
+
+/* Input */
+input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--brown);
+    border-radius: 0.5rem;
+
+    position: relative;
+
+
+    &.field-error {
+        border-color: var(--error);
+    }
+
+    &.field-warn {
+        border-color: var(--warn);
+    }
+
+    &.field-success {
+        border-color: var(--success);
+    }
+
+    &::placeholder {
+        color: var(--black);
+        opacity: 0.33;
+    }
+
+    &:focus {
+        outline: 1px solid var(--orange);
+        border-color: var(--orange);
+    }
+
+    &:disabled {
+        /*color: var(--black);*/
+        opacity: 0.33;
+    }
+}
+/* Icon */
+.field__icon-button {
+    width: 1.5rem;
+    height: 1.5rem;
+
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translate(0, -50%);
+
+    cursor: pointer;
+
+    color: var(--brown);
+    opacity: 0.5;
+    &:hover {
+        opacity: 1;
+    }
+
+}
+.field:focus-within .field__icon-button {
+    color: var(--orange);
+}
+
+
+/* Notes */
+.field__status-note {
+    width: 100%;
+    margin-top: 0.25rem;
+    display: inline-flex;
+    gap: 0.25rem;
+    margin-bottom: -0.25rem;
+
+    &.error {
+        color: var(--error);
+    }
+    &.warn {
+        color: var(--warn);
+    }
+    &.success {
+        color: var(--success);
+    }
+    & .iconify {
+        margin-top: -0.25rem;
+        transform: translate(0, 33%);
+    }
+
+}
+.field__note {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+
+
+/* Code input */
+.code-field {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.code-field__input {
+    width: 3rem;
+    text-align: center;
+}

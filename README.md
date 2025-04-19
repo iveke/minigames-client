@@ -13,7 +13,7 @@ Description...
     ```bash
     git clone https://github.com/iveke/minigames-client.git ./minigames-client
     ```
-4. Install Node.js from https://nodejs.org (if not installed).
+4. Install Node.js 22 from https://nodejs.org (if not installed).
 5. Install the dependencies:
     ```bash
     cd minigames-client 

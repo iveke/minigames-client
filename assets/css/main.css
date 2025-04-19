@@ -1,6 +1,27 @@
+
+
 :root {
-    /* Colors */
+    /* TEMPORARY*/
     --header-color: #ffd7bb;
+
+
+
+
+    /* Base Colors */
+    --white: #ffffff;
+    --light-gray: #DBDBDB;
+    --dark-gray: #555555;
+    --black: #101016;
+
+    --orange: #FFA11E;
+    --orange-light: #FFD787;
+    --brown: #532F00;
+    --brown-light: #985900;
+
+    --success: #7ADB24;
+    --warn: #FFA11E;
+    --error: #EF4444;
+
 
     /* Paddings */
     --default-section-padding-X: 5%;
@@ -41,6 +62,12 @@ body, #__nuxt, .__main {
     align-items: center;
     flex: 1;
 }
+
+
+
+
+
+
 .input-fields, .signup-form, .login-form {
     display: flex;
     flex-direction: column;
@@ -51,9 +78,11 @@ body, #__nuxt, .__main {
 .signup-form {
     width: 240px;
 }
+
 .status-note, .validation-note {
     font-size: 0.75rem;
 }
+
 label {
     width: 100%;
 }
