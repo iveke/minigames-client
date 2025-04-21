@@ -19,6 +19,7 @@ export default defineNuxtConfig({
         '~/assets/css/main.css',
         '~/assets/css/inputFields.css',
         '~/assets/css/typography.css',
+        '~/assets/css/buttonsAndLinks.css',
     ],
 
     pinia: {
