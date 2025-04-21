@@ -184,6 +184,8 @@ resetGame();
 
 
 h1 {
+  font-family: "Luckiest Guy", cursive;
+  font-weight: 700;
   font-size: 2em;
   color: var(--primary-color);
   margin-bottom: 20px;
