@@ -14,12 +14,17 @@ defineProps({
     type: String,
     default: 'black',
     required: false
+  },
+  width: {
+    type: String,
+    default: '100%',
+    required: false
   }
 })
 </script>
 
 <template>
-  <div class="divider">
+  <div class="divider" :style="{ width: width }">
     <div class="divider__line" :style="{ backgroundColor: lineColor }"></div>
     <span class="divider__title" :style="{ color: titleColor }">{{ title }}</span>
     <div class="divider__line" :style="{ backgroundColor: lineColor }"></div>
@@ -28,7 +33,6 @@ defineProps({
 
 <style scoped>
 .divider {
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -2,7 +2,7 @@
 const props = defineProps({
   codeMask: {
     type: String,
-    default: '10000-99999'
+    default: '10000-99999' // min and max value length have to be equal
   },
 })
 const emit = defineEmits(['update:modelValue'])

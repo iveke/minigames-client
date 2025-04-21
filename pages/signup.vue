@@ -1,165 +1,154 @@
 <script setup>
-import {useValidation} from "~/composables/useValidation.js";
+import FieldError from "~/components/fields/field-error.vue";
+import PasswordField from "~/components/fields/password-field.vue";
+import * as yup from 'yup';
 
 useHead({
   title: 'Реєстрація',
 })
 
-const auth = useAuthStore();
-//
-const email = ref('');
-const password = ref('');
-const username = ref('');
-//
-const code = ref('');
-//
-//
-const isValidEmail = computed(() => {
-  return email.value.includes('@')
-})
-const isValidPassword = computed(() => {
-  return password.value.length >= 6
-})
-const isValidUsername = computed(() => {
-  return username.value.length >= 3
+const schema = yup.object({
+  email: yup.string()
+      .email()
+      .required(),
+  password: yup.string()
+      .required()
+      .matches(/^[a-zA-Z\d]+$/)
+      .min(6),
+  username: yup.string()
+      .required()
+      .matches(/^[a-zA-Z]+$/)
+      .min(3)
+      .max(50),
 })
 
-const isValidCode = computed(() => {
-  return code.value >= 10000 && code.value <= 99999
-})
-
-
-const isValid = computed(() => {
-  const validator = useValidation()
-  const Email = validator.Email(email.value)
-  const Password = validator.Password(password.value)
-  const Username = validator.Username(username.value)
-  const All = Email && Password && Username
-
-  return {
-    All,
-    Email,
-    Password,
-    Username,
+const {handleSubmit, values, errors, defineField} = useForm({
+  validationSchema: schema,
+  initialValues: {
+    email: '',
+    password: '',
+    username: ''
   }
 })
-//
-//
-function SignUp() {
-  auth.register(email.value, password.value, username.value)
-}
 
-function Confirm() {
-  auth.confirmEmail(code.value)
-}
+const [email, emailAttrs] = defineField('email');
+const [password, passwordAttrs] = defineField('password');
+const [username, usernameAttrs] = defineField('username');
 
-function requestCode() {
-  auth.requestCode()
-  RunTimeoutTimer()
-}
-
-const requestTimer = ref(0)
-const requestTime = ref(null)
-const isAllowedToRequestCode = ref(true)
-
-async function RunTimeoutTimer() {
-  isAllowedToRequestCode.value = false
-
-  requestTimer.value = setInterval(() => {
-    if (auth.requestCodeTimeout < Date.now()) {
-      clearInterval(requestTimer.value)
-      requestTime.value = null
-      isAllowedToRequestCode.value = true
-      return
-    }
-    requestTime.value = new Date(auth.requestCodeTimeout - Date.now()).getSeconds()
-  }, 1000)
-}
+const onSubmit = handleSubmit((values) => {
+  console.log('Форма відправлена:', values);
+  // auth.register(email.value, password.value, username.value)
+})
 
 
-// TEMP
-// TEMP
-// TEMP
+const auth = useAuthStore();
+
 
 </script>
 
 <template>
 
   <div class="main">
-    {{ isValid.Email }}<br>
-    {{ isValid.Password }}<br>
-    {{ isValid.Username }}<br>
-    {{ isValid.All }}<br>
 
-    <form action="" class="signup-form" name="signup-form">
-      <div class="input-fields">
-        <label for="email">Email</label>
-        <input v-model="email" id="email" type="email">
-        <span v-if="!isValidEmail" class="validation-note">Емейл повинен містити @</span>
+    <form @submit="onSubmit">
+      <h3>Реєстрація</h3>
 
-        <label for="password">Пароль</label>
-        <input v-model="password" id="password" type="password">
-        <span v-if="!isValidPassword" class="validation-note">Пароль має містити хоча б 6 символів</span>
+      <div class="fields-container">
 
-        <label for="nickname">Нікнейм</label>
-        <input v-model="username" id="nickname" type="text">
-        <span v-if="!isValidUsername" class="validation-note">Ім'я користувача має містити хоча б 3 символи</span>
+        <label for="email" class="field__label">Електронна пошта</label>
+        <input v-model="email"
+               v-bind="emailAttrs"
+               :class="{'field-error': errors.email}"
+               type="email" id="email"
+               placeholder="Email">
+        <FieldError type="error" :message="errors.email"/>
+
+
+        <label for="password" class="field__label">Пароль</label>
+        <PasswordField v-model="password"
+                       v-bind="passwordAttrs"
+                       :class="{'field-error': errors.password}"
+                       id="password"
+                       placeholder="Password"/>
+        <FieldError type="error" :message="errors.password"/>
+
+
+        <label for="username" class="field__label">Ім'я користувача</label>
+        <input v-model="username"
+               v-bind="usernameAttrs"
+               :class="{'field-error': errors.username}"
+               type="text"
+               id="username"
+               placeholder="Username">
+        <FieldError type="error" :message="errors.username"/>
+
       </div>
 
-
-      <div class="signup-with">
-        <button @click="" type="button"><img src="" alt="">Google</button>
-        <button @click="" type="button"><img src="" alt="">Apple</button>
-      </div>
-
-
-      <!--      <div class="status-note">-->
-      <!--        Користувач з таким емейлом вже зареєстрований-->
-      <!--      </div>-->
-
-
-      <span class="">
-      Вже маєте акаунт?
-      <NuxtLink to="/login">Увійти</NuxtLink>
-    </span>
-
-
-      <button @click="SignUp" type="button" :disabled="!isValid">Зареєструватися</button>
-
-
-      <!--    <NuxtLink :to="approveHref" target="_blank">-->
-      <!--      <button @click="SignUp" type="button" :disabled="!(email && password && nick)">Зареєструватися</button>-->
-      <!--    </NuxtLink>-->
-
-      <!--    <NuxtLink to="/account">-->
-      <!--      <button @click="SignUp">Зареєструватися</button>-->
-      <!--    </NuxtLink>-->
+      <span class="have-account">Вже маєте акаунт? <NuxtLink to="/login" class="signup-with">Увійти</NuxtLink></span>
+      <button type="submit" class="style-1">Зареєструватися</button>
 
 
     </form>
-    <br>
-    <input v-model="code" type="number" placeholder="Введіть код підтвердження">
-    <br>
-    <span v-if="!isAllowedToRequestCode" class="validation-note">Кож можна буде відправити ще раз через {{
-        requestTime
-      }}</span>
-    <br>
-    <button @click="requestCode" :disabled="!isAllowedToRequestCode">Запросити код ще раз</button>
-    <br>
-    <button @click="Confirm" :disabled="!isValidCode">Підтвердити емейл</button>
-    {{ auth.emailStatus }}
-    <br>
-    <!--    {{ isValidUsername}}-->
-    <!--    <br>-->
-    <!--    {{ isValidEmail}}-->
-    <!--    <br>-->
-    <!--    {{ isValidPassword}}-->
+    <Divider title="Або" line-color="var(--orange)" width="min(100%, 384px)"/>
+    <div class="continue-with">
+      <button type="submit" class="continue-with__button" disabled>
+        <Icon name="logos:google-icon" size="1.5rem"></Icon>
+        <span class="continue-with__text">Продовжити з Google</span>
+      </button>
+
+      <button type="submit" class="continue-with__button" disabled>
+        <Icon name="logos:google-icon" size="1.5rem"></Icon>
+        <span class="continue-with__text">Продовжити з Google</span>
+      </button>
+    </div>
 
 
   </div>
 </template>
 
 <style scoped>
+.main {
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+}
+
+form {
+  width: min(100%, 480px);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem min(3rem, 10%);
+
+  border: 1px solid var(--orange);
+  border-radius: 2rem;
+}
+.fields-container {
+  margin-top: 0.5rem;
+}
+
+h3 {
+  text-align: center;
+  color: var(--brown);
+}
 
 
+.have-account {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.continue-with {
+  width: min(100%, 384px);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .iconify {
+    height: 100%;
+  }
+
+  .continue-with__text {
+    width: 100%;
+  }
+}
 </style>
