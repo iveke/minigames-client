@@ -5,7 +5,8 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: null,
         tempToken: null,
-        emailStatus: emailConfirmStatus.NOT_CONFIRMED,
+        email: null,
+        emailStatus: null,
         requestCodeTimeout: null
 
         // {nickname: '', email: '', password: '', token: ''}
@@ -14,36 +15,43 @@ export const useAuthStore = defineStore('auth', {
         isAuthorized: (state) => !!state.token
     },
     actions: {
-        async register(email, password, username) {
-            if (email && password && username) {
-                const apiUrl = useRuntimeConfig().public.API_URL
-                const body = {
-                    "username": username,
-                    "email": email,
-                    "password": password
-                };
-                try {
-                    const response = await fetch(`${apiUrl}/auth/register`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    })
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error(errorData)
-                    }
-                    const data = await response.json();
-                    this.tempToken = data.token;
-
-                    this.emailStatus = emailConfirmStatus.PENDING
-
-                    // navigateTo('/account');
-                } catch (e) {
-                    console.error("Error during registration", e)
-                }
+        async register(values) {
+            if (!values) {
+                console.error("Values is empty", values)
+                return false
             }
+            let success = false
+
+            const apiUrl = useRuntimeConfig().public.API_URL
+            try {
+                const response = await fetch(`${apiUrl}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'mode': 'no-cors',
+                        'Access-Control-Allow-Origin': '*',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(errorData)
+                }
+                const data = await response.json();
+
+                this.tempToken = data.token;
+                this.email = values.email
+                this.emailStatus = emailConfirmStatus.PENDING
+                success = true
+
+                console.log('Success', data)
+
+                // navigateTo('/account');
+            } catch (e) {
+                console.error("Error during registration", e)
+            }
+
+            return success
         },
         async confirmEmail(code) {
             if (code < 10000 && code > 99999) {
@@ -106,35 +114,38 @@ export const useAuthStore = defineStore('auth', {
             }
         },
 
-        async login(email, password) {
-            if (email && password) {
-                const apiUrl = useRuntimeConfig().public.API_URL
-                const body = {
-                    "email": email,
-                    "password": password
-                };
-                console.log("Login", body)
-                try {
-                    const response = await fetch(`${apiUrl}/auth/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(body)
-                    })
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error(errorData)
-                    }
-                    const data = await response.json();
-                    this.token = data.token;
-
-                    navigateTo('/account');
-                } catch (e) {
-                    console.error("Error during registration", e)
-                }
-
+        async login(values) {
+            if (!values) {
+                console.error("Values is empty", values)
+                return false
             }
+            let success = false
+
+            const apiUrl = useRuntimeConfig().public.API_URL
+            try {
+                const response = await fetch(`${apiUrl}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(values)
+                })
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error(errorData)
+                }
+                const data = await response.json();
+                this.token = data.token;
+                success = true
+
+                console.log('Success', data)
+
+                // navigateTo('/account');
+            } catch (e) {
+                console.error("Error during registration", e)
+            }
+
+            return success
         },
 
         logout() {

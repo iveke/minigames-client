@@ -1,5 +1,14 @@
-a {
+button.link {
+    border: 0;
+    padding: 0;
+    display: inline;
+    background: none;
+    width: fit-content;
+}
+a,
+button.link {
     color: var(--orange);
+    text-decoration: underline;
 
     transition: color 50ms ease-in-out;
 
@@ -22,8 +31,8 @@ a {
 
 
 
-
 /* buttons */
+
 
 button.style-1,
 button.style-2,

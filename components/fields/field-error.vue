@@ -10,7 +10,6 @@ const props = defineProps({
     required: true,
   }
 })
-console.log(props.message)
 </script>
 
 <template>

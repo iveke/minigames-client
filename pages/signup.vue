@@ -36,13 +36,14 @@ const [password, passwordAttrs] = defineField('password');
 const [username, usernameAttrs] = defineField('username');
 
 const onSubmit = handleSubmit((values) => {
-  console.log('Форма відправлена:', values);
-  // auth.register(email.value, password.value, username.value)
+  auth.register(values)
 })
-
 
 const auth = useAuthStore();
 
+// email.value = 'pryadka18@gmail.com';
+// password.value = '123456';
+// username.value = 'testuser';
 
 </script>
 
@@ -84,7 +85,7 @@ const auth = useAuthStore();
 
       </div>
 
-      <span class="have-account">Вже маєте акаунт? <NuxtLink to="/login" class="signup-with">Увійти</NuxtLink></span>
+      <span class="sub-note">Вже маєте акаунт? <NuxtLink to="/login">Увійти</NuxtLink></span>
       <button type="submit" class="style-1">Зареєструватися</button>
 
 
@@ -131,9 +132,10 @@ h3 {
 }
 
 
-.have-account {
+.sub-note {
   text-align: center;
   margin: 2rem 0;
+  font-size: 0.875rem;
 }
 
 .continue-with {

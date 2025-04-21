@@ -4,6 +4,10 @@ const props = defineProps({
     type: String,
     default: '10000-99999' // min and max value length have to be equal
   },
+  modelValue: {
+    type: [String, Number],
+    default: null
+  }
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -87,14 +91,17 @@ function focusLastEmpty(blur = false) {
            :id="'code__' + i"
            :ref="el => inputRefs[i-1] = el"
            v-model="inputVModels[i-1]"
+           v-bind="$attrs"
 
            type="text"
            inputmode="numeric"
            pattern="\d*"
            maxlength="1"
+           placeholder="_"
 
            class="code-field__input"
-           placeholder="_"
+
+
            @paste="handlePaste"
            @input="handleInput(i-1, $event)"
            @keydown="handleBackspace(i-1, $event)"
@@ -106,5 +113,7 @@ function focusLastEmpty(blur = false) {
 </template>
 
 <style scoped>
-
+input {
+  width: 100%;
+}
 </style>
