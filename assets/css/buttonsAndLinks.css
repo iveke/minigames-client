@@ -1,0 +1,102 @@
+a {
+    color: var(--orange);
+
+    transition: color 50ms ease-in-out;
+
+    &:hover:not(:disabled) {
+        color: var(--orange-light);
+    }
+
+    &:active {
+        color: var(--brown);
+    }
+
+    &:focus {
+        outline-color: var(--orange);
+    }
+
+    &:disabled {
+        opacity: 0.33;
+    }
+}
+
+
+
+
+/* buttons */
+
+button.style-1,
+button.style-2,
+button.style-3,
+button.continue-with__button {
+    padding: 0.75rem 1rem;
+    border: 3px solid;
+    border-radius: 0.5rem;
+
+    transition: background-color 50ms ease-in-out, border-color 50ms ease-in-out, color 50ms ease-in-out;
+
+    &:disabled {
+        opacity: 0.33;
+    }
+}
+
+button.style-1 {
+    background-color: var(--orange);
+    border-color: var(--orange);
+    color: var(--white);
+
+    &:hover:not(:disabled) {
+        background-color: var(--orange-light);
+        border-color: var(--orange-light);
+    }
+    &:focus {
+        outline-color: var(--brown);
+    }
+}
+button.style-2 {
+    background-color: var(--brown);
+    border-color: var(--brown);
+    color: var(--white);
+
+    &:hover:not(:disabled) {
+        background-color: var(--brown-light);
+        border-color: var(--brown-light);
+    }
+    &:focus {
+        outline-color: var(--orange);
+    }
+}
+
+button.style-3 {
+    background-color: var(--white);
+    border: 3px solid var(--brown);
+    color: var(--brown);
+
+    &:hover:not(:disabled) {
+        border-color: var(--brown-light);
+        color: var(--brown-light);
+    }
+    &:focus {
+        outline-color: var(--orange);
+    }
+}
+button.continue-with__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    gap: 0.5rem;
+
+
+    background-color: var(--white);
+    border: 1px solid var(--brown);
+    color: var(--black);
+
+
+    &:hover:not(:disabled) {
+        border-color: var(--orange);
+    }
+    &:focus {
+        outline-color: var(--orange);
+    }
+}

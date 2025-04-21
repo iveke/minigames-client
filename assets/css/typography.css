@@ -6,6 +6,23 @@ body {
     color: var(--black);
 }
 
+h1 {
+    font-family: Stalinist One, sans-serif;
+    font-weight: 400;
+    font-size: 2.25rem;
+}
+h2 {
+    font-weight: 700;
+    font-size: 2rem;
+}
+h3 {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+h4 {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
 
 label {
     font-weight: 500;
@@ -24,4 +41,22 @@ input {
 .code-field__input {
     font-size: 1.5rem;
 }
+
+
+button {
+    font-family: Nunito, sans-serif;
+}
+button.style-1,
+button.style-2,
+button.style-3 {
+    font-size: 1rem;
+    font-weight: 900;
+}
+button.continue-with__button {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+
+
 
