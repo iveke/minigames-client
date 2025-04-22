@@ -2,6 +2,7 @@
 import FieldError from "~/components/fields/field-error.vue";
 import PasswordField from "~/components/fields/password-field.vue";
 import * as yup from 'yup';
+import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
   title: 'Реєстрація',
@@ -37,6 +38,9 @@ const [username, usernameAttrs] = defineField('username');
 
 const onSubmit = handleSubmit((values) => {
   auth.register(values)
+
+
+  navigateTo('/confirm-email')
 })
 
 const auth = useAuthStore();
@@ -84,9 +88,34 @@ const auth = useAuthStore();
         <FieldError type="error" :message="errors.username"/>
 
       </div>
-
       <span class="sub-note">Вже маєте акаунт? <NuxtLink to="/login">Увійти</NuxtLink></span>
+
+      <!--            <StatusPlate-->
+      <!--              type="error"-->
+      <!--              title="Error"-->
+      <!--            >-->
+      <!--              Error-->
+      <!--            </StatusPlate>-->
+
+
+      <!--      <Spinner bg="var(&#45;&#45;white)"-->
+      <!--               size="3rem"-->
+      <!--               color="var(&#45;&#45;orange)"-->
+      <!--               width="75"-->
+      <!--               length="33"-->
+      <!--               speed="1.5"/>-->
+
+
       <button type="submit" class="style-1">Зареєструватися</button>
+
+<!--      <button type="button" class="style-1" style="height: 3.25rem">-->
+<!--        <Spinner bg="transparent"-->
+<!--                 size="2rem"-->
+<!--                 color="var(&#45;&#45;white)"-->
+<!--                 width="75"-->
+<!--                 length="33"-->
+<!--                 speed="1.5"/>-->
+<!--      </button>-->
 
 
     </form>
@@ -110,7 +139,6 @@ const auth = useAuthStore();
 <style scoped>
 .main {
   gap: 1.5rem;
-  padding: 2rem 1.5rem;
 }
 
 form {
@@ -122,6 +150,7 @@ form {
   border: 1px solid var(--orange);
   border-radius: 2rem;
 }
+
 .fields-container {
   margin-top: 0.5rem;
 }
@@ -136,6 +165,10 @@ h3 {
   text-align: center;
   margin: 2rem 0;
   font-size: 0.875rem;
+}
+
+.status-plate {
+  margin-bottom: 2rem;
 }
 
 .continue-with {
