@@ -7,6 +7,7 @@ import StatusPlate from "~/components/status-plate.vue";
 useHead({
   title: 'Реєстрація',
 })
+const auth = useAuthStore();
 
 const schema = yup.object({
   email: yup.string()
@@ -36,14 +37,22 @@ const [email, emailAttrs] = defineField('email');
 const [password, passwordAttrs] = defineField('password');
 const [username, usernameAttrs] = defineField('username');
 
-const onSubmit = handleSubmit((values) => {
-  auth.register(values)
+
+const state = ref(0)
 
 
-  navigateTo('/confirm-email')
+const onSubmit = handleSubmit(async (values) => {
+  state.value = 1
+  const response = await auth.register(values)
+  if (response) {
+    state.value = 2
+  } else {
+    state.value = 3
+  }
+  console.log('response', response)
 })
 
-const auth = useAuthStore();
+
 
 // email.value = 'pryadka18@gmail.com';
 // password.value = '123456';
@@ -86,36 +95,26 @@ const auth = useAuthStore();
                id="username"
                placeholder="Username">
         <FieldError type="error" :message="errors.username"/>
-
       </div>
+
       <span class="sub-note">Вже маєте акаунт? <NuxtLink to="/login">Увійти</NuxtLink></span>
-
-      <!--            <StatusPlate-->
-      <!--              type="error"-->
-      <!--              title="Error"-->
-      <!--            >-->
-      <!--              Error-->
-      <!--            </StatusPlate>-->
+      <StatusPlate v-if="state === 3"
+                   type="error"
+                   title="Помилка"
+                   message="Помилка авторизації."
+      />
 
 
-      <!--      <Spinner bg="var(&#45;&#45;white)"-->
-      <!--               size="3rem"-->
-      <!--               color="var(&#45;&#45;orange)"-->
-      <!--               width="75"-->
-      <!--               length="33"-->
-      <!--               speed="1.5"/>-->
+      <button v-if="state !== 1" type="submit" class="style-1">Зареєструватися</button>
+      <button v-else type="button" class="style-1" style="height: 3.25rem">
+        <Spinner bg="transparent"
+                 size="2rem"
+                 color="var(--white)"
+                 width="75"
+                 length="33"
+                 speed="1.5"/>
+      </button>
 
-
-      <button type="submit" class="style-1">Зареєструватися</button>
-
-<!--      <button type="button" class="style-1" style="height: 3.25rem">-->
-<!--        <Spinner bg="transparent"-->
-<!--                 size="2rem"-->
-<!--                 color="var(&#45;&#45;white)"-->
-<!--                 width="75"-->
-<!--                 length="33"-->
-<!--                 speed="1.5"/>-->
-<!--      </button>-->
 
 
     </form>

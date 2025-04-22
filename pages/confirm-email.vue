@@ -4,6 +4,7 @@ import PasswordField from "~/components/fields/password-field.vue";
 import FieldError from "~/components/fields/field-error.vue";
 import CodeInput from "~/components/fields/code-input.vue";
 import * as yup from 'yup';
+import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
   title: 'Підтвердження e-mail',
@@ -33,9 +34,21 @@ watch(receivedCode, (newValue) => {
 })
 
 // Submit
-const onSubmit = handleSubmit((values) => {
-  console.log('submit', values);
+const state = ref(0)
+
+
+const onSubmit = handleSubmit(async (values) => {
+  state.value = 1
+  const response = await auth.confirmEmail(values)
+  if (response) {
+    state.value = 2
+  } else {
+    state.value = 3
+  }
+  console.log('response', response)
 })
+
+
 
 
 // Time out
@@ -90,10 +103,22 @@ const reset = () => {
         <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">Відправити код повторно</button>
         <span v-else>Відправити код повторно можна через {{ restTimeSeconds }}</span>
       </span>
+      <StatusPlate v-if="state === 3"
+                   type="error"
+                   title="Помилка"
+                   message="Помилка авторизації."
+      />
 
-      
 
-      <button type="submit" class="style-1">Зареєструватися</button>
+      <button v-if="state !== 1" type="submit" class="style-1">Надіслати код</button>
+      <button v-else type="button" class="style-1" style="height: 3.25rem">
+        <Spinner bg="transparent"
+                 size="2rem"
+                 color="var(--white)"
+                 width="75"
+                 length="33"
+                 speed="1.5"/>
+      </button>
 
 
     </form>
@@ -127,7 +152,9 @@ h3 {
   text-align: center;
   color: var(--brown);
 }
-
+.status-plate {
+  margin-bottom: 2rem;
+}
 
 
 .code-field {

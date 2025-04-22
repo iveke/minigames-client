@@ -52,7 +52,8 @@ export const useAuthStore = defineStore('auth', {
 
             return success
         },
-        async confirmEmail(code) {
+        async confirmEmail(values) {
+            const {code} = values
             if (code < 10000 && code > 99999) {
                 console.error("Code is not valid")
                 return false

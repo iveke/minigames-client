@@ -1,72 +1,173 @@
 <script setup>
+import FieldError from "~/components/fields/field-error.vue";
+import PasswordField from "~/components/fields/password-field.vue";
+import * as yup from 'yup';
+import StatusPlate from "~/components/status-plate.vue";
+
 useHead({
   title: 'Авторизація',
 })
-
 const auth = useAuthStore();
 
-const email = ref('');
-const password = ref('');
-
-const isValidEmail = computed(() => {
-  return email.value.includes('@')
-})
-const isValidPassword = computed(() => {
-  return password.value.length >= 6
-})
-
-
-const isValid = computed(() => {
-  return isValidEmail.value && isValidPassword.value
+const schema = yup.object({
+  email: yup.string()
+      .email()
+      .required(),
+  password: yup.string()
+      .required()
+      .matches(/^[a-zA-Z\d]+$/)
+      .min(6),
 })
 
+const {handleSubmit, values, errors, defineField} = useForm({
+  validationSchema: schema,
+  initialValues: {
+    email: '',
+    password: '',
+  }
+})
 
-// onBeforeMount(() => {
-//   if (auth.isAuthorized) {
-//     navigateTo('/account')
-//   }
-// })
-function LogIn() {
-  auth.login(email.value, password.value)
-}
+const [email, emailAttrs] = defineField('email');
+const [password, passwordAttrs] = defineField('password');
+
+
+const state = ref(0)
+
+const onSubmit = handleSubmit(async (values) => {
+  state.value = 1
+  const response = await auth.login(values)
+  if (response) {
+    state.value = 2
+  } else {
+    state.value = 3
+  }
+  console.log('response', response)
+})
+
+
 </script>
 
 <template>
+
   <div class="main">
-    <form action="" class="login-form" name="login-form">
-      <div class="input-fields">
-        <label for="email">Email </label>
-        <input v-model="email" id="email" type="email">
-        <span v-if="!isValidEmail" class="validation-note">Емейл повинен містити @</span>
 
-        <label for="password">Пароль </label>
-        <input v-model="password" id="password" type="password">
-        <span v-if="!isValidPassword" class="validation-note">Пароль має містити хоча б 6 символів</span>
+    <form @submit="onSubmit">
+      <h3>Вхід</h3>
+
+      <div class="fields-container">
+
+        <label for="email" class="field__label">Електронна пошта</label>
+        <input v-model="email"
+               v-bind="emailAttrs"
+               :class="{'field-error': errors.email}"
+               type="email" id="email"
+               placeholder="Email">
+        <FieldError type="error" :message="errors.email"/>
+
+
+        <label for="password" class="field__label">Пароль</label>
+        <PasswordField v-model="password"
+                       v-bind="passwordAttrs"
+                       :class="{'field-error': errors.password}"
+                       id="password"
+                       placeholder="Password"/>
+        <FieldError type="error" :message="errors.password"/>
       </div>
 
-      <div class="login-with">
-        <button @click="" type="button"><img src="" alt="">Google</button>
-        <button @click="" type="button"><img src="" alt="">Apple</button>
-      </div>
+      <span class="sub-note">Ще не маєте акаунту? <NuxtLink to="/signup">Зареєструватися</NuxtLink></span>
+      <StatusPlate v-if="state === 3"
+                   type="error"
+                   title="Помилка"
+                   message="Помилка авторизації."
+      />
 
 
-<!--      <div class="status-note">-->
-<!--        Неправильний логін або пароль-->
-<!--      </div>-->
+      <!--      <Spinner bg="var(&#45;&#45;white)"-->
+      <!--               size="3rem"-->
+      <!--               color="var(&#45;&#45;orange)"-->
+      <!--               width="75"-->
+      <!--               length="33"-->
+      <!--               speed="1.5"/>-->
 
-      <span class="">
-      Ще не маєте акаунт?
-      <NuxtLink to="/signup">Зареєструватися</NuxtLink>
-    </span>
 
-      <button @click="LogIn" type="button" :disabled="!isValid">Увійти</button>
+      <button v-if="state !== 1" type="submit" class="style-1">Увійти</button>
+      <button v-else type="button" class="style-1" style="height: 3.25rem">
+        <Spinner bg="transparent"
+                 size="2rem"
+                 color="var(--white)"
+                 width="75"
+                 length="33"
+                 speed="1.5"/>
+      </button>
 
-      <!--    <NuxtLink to="/account"><button @click="LogIn" type="submit">Увійти</button></NuxtLink>-->
+
     </form>
+    <Divider title="Або" line-color="var(--orange)" width="min(100%, 384px)"/>
+    <div class="continue-with">
+      <button type="submit" class="continue-with__button" disabled>
+        <Icon name="logos:google-icon" size="1.5rem"></Icon>
+        <span class="continue-with__text">Продовжити з Google</span>
+      </button>
+
+      <button type="submit" class="continue-with__button" disabled>
+        <Icon name="logos:google-icon" size="1.5rem"></Icon>
+        <span class="continue-with__text">Продовжити з Google</span>
+      </button>
+    </div>
+
+
   </div>
 
 </template>
 
 <style scoped>
+.main {
+  gap: 1.5rem;
+}
 
+form {
+  width: min(100%, 480px);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem min(3rem, 10%);
+
+  border: 1px solid var(--orange);
+  border-radius: 2rem;
+}
+
+.fields-container {
+  margin-top: 0.5rem;
+}
+
+h3 {
+  text-align: center;
+  color: var(--brown);
+}
+
+
+.sub-note {
+  text-align: center;
+  margin: 2rem 0;
+  font-size: 0.875rem;
+}
+
+.status-plate {
+  margin-bottom: 2rem;
+}
+
+.continue-with {
+  width: min(100%, 384px);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .iconify {
+    height: 100%;
+  }
+
+  .continue-with__text {
+    width: 100%;
+  }
+}
 </style>
