@@ -7,7 +7,6 @@ export const useAuthStore = defineStore('auth', {
         tempToken: null,
         email: null,
         emailStatus: null,
-        requestCodeTimeout: null
 
         // {nickname: '', email: '', password: '', token: ''}
     }),
@@ -56,12 +55,13 @@ export const useAuthStore = defineStore('auth', {
         async confirmEmail(code) {
             if (code < 10000 && code > 99999) {
                 console.error("Code is not valid")
-                return
+                return false
             }
-            if (this.emailStatus === emailConfirmStatus.PENDING) {
-
-
+            if (this.emailStatus !== emailConfirmStatus.PENDING) {
+                console.error("Email is not in pending state")
+                return false
             }
+            let success = false
 
             const apiUrl = useRuntimeConfig().public.API_URL
             const jwtBearer = `Bearer ${this.tempToken}`
@@ -82,35 +82,34 @@ export const useAuthStore = defineStore('auth', {
                 this.emailStatus = emailConfirmStatus.CONFIRMED
                 this.token = this.tempToken;
                 this.tempToken = null;
+                success = true
 
                 navigateTo('/account');
             } catch (e) {
                 console.error("Error during registration", e)
             }
 
-
+            return success
         },
 
         async requestCode() {
-            if (this.emailStatus === emailConfirmStatus.PENDING) {
-                if (this.requestCodeTimeout < Date.now()) {
-                    this.setRequestCodeTimeout(1)
-                    this.emailStatus = emailConfirmStatus.PENDING
+            if (this.emailStatus !== emailConfirmStatus.PENDING) {
+                console.error("Email is not in pending state")
+                return
+            }
 
-                    const apiUrl = useRuntimeConfig().public.API_URL
-                    const jwtBearer = `Bearer ${this.tempToken}`
-                    try {
-                        const response = await fetch(`${apiUrl}/auth/generateConfirmEmailCode`, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': jwtBearer
-                            },
-                        })
-                    } catch (e) {
-                        console.error("Error during asking request", e)
-                    }
+            const apiUrl = useRuntimeConfig().public.API_URL
+            const jwtBearer = `Bearer ${this.tempToken}`
+            try {
+                const response = await fetch(`${apiUrl}/auth/generateConfirmEmailCode`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': jwtBearer
+                    },
+                })
 
-                }
+            } catch (e) {
+                console.error("Error during asking request", e)
             }
         },
 
@@ -150,15 +149,10 @@ export const useAuthStore = defineStore('auth', {
 
         logout() {
             this.token = null;
-            this.isConfirmedEmail = null
-            this.requestCodeTimeout = null;
+            this.tempToken = null;
+            this.email = null
+            this.emailStatus = null
             navigateTo('/');
         },
-
-
-        setRequestCodeTimeout(minutes = 1) {
-            const nextAllowedTime = Date.now() + 1000 * 60 * minutes
-            this.requestCodeTimeout = nextAllowedTime
-        }
     }
 })
