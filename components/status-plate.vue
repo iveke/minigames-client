@@ -4,6 +4,10 @@ const {type, title} = defineProps({
     type: String,
     required: true
   },
+  message: {
+    type: String,
+    required: false,
+  },
   type: {
     type: String,
     required: true,
@@ -35,7 +39,7 @@ const iconName = computed(() => {
       <Icon :name="iconName" size="1.25rem"/>
       {{ title }}
     </label>
-    <p><slot></slot></p>
+    <p v-if="message">{{message}}</p>
   </div>
 </template>
 
