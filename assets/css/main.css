@@ -18,9 +18,12 @@
     --brown: #532F00;
     --brown-light: #985900;
 
-    --success: #7ADB24;
+    --success: #58BD00;
     --warn: #FFA11E;
     --error: #EF4444;
+    --success-bg: #D7FFC9;
+    --warn-bg: #FFF2CD;
+    --error-bg: #FFE4E4;
 
 
     /* Paddings */
@@ -61,6 +64,7 @@ body, #__nuxt, .__main {
     justify-content: center;
     align-items: center;
     flex: 1;
+    padding: 2rem 1.5rem;
 }
 
 
@@ -68,21 +72,3 @@ body, #__nuxt, .__main {
 
 
 
-.input-fields, .signup-form, .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: center;
-}
-
-.signup-form {
-    width: 240px;
-}
-
-.status-note, .validation-note {
-    font-size: 0.75rem;
-}
-
-label {
-    width: 100%;
-}

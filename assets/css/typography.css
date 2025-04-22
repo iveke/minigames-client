@@ -43,12 +43,24 @@ input {
 }
 
 
-button {
+.nav-link,
+select.header-dropdown{
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+
+
+button,
+select {
     font-family: Nunito, sans-serif;
 }
 button.style-1,
 button.style-2,
-button.style-3 {
+button.style-3,
+.button.style-1,
+.button.style-2,
+.button.style-3{
     font-size: 1rem;
     font-weight: 900;
 }

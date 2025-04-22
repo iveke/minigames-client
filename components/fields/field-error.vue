@@ -1,13 +1,25 @@
 <script setup>
-const props = defineProps({
+const {message, type} = defineProps({
   message: {
     default: false,
     required: false,
   },
   type: {
     type: String,
-    default: 'error' | 'warn' | 'success',
     required: true,
+    validator: (value) => ['error', 'warn', 'success'].includes(value)
+  }
+})
+
+const iconName = computed(() => {
+  if (type === 'error') {
+    return 'material-symbols:error'
+  }
+  if (type === 'warn') {
+    return 'material-symbols:warning'
+  }
+  if (type === 'success') {
+    return 'material-symbols:check'
   }
 })
 </script>
@@ -20,7 +32,7 @@ const props = defineProps({
     'warn': type === 'warn',
     'success': type === 'success',
   } ">
-    <Icon name="material-symbols:error" size="1rem"/>
+    <Icon :name="iconName" size="1rem"/>
     {{ message }}
   </span>
 
