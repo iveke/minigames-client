@@ -10,6 +10,7 @@ useHead({
 })
 const auth = useAuthStore();
 
+// auth form
 const schema = yup.object({
   code: yup.number()
       .required()
@@ -24,7 +25,6 @@ const {handleSubmit, values, errors, defineField} = useForm({
   }
 })
 
-
 const [code, codeAttrs] = defineField('code');
 const receivedCode = ref();
 
@@ -32,17 +32,49 @@ watch(receivedCode, (newValue) => {
   code.value = newValue;
 })
 
-const requestCode = () => {
-  console.log('request code');
-}
+// Submit
 const onSubmit = handleSubmit((values) => {
   console.log('submit', values);
 })
+
+
+// Time out
+
+const duration = ref(60 * 1000)
+const restTime = ref(duration.value + 100)
+const restTimeSeconds = computed(() => {
+  return  Math.floor(duration.value / 1000 - restTime.value / 1000)
+})
+let lastTime
+let handle
+
+const update = () => {
+  restTime.value = Math.floor(performance.now() - lastTime)
+  if (restTime.value >= duration.value) {
+    cancelAnimationFrame(handle)
+  } else {
+    handle = requestAnimationFrame(update)
+  }
+}
+
+const requestCode = () => {
+  if (restTime.value < duration.value) {
+    console.log('wait', restTime.value, duration.value)
+    return
+  }
+  console.log('request code');
+  reset()
+  update()
+}
+const reset = () => {
+  restTime.value = 0
+  lastTime = performance.now()
+  update()
+}
 </script>
 
 <template>
   <div class="main">
-
     <form @submit="onSubmit">
       <h3>Підтвердження e-mail</h3>
 
@@ -54,7 +86,12 @@ const onSubmit = handleSubmit((values) => {
         <span class="field__note">Якщо не бачите листа, перевірте спам.</span>
 
       </div>
-      <button type="button" class="link sub-note" @click="requestCode">Відправити код повторно</button>
+      <span class="sub-note">
+        <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">Відправити код повторно</button>
+        <span v-else>Відправити код повторно можна через {{ restTimeSeconds }}</span>
+      </span>
+
+      
 
       <button type="submit" class="style-1">Зареєструватися</button>
 
