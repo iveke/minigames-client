@@ -71,11 +71,9 @@ const update = () => {
 }
 
 const requestCode = () => {
-  if (restTime.value < duration.value) {
-    console.log('wait', restTime.value, duration.value)
-    return
-  }
-  console.log('request code');
+  if (restTime.value < duration.value) return
+
+  auth.requestCode()
   reset()
   update()
 }

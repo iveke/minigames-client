@@ -26,8 +26,6 @@ export const useAuthStore = defineStore('auth', {
                 const response = await fetch(`${apiUrl}/auth/register`, {
                     method: 'POST',
                     headers: {
-                        'mode': 'no-cors',
-                        'Access-Control-Allow-Origin': '*',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(values)
@@ -74,8 +72,10 @@ export const useAuthStore = defineStore('auth', {
                     },
                 })
                 if (!response.ok) {
+                    console.error(response)
                     const errorData = await response.json();
-                    console.error(errorData)
+                    // console.error(errorData)
+                    return false
                 }
                 const data = await response.json();
                 console.log(data)
