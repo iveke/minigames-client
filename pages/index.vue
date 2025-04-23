@@ -14,6 +14,7 @@ definePageMeta({
 <div class="main">
   <h1> Головна сторнінка</h1>
 
+  {{ $t('welcome') }}
 </div>
 
 </template>

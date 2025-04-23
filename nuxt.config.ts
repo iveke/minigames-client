@@ -9,11 +9,11 @@ export default defineNuxtConfig({
         strict: false
     },
     modules: [
-      '@pinia/nuxt',
-      '@nuxt/test-utils',
-      '@nuxtjs/i18n',
-      '@vee-validate/nuxt',
-      '@nuxt/icon',
+        '@pinia/nuxt',
+        '@nuxt/test-utils',
+        '@nuxtjs/i18n',
+        '@vee-validate/nuxt',
+        '@nuxt/icon',
     ],
     css: [
         '~/assets/css/main.css',
@@ -35,18 +35,27 @@ export default defineNuxtConfig({
             ErrorMessage: 'VeeErrorMessage',
         },
     },
-    // i18n: {
-    //     // locales: [
-    //     //     { code: 'uk', iso: 'uk-UA', file: 'uk.json', name: 'Українська' },
-    //     //     { code: 'en', iso: 'en-US', file: 'en.json', name: 'English' },
-    //     // ],
-    //     // defaultLocale: 'uk',
-    //     // langDir: 'locales/',
-    //     // strategy: 'prefix_except_default',
-    //     // bundle: {
-    //     //     optimizeTranslationDirective: false,
-    //     // },
-    // },
+    i18n: {
+        locales: [
+            {code: 'uk', iso: 'uk-UA', file: 'uk.json', name: 'Українська'},
+            {code: 'en', iso: 'en-US', file: 'en.json', name: 'English'},
+        ],
+        defaultLocale: 'uk',
+        langDir: 'locales/',
+        strategy: 'prefix',
+
+        detectBrowserLanguage: {
+            useCookie: true,
+            cookieKey: 'i18n_redirected',
+            redirectOn: 'root',
+        },
+
+        bundle: {
+            optimizeTranslationDirective: false,
+        },
+    },
+
+
     imports: {
         dirs: [
             'utils/**',

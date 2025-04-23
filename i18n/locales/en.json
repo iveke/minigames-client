@@ -1,0 +1,33 @@
+{
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "login": "Login",
+    "signup": "Sign-up",
+    "toLogin": "Log in",
+    "toLogout": "Log out",
+    "toSignup": "Sign up",
+    "hasAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "or": "Or",
+    "continueWith": "Continue with {provider}",
+    "emailConfirmation:": "E-mail confirmation",
+    "emailConfirmation:label": "Verification code has been sent to {email}",
+    "emailConfirmation:note": "If you didn't receive the email, please check your spam folder.",
+    "emailConfirmation:resend": "Resend cond",
+    "emailConfirmation:resend:timeout": "Resend code in {time}",
+    "emailConfirmation:approve": "Confirm"
+  },
+  "validation": {
+    "required": "{field} is required",
+    "email": "Email is not valid",
+    "min": "{field} must be at least {length} characters",
+    "max": "{field} must be at most {length} characters",
+    "minValue": "{field} must be at least {value}",
+    "maxValue": "{field} must be at most {value}",
+    "password": "{field} must contain only Latin letters and numbers",
+    "username": "{field} must contain only Latin letters"
+  },
+  "auth.signup": ""
+}

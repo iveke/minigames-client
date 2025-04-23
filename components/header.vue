@@ -28,12 +28,7 @@ const auth = useAuthStore();
             <Icon class="style-1" role="button" name="material-symbols:person-rounded" size="3rem"></Icon>
           </NuxtLink>
 
-
-          <select class="header-dropdown" name="locale" id="locale">
-            <option value="1">UA</option>
-            <option value="1">EN</option>
-          </select>
-
+          <LangSwitcher class="header-dropdown"/>
 
 
 

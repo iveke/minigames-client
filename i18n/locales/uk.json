@@ -1,0 +1,32 @@
+{
+  "auth": {
+    "email": "Електронна пошта",
+    "password": "Пароль",
+    "username": "Ім'я користувача",
+    "login": "Вхід",
+    "signup": "Реєстрація",
+    "toLogin": "Увійти",
+    "toLogout": "Вийти",
+    "toSignup": "Зареєструватися",
+    "hasAccount": "Вже маєте обліковий запис?",
+    "noAccount": "Не маєте облікового запису?",
+    "or": "Або",
+    "continueWith": "Продовжити з {provider}",
+    "emailConfirmation:": "Підтвердження e-mail",
+    "emailConfirmation:label": "Код верифікації відправлено на {email}",
+    "emailConfirmation:note": "Якщо не бачите листа, перевірте спам.",
+    "emailConfirmation:resend": "Відправити код повторно",
+    "emailConfirmation:resend:timeout": "Відправити код повторно можна через {time}",
+    "emailConfirmation:approve": "Підтвердити"
+  },
+  "validation": {
+    "required": "{field} є обов'язковим",
+    "email": "Електронна пошта недійсна",
+    "min": "{field} має містити не менше {length} символів",
+    "max": "{field} має містити не більше {length} символів",
+    "minValue": "{field} має бути не менше {value}",
+    "maxValue": "{field} має бути не більше {value}",
+    "password": "{field} має містити лише латинські літери та цифри",
+    "username": "{field} має містити лише латинські літери"
+  }
+}
