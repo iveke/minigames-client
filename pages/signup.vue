@@ -1,7 +1,6 @@
 <script setup>
 import FieldError from "~/components/fields/field-error.vue";
 import PasswordField from "~/components/fields/password-field.vue";
-import * as yup from 'yup';
 import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
@@ -9,17 +8,21 @@ useHead({
 })
 const auth = useAuthStore();
 
+
+const { t } = useI18n();
+const yup = configureYup({ t });
+
 const schema = yup.object({
   email: yup.string()
       .email()
       .required(),
   password: yup.string()
       .required()
-      .matches(/^[a-zA-Z\d]+$/)
+      .matches(/^[a-zA-Z\d]+$/, t('validation.password'))
       .min(6),
   username: yup.string()
       .required()
-      .matches(/^[a-zA-Z]+$/)
+      .matches(/^[a-zA-Z]+$/, t('validation.username'))
       .min(3)
       .max(50),
 })
@@ -69,31 +72,34 @@ const onSubmit = handleSubmit(async (values) => {
 
       <div class="fields-container">
 
-        <label for="email" class="field__label">{{ $t('auth.email')}}</label>
+        <label for="email" class="field__label">{{ $t('field.email')}}</label>
         <input v-model="email"
                v-bind="emailAttrs"
                :class="{'field-error': errors.email}"
                type="email" id="email"
-               :placeholder="$t('auth.email')">
+               :placeholder="$t('field.email')">
         <FieldError type="error" :message="errors.email"/>
 
 
-        <label for="password" class="field__label">{{ $t('auth.password')}}</label>
+        <label for="password" class="field__label">{{ $t('field.password')}}</label>
         <PasswordField v-model="password"
                        v-bind="passwordAttrs"
                        :class="{'field-error': errors.password}"
                        id="password"
-                       :placeholder="$t('auth.password')"/>
+                       minlength="6"
+                       :placeholder="$t('field.password')"/>
         <FieldError type="error" :message="errors.password"/>
 
 
-        <label for="username" class="field__label">{{ $t('auth.username')}}</label>
+        <label for="username" class="field__label">{{ $t('field.username')}}</label>
         <input v-model="username"
                v-bind="usernameAttrs"
                :class="{'field-error': errors.username}"
                type="text"
                id="username"
-               :placeholder="$t('auth.username')">
+               minlength="3"
+               maxlength="50"
+               :placeholder="$t('field.username')">
         <FieldError type="error" :message="errors.username"/>
       </div>
 

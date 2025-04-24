@@ -15,6 +15,8 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@vee-validate/i18n": "^4.15.0",
+    "@vee-validate/rules": "^4.15.0",
     "axios": "^1.8.4",
     "cookie": "^1.0.2",
     "cookie-universal-nuxt": "^2.2.2",

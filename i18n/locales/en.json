@@ -1,8 +1,5 @@
 {
   "auth": {
-    "email": "Email",
-    "password": "Password",
-    "username": "Username",
     "login": "Login",
     "signup": "Sign-up",
     "toLogin": "Log in",
@@ -19,15 +16,19 @@
     "emailConfirmation:resend:timeout": "Resend code in {time}",
     "emailConfirmation:approve": "Confirm"
   },
+  "field": {
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "code": "Code"
+  },
   "validation": {
     "required": "{field} is required",
     "email": "Email is not valid",
     "min": "{field} must be at least {length} characters",
     "max": "{field} must be at most {length} characters",
-    "minValue": "{field} must be at least {value}",
-    "maxValue": "{field} must be at most {value}",
-    "password": "{field} must contain only Latin letters and numbers",
-    "username": "{field} must contain only Latin letters"
+    "password": "Password must contain only Latin letters and numbers",
+    "username": "Username must contain only Latin letters"
   },
   "games": {
     "tetris": "Tetris",

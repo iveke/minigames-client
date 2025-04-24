@@ -3,7 +3,6 @@
 import PasswordField from "~/components/fields/password-field.vue";
 import FieldError from "~/components/fields/field-error.vue";
 import CodeInput from "~/components/fields/code-input.vue";
-import * as yup from 'yup';
 import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
@@ -11,7 +10,10 @@ useHead({
 })
 const auth = useAuthStore();
 
-// auth form
+
+const { t } = useI18n();
+const yup = configureYup({ t });
+
 const schema = yup.object({
   code: yup.number()
       .required()
