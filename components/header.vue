@@ -13,23 +13,22 @@ const auth = useAuthStore();
 
       <div class="nav-container">
         <nav>
-          <NuxtLink class="nav-link" to="/games/tetris">Тетріс</NuxtLink>
-          <NuxtLink class="nav-link" to="/games/memory">Memory Game</NuxtLink>
-          <NuxtLink class="nav-link" to="/games/snake">Змійка</NuxtLink>
+          <NuxtLink class="nav-link" to="/games/tetris">{{ $t('games.tetris') }}</NuxtLink>
+          <NuxtLink class="nav-link" to="/games/memory">{{ $t('games.memory') }}</NuxtLink>
+          <NuxtLink class="nav-link" to="/games/snake">{{ $t('games.snake') }}</NuxtLink>
         </nav>
 
 
         <div class="auth-block">
-          <NuxtLink class="button style-3" to="/login" v-if="!auth.isAuthorized">Увійти</NuxtLink>
+          <NuxtLink class="button style-3" to="/login" v-if="!auth.isAuthorized">{{ $t('auth.toLogin') }}</NuxtLink>
 
-          <NuxtLink class="button style-2" to="/signup" v-if="!auth.isAuthorized">Зареєструватися</NuxtLink>
+          <NuxtLink class="button style-2" to="/signup" v-if="!auth.isAuthorized">{{ $t('auth.toSignup') }}</NuxtLink>
 
           <NuxtLink to="/account" v-if="auth.isAuthorized">
             <Icon class="style-1" role="button" name="material-symbols:person-rounded" size="3rem"></Icon>
           </NuxtLink>
 
           <LangSwitcher class="header-dropdown"/>
-
 
 
         </div>

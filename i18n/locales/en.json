@@ -29,5 +29,9 @@
     "password": "{field} must contain only Latin letters and numbers",
     "username": "{field} must contain only Latin letters"
   },
-  "auth.signup": ""
+  "games": {
+    "tetris": "Tetris",
+    "memory": "Memory Game",
+    "snake": "Snake"
+  }
 }

@@ -28,5 +28,10 @@
     "maxValue": "{field} має бути не більше {value}",
     "password": "{field} має містити лише латинські літери та цифри",
     "username": "{field} має містити лише латинські літери"
+  },
+  "games": {
+    "tetris": "Тетріс",
+    "memory": "Memory Game",
+    "snake": "Змійка"
   }
 }
