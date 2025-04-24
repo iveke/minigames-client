@@ -74,7 +74,7 @@ const onSubmit = handleSubmit(async (values) => {
         <FieldError type="error" :message="errors.password"/>
       </div>
 
-      <span class="sub-note">{{ $t('auth.noAccount')}} <NuxtLink to="/signup">{{ $t('auth.toSignup')}}</NuxtLink></span>
+      <span class="sub-note">{{ $t('auth.noAccount')}} <NuxtLink :to="$localePath('/signup')">{{ $t('auth.toSignup')}}</NuxtLink></span>
       <StatusPlate v-if="state === 3"
                    type="error"
                    title="Помилка"

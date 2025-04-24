@@ -97,7 +97,7 @@ const onSubmit = handleSubmit(async (values) => {
         <FieldError type="error" :message="errors.username"/>
       </div>
 
-      <span class="sub-note">{{ $t('auth.hasAccount')}} <NuxtLink to="/login">{{ $t('auth.toLogin')}}</NuxtLink></span>
+      <span class="sub-note">{{ $t('auth.hasAccount')}} <NuxtLink :to="$localePath('/login')">{{ $t('auth.toLogin')}}</NuxtLink></span>
       <StatusPlate v-if="state === 3"
                    type="error"
                    title="Помилка"

@@ -1,5 +1,6 @@
 import {config} from "@vue/test-utils";
 import {emailConfirmStatus} from "~/utils/constants/constants.js";
+import {useLocalePath} from "#i18n";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -43,7 +44,8 @@ export const useAuthStore = defineStore('auth', {
 
                 console.log('Success', data)
 
-                // navigateTo('/account');
+                // const localePath = useLocalePath();
+                // navigateTo(localePath({path: '/account'}));
             } catch (e) {
                 console.error("Error during registration", e)
             }
@@ -85,7 +87,8 @@ export const useAuthStore = defineStore('auth', {
                 this.tempToken = null;
                 success = true
 
-                navigateTo('/account');
+                // const localePath = useLocalePath();
+                // navigateTo(localePath({path: '/account'}));
             } catch (e) {
                 console.error("Error during registration", e)
             }
@@ -140,7 +143,8 @@ export const useAuthStore = defineStore('auth', {
 
                 console.log('Success', data)
 
-                // navigateTo('/account');
+                // const localePath = useLocalePath();
+                // navigateTo(localePath({path: '/'}));
             } catch (e) {
                 console.error("Error during registration", e)
             }
@@ -153,7 +157,9 @@ export const useAuthStore = defineStore('auth', {
             this.tempToken = null;
             this.email = null
             this.emailStatus = null
-            navigateTo('/');
+
+            const localePath = useLocalePath();
+            navigateTo(localePath({path: '/'}));
         },
     }
 })
