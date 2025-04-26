@@ -7,6 +7,9 @@ import StatusPlate from "~/components/status-plate.vue";
 useHead({
   title: 'Реєстрація',
 })
+definePageMeta({
+  middleware: ['auth']
+})
 
 const schema = yup.object({
   email: yup.string()

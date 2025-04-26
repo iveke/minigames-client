@@ -4,6 +4,7 @@ import Footer from "~/components/footer.vue";
 import Header from "~/components/header.vue";
 
 
+
 </script>
 
 <template>

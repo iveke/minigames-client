@@ -1,6 +1,4 @@
 <script setup>
-
-import PasswordField from "~/components/fields/password-field.vue";
 import FieldError from "~/components/fields/field-error.vue";
 import CodeInput from "~/components/fields/code-input.vue";
 import * as yup from 'yup';
@@ -8,6 +6,9 @@ import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
   title: 'Підтвердження e-mail',
+})
+definePageMeta({
+  middleware: ['auth']
 })
 
 // auth form
@@ -51,14 +52,12 @@ const onSubmit = handleSubmit(async (values) => {
 })
 
 
-
-
 // Time out
 
 const duration = ref(60 * 1000)
 const restTime = ref(duration.value + 100)
 const restTimeSeconds = computed(() => {
-  return  Math.floor(duration.value / 1000 - restTime.value / 1000)
+  return Math.floor(duration.value / 1000 - restTime.value / 1000)
 })
 let lastTime
 let handle
@@ -84,6 +83,11 @@ const reset = () => {
   lastTime = performance.now()
   update()
 }
+
+// Show warn plate if user didn't confirm email
+
+
+
 </script>
 
 <template>
@@ -92,7 +96,7 @@ const reset = () => {
       <h3>Підтвердження e-mail</h3>
 
       <div class="code-fields-container">
-        <label for="email" class="field__label">Код верифікації відправлено на {{auth.email}}</label>
+        <label for="email" class="field__label">Код верифікації відправлено на {{ auth.email }}</label>
         <input v-model="code" type="hidden">
         <CodeInput v-model="receivedCode" code-mask="10000-99999" :class="{'field-error': errors.code}"/>
         <FieldError type="error" :message="errors.code"/>
@@ -100,7 +104,8 @@ const reset = () => {
 
       </div>
       <span class="sub-note">
-        <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">Відправити код повторно</button>
+        <button v-if="restTime >= duration" type="button" class="link"
+                @click="requestCode">Відправити код повторно</button>
         <span v-else>Відправити код повторно можна через {{ restTimeSeconds }}</span>
       </span>
       <StatusPlate v-if="state === 3"
@@ -152,6 +157,7 @@ h3 {
   text-align: center;
   color: var(--brown);
 }
+
 .status-plate {
   margin-bottom: 2rem;
 }
@@ -160,12 +166,15 @@ h3 {
 .code-field {
   margin-top: 1.5rem;
 }
+
 .field__status-note {
   margin-top: 1rem;
 }
+
 .field__note {
   margin-top: 1.5rem;
 }
+
 .sub-note {
   text-align: left;
   margin: 2rem 0;

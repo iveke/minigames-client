@@ -7,6 +7,9 @@ import StatusPlate from "~/components/status-plate.vue";
 useHead({
   title: 'Авторизація',
 })
+definePageMeta({
+  middleware: ['auth']
+})
 
 const schema = yup.object({
   email: yup.string()
@@ -38,8 +41,13 @@ const onSubmit = handleSubmit(async (values) => {
   const response = await auth.login(values)
   if (response.ok) {
     state.value = 2
+
     if (response.status === 200) {
-      navigateTo('/account');
+      if (response.data.confirmEmail) {
+        navigateTo('/account');
+      } else {
+        navigateTo('/confirm-email');
+      }
     }
   } else {
     state.value = 3

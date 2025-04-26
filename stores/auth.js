@@ -146,7 +146,7 @@ export const useAuthStore = defineStore('auth', {
                 ok: false,
                 status: undefined,
                 statusText: undefined,
-                data: undefined,
+                data: { undefined },
             }
 
             if (!values) {
@@ -169,7 +169,13 @@ export const useAuthStore = defineStore('auth', {
                 response.data = await fetchResponse.json()
 
                 if (response.ok) {
-                    this.token = response.data.token;
+                    if (response.data.confirmEmail) {
+                        this.token = response.data.token;
+                    } else {
+                        this.tempToken = response.data.token;
+                        this.email = values.email
+                        this.emailStatus = emailConfirmStatus.PENDING
+                    }
 
                 } else {
                     console.error(response.data)
