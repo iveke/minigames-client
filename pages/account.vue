@@ -1,5 +1,7 @@
 <script setup>
 
+import {navigate} from "jsdom/lib/jsdom/living/window/navigation.js";
+
 useHead({
   title: 'Профіль',
 })
@@ -10,6 +12,12 @@ definePageMeta({
 
 const auth = useAuthStore();
 const route = useRoute();
+
+watch(() => auth.isAuthorized, (newValue) => {
+  if (!newValue) {
+    navigateTo('/')
+  }
+})
 
 </script>
 
