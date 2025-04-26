@@ -7,7 +7,6 @@ import StatusPlate from "~/components/status-plate.vue";
 useHead({
   title: 'Реєстрація',
 })
-const auth = useAuthStore();
 
 const schema = yup.object({
   email: yup.string()
@@ -39,13 +38,16 @@ const [username, usernameAttrs] = defineField('username');
 
 
 const state = ref(0)
-
+const auth = useAuthStore();
 
 const onSubmit = handleSubmit(async (values) => {
   state.value = 1
   const response = await auth.register(values)
-  if (response) {
+  if (response.ok) {
     state.value = 2
+    if (response.status === 200) {
+      navigateTo('/confirm-email');
+    }
   } else {
     state.value = 3
   }

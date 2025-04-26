@@ -9,7 +9,6 @@ import StatusPlate from "~/components/status-plate.vue";
 useHead({
   title: 'Підтвердження e-mail',
 })
-const auth = useAuthStore();
 
 // auth form
 const schema = yup.object({
@@ -35,13 +34,16 @@ watch(receivedCode, (newValue) => {
 
 // Submit
 const state = ref(0)
-
+const auth = useAuthStore();
 
 const onSubmit = handleSubmit(async (values) => {
   state.value = 1
   const response = await auth.confirmEmail(values)
-  if (response) {
+  if (response.ok) {
     state.value = 2
+    if (response.status === 200) {
+      navigateTo('/account');
+    }
   } else {
     state.value = 3
   }
