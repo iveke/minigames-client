@@ -36,6 +36,8 @@ watch(receivedCode, (newValue) => {
 // Submit
 const state = ref(0)
 const auth = useAuthStore();
+const statusPlateTitle = ref('Помилка авторизації')
+const statusPlateMessage = ref('Помилка')
 
 const onSubmit = handleSubmit(async (values) => {
   state.value = 1
@@ -47,6 +49,9 @@ const onSubmit = handleSubmit(async (values) => {
     }
   } else {
     state.value = 3
+    statusPlateTitle.value = `Помилка ${response.status}`
+    statusPlateMessage.value = 'Облікового запису не існує'
+    auth.logout()
   }
   console.log('response', response)
 })
@@ -85,7 +90,8 @@ const reset = () => {
 }
 
 // Show warn plate if user didn't confirm email
-
+const route = useRoute()
+const forcedRedirect = computed(() => route.query.forcedRedirect)
 
 
 </script>
@@ -108,10 +114,16 @@ const reset = () => {
                 @click="requestCode">Відправити код повторно</button>
         <span v-else>Відправити код повторно можна через {{ restTimeSeconds }}</span>
       </span>
-      <StatusPlate v-if="state === 3"
+      <StatusPlate ref="errorStatusPlate"
+                   v-if="state === 3"
                    type="error"
-                   title="Помилка"
-                   message="Помилка авторизації."
+                   :title="statusPlateTitle"
+                   :message="statusPlateMessage"
+      />
+      <StatusPlate v-if="forcedRedirect"
+                   type="warn"
+                   title="Підтвердіть електронну пошту"
+                   message="Минулого разу ви не підтвердили електронну пошту, буль ласка, зробіть це зараз. "
       />
 
 

@@ -192,7 +192,6 @@ export const useAuthStore = defineStore('auth', {
             this.tempToken = null;
             this.email = null
             this.emailStatus = null
-            navigateTo('/');
         },
     }
 })
