@@ -34,5 +34,28 @@
     "tetris": "Tetris",
     "memory": "Memory Game",
     "snake": "Snake"
+  },
+  "statusMessages": {
+    "success": {
+    },
+    "warning": {
+      "confirmEmail": "Confirm your email"
+    },
+    "error": {
+      "default": "Undefined error",
+      "/auth/login": {
+        "400": "Invalid password",
+        "401": "Unauthorized",
+        "500": "Internal Server Error"
+      },
+      "/auth/register": {
+        "500": "Internal Server Error"
+      },
+      "/user/confirmEmail": {
+        "400": "Confirmation code is not correct",
+        "404": "Користувача не існує",
+        "500": "Internal Server Error"
+      }
+    }
   }
 }

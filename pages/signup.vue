@@ -3,6 +3,7 @@ import FieldError from "~/components/fields/field-error.vue";
 import PasswordField from "~/components/fields/password-field.vue";
 import StatusPlate from "~/components/status-plate.vue";
 import {useLocalePath} from "#i18n";
+import {useTranslateApiResponse} from "~/composables/useTranslateApiResponse.js";
 
 useHead({
   title: 'Реєстрація',
@@ -11,7 +12,7 @@ definePageMeta({
   middleware: ['auth']
 })
 
-
+const {translate} = useTranslateApiResponse()
 const { t } = useI18n();
 const localePath = useLocalePath();
 const yup = configureYup({ t });
@@ -60,7 +61,8 @@ const onSubmit = handleSubmit(async (values) => {
       navigateTo(localePath('/confirm-email'));
     }
   } else {
-    statusPlate.value.SetMessage('error', response.statusText)
+    const message = translate(response, '/auth/register')
+    statusPlate.value.SetMessage('error', message)
   }
   state.value = 0
 
