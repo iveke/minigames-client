@@ -8,8 +8,6 @@ export const useTranslateApiResponse = () => {
             // return t('apiStatusText.default')
             return response.statusText
         })()
-        console.log(translationKey)
-        console.log(translation)
         return translation
     }
     return {

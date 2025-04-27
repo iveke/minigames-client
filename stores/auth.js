@@ -1,4 +1,5 @@
 import {emailConfirmStatus} from "~/utils/constants/constants.js";
+import {BaseResponse} from "~/utils/BaseResponse.js";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -12,18 +13,14 @@ export const useAuthStore = defineStore('auth', {
     },
     actions: {
         async register(values) {
-            const response = {
-                ok: false,
-                status: undefined,
-                statusText: undefined,
-                data: undefined,
-            }
+            const response = BaseResponse()
 
             if (!values) {
-                console.error("Values is empty", values)
+                response.statusText = "Values is empty"
+                response.status = undefined
+                console.error(response.statusText, values)
                 return response
             }
-
 
             const apiUrl = useRuntimeConfig().public.API_URL
             try {
@@ -54,19 +51,18 @@ export const useAuthStore = defineStore('auth', {
         },
         async confirmEmail(values) {
             const {code} = values
-            const response = {
-                ok: false,
-                status: undefined,
-                statusText: undefined,
-                data: undefined,
-            }
+            const response = BaseResponse()
 
             if (code < 10000 && code > 99999) {
-                console.error("Code is not valid")
+                response.statusText = "Code is not valid"
+                response.status = undefined
+                console.error(response.statusText, values)
                 return response
             }
             if (this.emailStatus !== emailConfirmStatus.PENDING) {
-                console.error("Email is not in pending state")
+                response.statusText = "Email is not in pending state"
+                response.status = undefined
+                console.error(response.statusText)
                 return response
             }
 
@@ -99,15 +95,12 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async requestCode() {
-            const response = {
-                ok: false,
-                status: undefined,
-                statusText: undefined,
-                data: undefined,
-            }
+            const response = BaseResponse()
 
             if (this.emailStatus !== emailConfirmStatus.PENDING) {
-                console.error("Email is not in pending state")
+                response.statusText = "Email is not in pending state"
+                response.status = undefined
+                console.error(response.statusText)
                 return response
             }
 
@@ -139,15 +132,12 @@ export const useAuthStore = defineStore('auth', {
         },
 
         async login(values) {
-            const response = {
-                ok: false,
-                status: undefined,
-                statusText: undefined,
-                data: { undefined },
-            }
+            const response = BaseResponse()
 
             if (!values) {
-                console.error("Values is empty", values)
+                response.statusText = "Values is empty"
+                response.status = undefined
+                console.error(response.statusText, values)
                 return response
             }
 

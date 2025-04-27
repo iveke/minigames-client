@@ -22,7 +22,7 @@ export default defineNuxtRouteMiddleware((to) => {
         return navigateTo({
             path: localePath('/confirm-email'),
             query: {
-                forcedRedirect: true
+                forcedRedirect: 'true'
             }
         });
     }

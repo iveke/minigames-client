@@ -7,14 +7,13 @@ const localePath = useLocalePath();
 
 
 onMounted(() => {
-
   if (authStore.emailStatus === emailConfirmStatus.PENDING) {
     navigateTo({
       path: localePath('/confirm-email'),
       query: {
-        forcedRedirect: true
+        forcedRedirect: 'true'
       }
-    })
+    });
   }
 })
 

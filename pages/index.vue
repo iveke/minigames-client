@@ -2,9 +2,6 @@
 useHead({
   title: 'GMini - Головна',
 })
-definePageMeta({
-  middleware: [],
-})
 
 
 </script>
