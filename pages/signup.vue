@@ -2,6 +2,7 @@
 import FieldError from "~/components/fields/field-error.vue";
 import PasswordField from "~/components/fields/password-field.vue";
 import StatusPlate from "~/components/status-plate.vue";
+import {useLocalePath} from "#i18n";
 
 useHead({
   title: 'Реєстрація',
@@ -12,6 +13,7 @@ definePageMeta({
 
 
 const { t } = useI18n();
+const localePath = useLocalePath();
 const yup = configureYup({ t });
 
 const schema = yup.object({
@@ -55,7 +57,7 @@ const onSubmit = handleSubmit(async (values) => {
     statusPlate.value.Display(false)
 
     if (response.status === 200) {
-      navigateTo('/confirm-email');
+      navigateTo(localePath('/confirm-email'));
     }
   } else {
     statusPlate.value.SetMessage('error', response.statusText)
@@ -78,30 +80,30 @@ const onSubmit = handleSubmit(async (values) => {
   <div class="main">
 
     <form @submit="onSubmit">
-      <h3>{{ $t('auth.signup')}}</h3>
+      <h3>{{ t('auth.signup')}}</h3>
 
       <div class="fields-container">
 
-        <label for="email" class="field__label">{{ $t('field.email')}}</label>
+        <label for="email" class="field__label">{{ t('field.email')}}</label>
         <input v-model="email"
                v-bind="emailAttrs"
                :class="{'field-error': errors.email}"
                type="email" id="email"
-               :placeholder="$t('field.email')">
+               :placeholder="t('field.email')">
         <FieldError type="error" :message="errors.email"/>
 
 
-        <label for="password" class="field__label">{{ $t('field.password')}}</label>
+        <label for="password" class="field__label">{{ t('field.password')}}</label>
         <PasswordField v-model="password"
                        v-bind="passwordAttrs"
                        :class="{'field-error': errors.password}"
                        id="password"
                        minlength="6"
-                       :placeholder="$t('field.password')"/>
+                       :placeholder="t('field.password')"/>
         <FieldError type="error" :message="errors.password"/>
 
 
-        <label for="username" class="field__label">{{ $t('field.username')}}</label>
+        <label for="username" class="field__label">{{ t('field.username')}}</label>
         <input v-model="username"
                v-bind="usernameAttrs"
                :class="{'field-error': errors.username}"
@@ -109,15 +111,15 @@ const onSubmit = handleSubmit(async (values) => {
                id="username"
                minlength="3"
                maxlength="50"
-               :placeholder="$t('field.username')">
+               :placeholder="t('field.username')">
         <FieldError type="error" :message="errors.username"/>
       </div>
 
-      <span class="sub-note">{{ $t('auth.hasAccount')}} <NuxtLink :to="$localePath('/login')">{{ $t('auth.toLogin')}}</NuxtLink></span>
+      <span class="sub-note">{{ t('auth.hasAccount')}} <NuxtLink :to="localePath('/login')">{{ t('auth.toLogin')}}</NuxtLink></span>
       <StatusPlate ref="statusPlate"/>
 
 
-      <button v-if="state !== 1" type="submit" class="style-1">{{ $t('auth.toSignup')}}</button>
+      <button v-if="state !== 1" type="submit" class="style-1">{{ t('auth.toSignup')}}</button>
       <button v-else type="button" class="style-1" style="height: 3.25rem">
         <Spinner bg="transparent"
                  size="2rem"
@@ -130,16 +132,16 @@ const onSubmit = handleSubmit(async (values) => {
 
 
     </form>
-    <Divider :title="$t('auth.or')" line-color="var(--orange)" width="min(100%, 384px)"/>
+    <Divider :title="t('auth.or')" line-color="var(--orange)" width="min(100%, 384px)"/>
     <div class="continue-with">
       <button type="submit" class="continue-with__button" disabled>
         <Icon name="logos:google-icon" size="1.5rem"></Icon>
-        <span class="continue-with__text">{{ $t('auth.continueWith', {provider: 'Google'})}}</span>
+        <span class="continue-with__text">{{ t('auth.continueWith', {provider: 'Google'})}}</span>
       </button>
 
       <button type="submit" class="continue-with__button" disabled>
         <Icon name="logos:google-icon" size="1.5rem"></Icon>
-        <span class="continue-with__text">{{ $t('auth.continueWith', {provider: 'Google'})}}</span>
+        <span class="continue-with__text">{{ t('auth.continueWith', {provider: 'Google'})}}</span>
       </button>
     </div>
 

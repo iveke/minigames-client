@@ -1,19 +1,5 @@
 <script setup>
-// const {status, message, type} = defineProps({
-//   status: {
-//     type: Number,
-//     required: true
-//   },
-//   statusText: {
-//     type: String,
-//     required: false,
-//   },
-//   type: {
-//     type: String,
-//     required: true,
-//     validator: (value) => ['error', 'warn', 'success'].includes(value)
-//   }
-// })
+
 const statusType = ref('error')
 const statusPlateText = ref('Error')
 

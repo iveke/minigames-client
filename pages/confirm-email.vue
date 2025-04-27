@@ -2,6 +2,7 @@
 import FieldError from "~/components/fields/field-error.vue";
 import CodeInput from "~/components/fields/code-input.vue";
 import StatusPlate from "~/components/status-plate.vue";
+import {useLocalePath} from "#i18n";
 
 useHead({
   title: 'Підтвердження e-mail',
@@ -12,6 +13,7 @@ definePageMeta({
 
 
 const { t } = useI18n();
+const localePath = useLocalePath();
 const yup = configureYup({ t });
 
 const schema = yup.object({
@@ -48,7 +50,7 @@ const onSubmit = handleSubmit(async (values) => {
     statusPlate.value.Display(false)
 
     if (response.status === 200) {
-      navigateTo('/account');
+      navigateTo(localePath('/account'));
     }
   } else {
     statusPlate.value.SetMessage('error', response.statusText)
@@ -109,24 +111,24 @@ onMounted(() => {
 <template>
   <div class="main">
     <form @submit="onSubmit">
-      <h3>{{ $t('auth.emailConfirmation:')}}</h3>
+      <h3>{{ t('auth.emailConfirmation:')}}</h3>
 
       <div class="code-fields-container">
-        <label for="email" class="field__label">{{ $t('auth.emailConfirmation:label', {email: auth.email})}}</label>
+        <label for="email" class="field__label">{{ t('auth.emailConfirmation:label', {email: auth.email})}}</label>
         <input v-model="code" type="hidden">
-        <CodeInput v-model="receivedCode" code-mask="10000-99999" :class="{'field-error': errors.code}"/>
+        <CodeInput v-bind="codeAttrs" v-model="receivedCode" code-mask="10000-99999" :class="{'field-error': errors.code}"/>
         <FieldError type="error" :message="errors.code"/>
-        <span class="field__note">{{ $t('auth.emailConfirmation:note')}}</span>
+        <span class="field__note">{{ t('auth.emailConfirmation:note')}}</span>
 
       </div>
       <span class="sub-note">
-        <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">{{ $t('auth.emailConfirmation:resend')}}</button>
-        <span v-else>{{ $t('auth.emailConfirmation:resend:timeout', {time: restTimeSeconds})}}</span>
+        <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">{{ t('auth.emailConfirmation:resend')}}</button>
+        <span v-else>{{ t('auth.emailConfirmation:resend:timeout', {time: restTimeSeconds})}}</span>
       </span>
       <StatusPlate ref="statusPlate"/>
 
 
-      <button v-if="state !== 1" type="submit" class="style-1">{{ $t('auth.emailConfirmation:approve')}}</button>
+      <button v-if="state !== 1" type="submit" class="style-1">{{ t('auth.emailConfirmation:approve')}}</button>
       <button v-else type="button" class="style-1" style="height: 3.25rem">
         <Spinner bg="transparent"
                  size="2rem"

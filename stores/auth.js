@@ -1,4 +1,3 @@
-import {config} from "@vue/test-utils";
 import {emailConfirmStatus} from "~/utils/constants/constants.js";
 
 export const useAuthStore = defineStore('auth', {
@@ -7,8 +6,6 @@ export const useAuthStore = defineStore('auth', {
         tempToken: null,
         email: null,
         emailStatus: null,
-
-        // {nickname: '', email: '', password: '', token: ''}
     }),
     getters: {
         isAuthorized: (state) => !!state.token
