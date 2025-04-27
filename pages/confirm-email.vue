@@ -36,23 +36,27 @@ watch(receivedCode, (newValue) => {
 // Submit
 const state = ref(0)
 const auth = useAuthStore();
-const statusPlateTitle = ref('Помилка авторизації')
-const statusPlateMessage = ref('Помилка')
+const statusPlate = ref()
 
 const onSubmit = handleSubmit(async (values) => {
   state.value = 1
+
   const response = await auth.confirmEmail(values)
   if (response.ok) {
-    state.value = 2
+    statusPlate.value.Display(false)
+
     if (response.status === 200) {
       navigateTo('/account');
     }
   } else {
-    state.value = 3
-    statusPlateTitle.value = `Помилка ${response.status}`
-    statusPlateMessage.value = 'Облікового запису не існує'
-    auth.logout()
+    statusPlate.value.SetMessage('error', response.statusText)
+
+    if (response.status === 404) {
+      auth.logout()
+    }
   }
+  state.value = 0
+
   console.log('response', response)
 })
 
@@ -91,9 +95,13 @@ const reset = () => {
 
 // Show warn plate if user didn't confirm email
 const route = useRoute()
-const forcedRedirect = computed(() => route.query.forcedRedirect)
-
-
+const forcedRedirect = computed(() => route.query.forcedRedirect
+)
+onMounted(() => {
+  if (forcedRedirect.value) {
+    statusPlate.value.SetMessage('warn', 'Підтвердіть, будь ласка, електронну пошту')
+  }
+})
 </script>
 
 <template>
@@ -114,17 +122,7 @@ const forcedRedirect = computed(() => route.query.forcedRedirect)
                 @click="requestCode">Відправити код повторно</button>
         <span v-else>Відправити код повторно можна через {{ restTimeSeconds }}</span>
       </span>
-      <StatusPlate ref="errorStatusPlate"
-                   v-if="state === 3"
-                   type="error"
-                   :title="statusPlateTitle"
-                   :message="statusPlateMessage"
-      />
-      <StatusPlate v-if="forcedRedirect"
-                   type="warn"
-                   title="Підтвердіть електронну пошту"
-                   message="Минулого разу ви не підтвердили електронну пошту, буль ласка, зробіть це зараз. "
-      />
+      <StatusPlate ref="statusPlate"/>
 
 
       <button v-if="state !== 1" type="submit" class="style-1">Надіслати код</button>

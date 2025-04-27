@@ -6,7 +6,6 @@ const authStore = useAuthStore()
 
 onMounted(() => {
   if (authStore.emailStatus === emailConfirmStatus.PENDING) {
-    console.log('redirect to confirm email')
     navigateTo({
       path:'/confirm-email',
       query: {

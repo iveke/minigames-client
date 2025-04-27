@@ -35,12 +35,14 @@ const [password, passwordAttrs] = defineField('password');
 
 const state = ref(0)
 const auth = useAuthStore();
+const statusPlate = ref()
 
 const onSubmit = handleSubmit(async (values) => {
   state.value = 1
+
   const response = await auth.login(values)
   if (response.ok) {
-    state.value = 2
+    statusPlate.value.Display(false)
 
     if (response.status === 200) {
       if (response.data.confirmEmail) {
@@ -50,11 +52,12 @@ const onSubmit = handleSubmit(async (values) => {
       }
     }
   } else {
-    state.value = 3
+    statusPlate.value.SetMessage('error', response.statusText)
   }
+  state.value = 0
+
   console.log('response', response)
 })
-
 
 </script>
 
@@ -86,11 +89,12 @@ const onSubmit = handleSubmit(async (values) => {
       </div>
 
       <span class="sub-note">Ще не маєте акаунту? <NuxtLink to="/signup">Зареєструватися</NuxtLink></span>
-      <StatusPlate v-if="state === 3"
-                   type="error"
-                   title="Помилка"
-                   message="Помилка авторизації."
-      />
+      <StatusPlate ref="statusPlate"/>
+
+
+      <button type="button" @click="statusPlate.Display()">toggle Display</button>
+      <button type="button" @click="statusPlate.Display(true)">show</button>
+      <button type="button" @click="statusPlate.Display(false)">hide</button>
 
 
       <!--      <Spinner bg="var(&#45;&#45;white)"-->

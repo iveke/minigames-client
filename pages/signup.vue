@@ -42,18 +42,23 @@ const [username, usernameAttrs] = defineField('username');
 
 const state = ref(0)
 const auth = useAuthStore();
+const statusPlate = ref()
 
 const onSubmit = handleSubmit(async (values) => {
   state.value = 1
+
   const response = await auth.register(values)
   if (response.ok) {
-    state.value = 2
+    statusPlate.value.Display(false)
+
     if (response.status === 200) {
       navigateTo('/confirm-email');
     }
   } else {
-    state.value = 3
+    statusPlate.value.SetMessage('error', response.statusText)
   }
+  state.value = 0
+
   console.log('response', response)
 })
 
@@ -103,11 +108,7 @@ const onSubmit = handleSubmit(async (values) => {
       </div>
 
       <span class="sub-note">Вже маєте акаунт? <NuxtLink to="/login">Увійти</NuxtLink></span>
-      <StatusPlate v-if="state === 3"
-                   type="error"
-                   title="Помилка"
-                   message="Помилка авторизації."
-      />
+      <StatusPlate ref="statusPlate"/>
 
 
       <button v-if="state !== 1" type="submit" class="style-1">Зареєструватися</button>

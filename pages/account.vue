@@ -24,9 +24,9 @@ watch(() => auth.isAuthorized, (newValue) => {
 <template>
  <h1>Профіль</h1>
 
-  route: {{ route.fullPath }} <br>
+<!--  route: {{ route.fullPath }} <br>-->
   <br>
-  token: {{ auth.token }} <br>
+<!--  token: {{ auth.token }} <br>-->
   <br>
   is authorized: {{ auth.isAuthorized }} <br>
   <br>
