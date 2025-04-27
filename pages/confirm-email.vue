@@ -104,7 +104,7 @@ const route = useRoute()
 const forcedRedirect = computed(() => route.query.forcedRedirect
 )
 onMounted(() => {
-  if (forcedRedirect.value) {
+  if (forcedRedirect.value === "true") {
     statusPlate.value.SetMessage('warn', t('statusMessages.warning.confirmEmail'))
   }
 })

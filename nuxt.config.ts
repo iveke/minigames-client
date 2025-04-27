@@ -4,7 +4,14 @@ import {process} from "std-env";
 export default defineNuxtConfig({
     compatibilityDate: '2025-03-08',
     ssr: true,
-    devtools: {enabled: true},
+    devtools: {
+        enabled: true,
+
+    },
+    sourcemap: {
+        server: true,
+        client: true
+    },
     typescript: {
         strict: false
     },
