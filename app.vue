@@ -1,13 +1,16 @@
 <script setup>
 import {useAuthStore} from "~/stores/auth.js";
+import {useLocalePath} from "#i18n";
 
 const authStore = useAuthStore()
+const localePath = useLocalePath();
 
 
 onMounted(() => {
+
   if (authStore.emailStatus === emailConfirmStatus.PENDING) {
     navigateTo({
-      path:'/confirm-email',
+      path: localePath('/confirm-email'),
       query: {
         forcedRedirect: true
       }
