@@ -1,8 +1,11 @@
+import {useLocalePath} from "#i18n";
+
 export default defineNuxtRouteMiddleware((to) => {
     const authStore = useAuthStore();
+    const localePath = useLocalePath();
 
     if (to.path === '/account' && !authStore.isAuthorized) {
-        return navigateTo('/login');
+        return navigateTo(localePath({path: '/login'}));
     }
     if (to.path === '/login' && authStore.isAuthorized) {
         return abortNavigation();
@@ -17,7 +20,7 @@ export default defineNuxtRouteMiddleware((to) => {
     }
     if (to.path !== '/confirm-email' && authStore.tempToken && authStore.emailStatus === emailConfirmStatus.PENDING) {
         return navigateTo({
-            path:'/confirm-email',
+            path: localePath({path: '/confirm-email'}),
             query: {
                 forcedRedirect: true
             }

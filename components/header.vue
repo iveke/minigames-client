@@ -6,35 +6,29 @@ const auth = useAuthStore();
   <header>
     <div class="header-container">
       <div class="logo">
-        <NuxtLink to="/">
+        <NuxtLink :to="$localePath('/')">
           <img src="~/assets/svg/logo.svg" alt="" height="56">
         </NuxtLink>
       </div>
 
       <div class="nav-container">
         <nav>
-          <NuxtLink class="nav-link" to="/games/tetris">Тетріс</NuxtLink>
-          <NuxtLink class="nav-link" to="/games/memory">Memory Game</NuxtLink>
-          <NuxtLink class="nav-link" to="/games/snake">Змійка</NuxtLink>
+          <NuxtLink class="nav-link" :to="$localePath('/games/tetris')">{{ $t('games.tetris') }}</NuxtLink>
+          <NuxtLink class="nav-link" :to="$localePath('/games/memory')">{{ $t('games.memory') }}</NuxtLink>
+          <NuxtLink class="nav-link" :to="$localePath('/games/snake')">{{ $t('games.snake') }}</NuxtLink>
         </nav>
 
 
         <div class="auth-block">
-          <NuxtLink class="button style-3" to="/login" v-if="!auth.isAuthorized">Увійти</NuxtLink>
+          <NuxtLink class="button style-3" :to="$localePath('/login')" v-if="!auth.isAuthorized">{{ $t('auth.toLogin') }}</NuxtLink>
 
-          <NuxtLink class="button style-2" to="/signup" v-if="!auth.isAuthorized">Зареєструватися</NuxtLink>
+          <NuxtLink class="button style-2" :to="$localePath('/signup')" v-if="!auth.isAuthorized">{{ $t('auth.toSignup') }}</NuxtLink>
 
-          <NuxtLink to="/account" v-if="auth.isAuthorized">
+          <NuxtLink :to="$localePath('/account')" v-if="auth.isAuthorized">
             <Icon class="style-1" role="button" name="material-symbols:person-rounded" size="3rem"></Icon>
           </NuxtLink>
 
-
-          <select class="header-dropdown" name="locale" id="locale">
-            <option value="1">UA</option>
-            <option value="1">EN</option>
-          </select>
-
-
+          <LangSwitcher class="header-dropdown"/>
 
 
         </div>

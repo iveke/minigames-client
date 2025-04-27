@@ -1,7 +1,6 @@
 <script setup>
 import FieldError from "~/components/fields/field-error.vue";
 import PasswordField from "~/components/fields/password-field.vue";
-import * as yup from 'yup';
 import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
@@ -11,13 +10,17 @@ definePageMeta({
   middleware: ['auth']
 })
 
+
+const { t } = useI18n();
+const yup = configureYup({ t });
+
 const schema = yup.object({
   email: yup.string()
       .email()
       .required(),
   password: yup.string()
       .required()
-      .matches(/^[a-zA-Z\d]+$/)
+      .matches(/^[a-zA-Z\d]+$/, t('validation.password'))
       .min(6),
 })
 
@@ -66,36 +69,35 @@ const onSubmit = handleSubmit(async (values) => {
   <div class="main">
 
     <form @submit="onSubmit">
-      <h3>Вхід</h3>
+      <h3>{{ $t('auth.login')}}</h3>
 
       <div class="fields-container">
 
-        <label for="email" class="field__label">Електронна пошта</label>
+        <label for="email" class="field__label">{{ $t('field.email')}}</label>
         <input v-model="email"
                v-bind="emailAttrs"
                :class="{'field-error': errors.email}"
                type="email" id="email"
-               placeholder="Email">
+               :placeholder="$t('field.email')">
         <FieldError type="error" :message="errors.email"/>
 
 
-        <label for="password" class="field__label">Пароль</label>
+        <label for="password" class="field__label">{{ $t('field.password')}}</label>
         <PasswordField v-model="password"
                        v-bind="passwordAttrs"
                        :class="{'field-error': errors.password}"
                        id="password"
-                       placeholder="Password"/>
+                       :placeholder="$t('field.password')"/>
         <FieldError type="error" :message="errors.password"/>
       </div>
 
-      <span class="sub-note">Ще не маєте акаунту? <NuxtLink to="/signup">Зареєструватися</NuxtLink></span>
+      <span class="sub-note">{{ $t('auth.noAccount')}} <NuxtLink :to="$localePath('/signup')">{{ $t('auth.toSignup')}}</NuxtLink></span>
+      <StatusPlate v-if="state === 3"
+                   type="error"
+                   title="Помилка"
+                   message="Помилка авторизації."
+      />
       <StatusPlate ref="statusPlate"/>
-
-
-      <button type="button" @click="statusPlate.Display()">toggle Display</button>
-      <button type="button" @click="statusPlate.Display(true)">show</button>
-      <button type="button" @click="statusPlate.Display(false)">hide</button>
-
 
       <!--      <Spinner bg="var(&#45;&#45;white)"-->
       <!--               size="3rem"-->
@@ -105,7 +107,7 @@ const onSubmit = handleSubmit(async (values) => {
       <!--               speed="1.5"/>-->
 
 
-      <button v-if="state !== 1" type="submit" class="style-1">Увійти</button>
+      <button v-if="state !== 1" type="submit" class="style-1">{{ $t('auth.toLogin')}}</button>
       <button v-else type="button" class="style-1" style="height: 3.25rem">
         <Spinner bg="transparent"
                  size="2rem"
@@ -117,16 +119,16 @@ const onSubmit = handleSubmit(async (values) => {
 
 
     </form>
-    <Divider title="Або" line-color="var(--orange)" width="min(100%, 384px)"/>
+    <Divider :title="$t('auth.or')" line-color="var(--orange)" width="min(100%, 384px)"/>
     <div class="continue-with">
       <button type="submit" class="continue-with__button" disabled>
         <Icon name="logos:google-icon" size="1.5rem"></Icon>
-        <span class="continue-with__text">Продовжити з Google</span>
+        <span class="continue-with__text">{{ $t('auth.continueWith', {provider: 'Google'})}}</span>
       </button>
 
       <button type="submit" class="continue-with__button" disabled>
         <Icon name="logos:google-icon" size="1.5rem"></Icon>
-        <span class="continue-with__text">Продовжити з Google</span>
+        <span class="continue-with__text">{{ $t('auth.continueWith', {provider: 'Google'})}}</span>
       </button>
     </div>
 

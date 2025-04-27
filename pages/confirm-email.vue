@@ -1,7 +1,6 @@
 <script setup>
 import FieldError from "~/components/fields/field-error.vue";
 import CodeInput from "~/components/fields/code-input.vue";
-import * as yup from 'yup';
 import StatusPlate from "~/components/status-plate.vue";
 
 useHead({
@@ -11,7 +10,10 @@ definePageMeta({
   middleware: ['auth']
 })
 
-// auth form
+
+const { t } = useI18n();
+const yup = configureYup({ t });
+
 const schema = yup.object({
   code: yup.number()
       .required()
@@ -107,25 +109,24 @@ onMounted(() => {
 <template>
   <div class="main">
     <form @submit="onSubmit">
-      <h3>Підтвердження e-mail</h3>
+      <h3>{{ $t('auth.emailConfirmation:')}}</h3>
 
       <div class="code-fields-container">
-        <label for="email" class="field__label">Код верифікації відправлено на {{ auth.email }}</label>
+        <label for="email" class="field__label">{{ $t('auth.emailConfirmation:label', {email: auth.email})}}</label>
         <input v-model="code" type="hidden">
         <CodeInput v-model="receivedCode" code-mask="10000-99999" :class="{'field-error': errors.code}"/>
         <FieldError type="error" :message="errors.code"/>
-        <span class="field__note">Якщо не бачите листа, перевірте спам.</span>
+        <span class="field__note">{{ $t('auth.emailConfirmation:note')}}</span>
 
       </div>
       <span class="sub-note">
-        <button v-if="restTime >= duration" type="button" class="link"
-                @click="requestCode">Відправити код повторно</button>
-        <span v-else>Відправити код повторно можна через {{ restTimeSeconds }}</span>
+        <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">{{ $t('auth.emailConfirmation:resend')}}</button>
+        <span v-else>{{ $t('auth.emailConfirmation:resend:timeout', {time: restTimeSeconds})}}</span>
       </span>
       <StatusPlate ref="statusPlate"/>
 
 
-      <button v-if="state !== 1" type="submit" class="style-1">Надіслати код</button>
+      <button v-if="state !== 1" type="submit" class="style-1">{{ $t('auth.emailConfirmation:approve')}}</button>
       <button v-else type="button" class="style-1" style="height: 3.25rem">
         <Spinner bg="transparent"
                  size="2rem"
