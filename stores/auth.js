@@ -1,184 +1,82 @@
-import {emailConfirmStatus} from "~/utils/constants/constants.js";
-import {BaseResponse} from "~/utils/BaseResponse.js";
+import {useAuthService} from "~/services/auth.js";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         token: null,
-        tempToken: null,
         email: null,
         emailStatus: null,
     }),
     getters: {
-        isAuthorized: (state) => !!state.token
+        isAuthorized: (state) => !!state.token && state.emailStatus === 'CONFIRMED'
     },
     actions: {
-        async register(values) {
-            const response = BaseResponse()
+        logout() {
+            this.token = null;
+            this.email = null
+            this.emailStatus = null
+        },
 
-            if (!values) {
-                response.statusText = "Values is empty"
-                response.status = undefined
-                console.error(response.statusText, values)
-                return response
+        async login(values) {
+            const {login} = useAuthService()
+            const response = await login(values)
+
+            if (response.ok) {
+                this.token = response.data.token;
+                this.email = values.email
+                this.emailStatus = response.data.confirmEmail ? 'CONFIRMED' : 'PENDING'
+            } else {
+                console.error(response)
             }
 
-            const apiUrl = useRuntimeConfig().public.API_URL
-            try {
-                const fetchResponse = await fetch(`${apiUrl}/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(values)
-                })
-                response.ok = fetchResponse.ok
-                response.status = fetchResponse.status
-                response.statusText = fetchResponse.statusText
-                response.data = await fetchResponse.json()
+            return response
+        },
+        async register(values) {
+            const {register} = useAuthService()
+            const response = await register(values)
 
-                if (fetchResponse.ok) {
-                    this.tempToken = response.data.token;
-                    this.email = values.email
-                    this.emailStatus = emailConfirmStatus.PENDING
-                } else {
-                    console.error(response.data)
-                }
-            } catch (e) {
-                console.error("Error during registration", e)
+            if (response.ok) {
+                this.token = response.data.token;
+                this.email = values.email
+                this.emailStatus = 'PENDING'
+            } else {
+                console.error(response)
             }
 
             return response
         },
         async confirmEmail(values) {
-            const {code} = values
-            const response = BaseResponse()
-
-            if (code < 10000 && code > 99999) {
-                response.statusText = "Code is not valid"
-                response.status = undefined
-                console.error(response.statusText, values)
-                return response
+            if (this.emailStatus !== 'PENDING') {
+                throw new Error('Email status in not PENDING')
             }
-            if (this.emailStatus !== emailConfirmStatus.PENDING) {
-                response.statusText = "Email is not in pending state"
-                response.status = undefined
-                console.error(response.statusText)
-                return response
+            if (values.code < 10000 && values.code > 99999) {
+                throw new Error('Invalid values');
             }
 
-            const apiUrl = useRuntimeConfig().public.API_URL
-            const jwtBearer = `Bearer ${this.tempToken}`
-            try {
-                const fetchResponse = await fetch(`${apiUrl}/user/confirmEmail/${code}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': jwtBearer
-                    },
-                })
-                response.ok = fetchResponse.ok
-                response.status = fetchResponse.status
-                response.statusText = fetchResponse.statusText
-                response.data = await fetchResponse.json()
+            const {confirmEmail} = useAuthService()
+            const response = await confirmEmail(values)
 
-                if (response.ok) {
-                    this.token = this.tempToken;
-                    this.tempToken = null;
-                    this.emailStatus = emailConfirmStatus.CONFIRMED
-                } else {
-                    console.error(response.data)
-                }
-            } catch (e) {
-                console.error("Error during registration", e)
+            if (response.ok) {
+                this.emailStatus = 'CONFIRMED'
+            } else {
+                console.error(response)
             }
 
             return response
         },
 
         async requestCode() {
-            const response = BaseResponse()
-
-            if (this.emailStatus !== emailConfirmStatus.PENDING) {
-                response.statusText = "Email is not in pending state"
-                response.status = undefined
-                console.error(response.statusText)
-                return response
+            if (this.emailStatus !== 'PENDING') {
+                throw new Error('Email status in not PENDING')
             }
 
-            const apiUrl = useRuntimeConfig().public.API_URL
-            const jwtBearer = `Bearer ${this.tempToken}`
-            try {
-                const fetchResponse = await fetch(`${apiUrl}/auth/generateConfirmEmailCode`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': jwtBearer
-                    },
-                })
-                response.ok = fetchResponse.ok
-                response.status = fetchResponse.status
-                response.statusText = fetchResponse.statusText
-                response.data = await fetchResponse.json()
+            const {requestCode} = useAuthService()
+            const response = await requestCode()
 
-                if (response.ok) {
-
-                } else {
-                    console.error(response.data)
-                }
-
-            } catch (e) {
-                console.error("Error during asking request", e)
+            if (!response.ok) {
+                console.error(response)
             }
 
             return response
-        },
-
-        async login(values) {
-            const response = BaseResponse()
-
-            if (!values) {
-                response.statusText = "Values is empty"
-                response.status = undefined
-                console.error(response.statusText, values)
-                return response
-            }
-
-            const apiUrl = useRuntimeConfig().public.API_URL
-            try {
-                const fetchResponse = await fetch(`${apiUrl}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(values)
-                })
-                response.ok = fetchResponse.ok
-                response.status = fetchResponse.status
-                response.statusText = fetchResponse.statusText
-                response.data = await fetchResponse.json()
-
-                if (response.ok) {
-                    if (response.data.confirmEmail) {
-                        this.token = response.data.token;
-                    } else {
-                        this.tempToken = response.data.token;
-                        this.email = values.email
-                        this.emailStatus = emailConfirmStatus.PENDING
-                    }
-
-                } else {
-                    console.error(response.data)
-                }
-            } catch (e) {
-                console.error("Error during registration", e)
-            }
-
-            return response
-        },
-
-        logout() {
-            this.token = null;
-            this.tempToken = null;
-            this.email = null
-            this.emailStatus = null
         },
     }
 })
