@@ -40,15 +40,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="controller">
-    <button @click="emit('left')" :disabled="!game.isActive">Left</button>
-    <button @click="emit('right')" :disabled="!game.isActive">Right</button>
-    <button @click="emit('down')" :disabled="!game.isActive">Down</button>
-    <button @click="emit('drop')" :disabled="!game.isActive">Drop</button>
-    <button @click="emit('rotate')" :disabled="!game.isActive">Rotate</button>
-  </div>
+<!--  <div class="controller">-->
+<!--    <button @click="emit('left')" :disabled="!game.isActive">Left</button>-->
+<!--    <button @click="emit('right')" :disabled="!game.isActive">Right</button>-->
+<!--    <button @click="emit('down')" :disabled="!game.isActive">Down</button>-->
+<!--    <button @click="emit('drop')" :disabled="!game.isActive">Drop</button>-->
+<!--    <button @click="emit('rotate')" :disabled="!game.isActive">Rotate</button>-->
+<!--  </div>-->
   <div class="state-manager">
-    <button v-if="game.isActive" @click="emit('pause')">Pause</button>
+    <button @click="emit('pause')" :disabled="!game.isActive">Pause</button>
 
 <!--    </div>-->
   </div>

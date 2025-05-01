@@ -1,34 +1,36 @@
 <script setup>
 const auth = useAuthStore();
+const { t } = useI18n();
+const localePath = useLocalePath();
 </script>
 
 <template>
   <header>
     <div class="header-container">
       <div class="logo">
-        <NuxtLink :to="$localePath('/')">
-          <img src="~/assets/svg/logo.svg" alt="" height="56">
+        <NuxtLink :to="localePath('/')">
+          <img src="../../assets/svg/logo.svg" alt="" height="56">
         </NuxtLink>
       </div>
 
       <div class="nav-container">
         <nav>
-          <NuxtLink class="nav-link" :to="$localePath('/games/tetris')">{{ $t('games.tetris') }}</NuxtLink>
-          <NuxtLink class="nav-link" :to="$localePath('/games/memory')">{{ $t('games.memory') }}</NuxtLink>
-          <NuxtLink class="nav-link" :to="$localePath('/games/snake')">{{ $t('games.snake') }}</NuxtLink>
+          <NuxtLink class="nav-link" :to="localePath('/games/tetris')">{{ t('games.tetris') }}</NuxtLink>
+          <NuxtLink class="nav-link" :to="localePath('/games/memory')">{{ t('games.memory') }}</NuxtLink>
+          <NuxtLink class="nav-link" :to="localePath('/games/snake')">{{ t('games.snake') }}</NuxtLink>
         </nav>
 
 
         <div class="auth-block">
-          <NuxtLink class="button style-3" :to="$localePath('/login')" v-if="!auth.isAuthorized">{{ $t('auth.toLogin') }}</NuxtLink>
+          <NuxtLink class="button style-3" :to="localePath('/login')" v-if="!auth.isAuthorized">{{ t('auth.toLogin') }}</NuxtLink>
 
-          <NuxtLink class="button style-2" :to="$localePath('/signup')" v-if="!auth.isAuthorized">{{ $t('auth.toSignup') }}</NuxtLink>
+          <NuxtLink class="button style-2" :to="localePath('/signup')" v-if="!auth.isAuthorized">{{ t('auth.toSignup') }}</NuxtLink>
 
-          <NuxtLink :to="$localePath('/account')" v-if="auth.isAuthorized">
+          <NuxtLink :to="localePath('/account')" v-if="auth.isAuthorized">
             <Icon class="style-1" role="button" name="material-symbols:person-rounded" size="3rem"></Icon>
           </NuxtLink>
 
-          <LangSwitcher class="header-dropdown"/>
+          <CommonLangSwitcher class="header-dropdown"/>
 
 
         </div>

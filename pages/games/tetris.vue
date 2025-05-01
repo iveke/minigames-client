@@ -1,7 +1,4 @@
 <script setup>
-import Grid from "~/components/tetris/grid.vue";
-import Stats from "~/components/tetris/stats.vue";
-import Controller from "~/components/tetris/controller.vue";
 import {matrixMerge} from "~/composables/matrixMerge.js";
 import {matrixRotate} from "~/composables/matrixRotate.js";
 import {matrixOverlap} from "~/composables/matrixOverlap.js";
@@ -35,8 +32,8 @@ const clearedLines = ref(0)
 const tetraminoCount = ref(0)
 
 // level calculation
-watch(tetraminoCount, (newValue) => {
-  game.level = Math.floor(newValue / 10) + 1
+watch(clearedLines, (newValue) => {
+  game.level = Math.floor(newValue / 3) + 1
 })
 
 
@@ -74,6 +71,7 @@ function GetRandomTetramino() {
   randomTetramino.x = 10 / 2 - Math.floor(randomTetramino.shape[0].length / 2)
   return randomTetramino
 }
+
 function GenerateNextTetramino() {
   const nextTetramino = GetRandomTetramino()
 
@@ -232,11 +230,7 @@ game.DefineCustom('Reset', () => {
   timer.value = null
   tetraminoCount.value = 0
   clearedLines.value = 0
-  console.log(1234)
 })
-
-
-
 
 
 // Game loop
@@ -302,38 +296,31 @@ onBeforeRouteLeave(() => {
       <!--        <div class="temp-cell" v-for="i in 20">{{ i - 1 }}</div>-->
       <!--      </div>-->
       <div id="board">
-        <Modal v-if="game.isNotActive"
-               button-text="Play"
-               @action="() => {
+        <FunctionalModal v-if="game.isNotActive"
+                         button-text="Play"
+                         @action="() => {
                  game.Reset()
                  game.Play()
                }"
-        ><h2>Start</h2></Modal>
-        <Modal v-if="game.isPaused"
-               button-text="Resume"
-               @action="game.Play()"
-        ><h2>Pause</h2></Modal>
-        <Modal v-if="game.isGameOver"
-               button-text="Reset"
-               @action="() => {
+        ><h2>Start</h2></FunctionalModal>
+        <FunctionalModal v-if="game.isPaused"
+                         button-text="Resume"
+                         @action="game.Play()"
+        ><h2>Pause</h2></FunctionalModal>
+        <FunctionalModal v-if="game.isGameOver"
+                         button-text="Reset"
+                         @action="() => {
                  game.Reset()
                  game.Play()
                }"
         >
           <h2>Game over!</h2>Your points: {{ game.formattedPoints }}
-        </Modal>
-        <Grid :board :currentTetromino/>
+        </FunctionalModal>
+        <GamesTetrisGrid :board :currentTetromino/>
       </div>
-      <Stats :next-tetramino="next.Peek()">
-        points: {{ game.formattedPoints }}<br>
-        level: {{ game.level }}<br>
-        lines: {{ clearedLines }}
 
-        <!--      {{ NOT_ACTIVE }}-->
-        <!--      {{ ACTIVE }}-->
-        <!--      {{ PAUSED }}-->
-        <!--      {{ GAME_OVER }}-->
-        <Controller
+      <GamesTetrisStats>
+        <GamesTetrisController
             @down="SoftDrop"
             @drop="HardDrop"
             @right="Right"
@@ -342,7 +329,22 @@ onBeforeRouteLeave(() => {
 
             @pause="game.Pause()"
         />
-      </Stats>
+
+        score <br>
+        {{ game.formattedPoints }} <br>
+        time <br>
+
+        lvl lines <br>
+        {{ game.level }} {{ clearedLines }}<br>
+
+        <!--      {{ NOT_ACTIVE }}-->
+        <!--      {{ ACTIVE }}-->
+        <!--      {{ PAUSED }}-->
+        <!--      {{ GAME_OVER }}-->
+
+        <GamesTetrisNextTetramino :nextTetramino="next.Peek()"/>
+
+      </GamesTetrisStats>
     </div>
     <!--    <button class="temp" @click="FixTetramino">Fix</button>-->
     <!--    <button class="temp" @click="GenerateNextTetramino">Next</button>-->

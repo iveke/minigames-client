@@ -36,6 +36,7 @@
 
     /* Tetris */
     --grid-bg: #13111E;
+    --grid-color: #262439;
 
     --empty-color: #1D1A2D;
     --S-color: red;
@@ -45,6 +46,16 @@
     --O-color: yellow;
     --I-color: blue;
     --T-color: purple;
+
+
+
+    --tetromino-s: #ff0000;
+    --tetromino-z: #66ff33;
+    --tetromino-l: #ff33cc;
+    --tetromino-j: #00ffff;
+    --tetromino-o: #ffcc00;
+    --tetromino-i: #0066ff;
+    --tetromino-t: #9933ff;
 }
 
 * {
