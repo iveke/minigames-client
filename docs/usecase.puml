@@ -1,0 +1,70 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+left to right direction
+
+"Користувач" as user
+"Адмін" as admin
+
+admin -|> user
+
+
+"Authorization" as auth
+"Result Service" as results
+"User Service" as userController
+"Reviews Service" as reviews
+
+"Email Sevice" as email
+
+package "User use cases" {
+    (Оновити інформацію в акаунті) as userUpdate
+    (Пограти в гру) as play
+    (Подивитись лідерборд) as leaderboard
+    (Написати відгук) as makeReview
+    (Зареєструватися \n / Війти в акаунт) as signup
+}
+
+package "Admin use cases" {
+    (Блокувати користувачів) as ban
+    (Видаляти відгуки) as deleteReview
+    (Видаляти результати) as deleteResults
+}
+
+'''''''''''''''''''''''''''''''''''''''''
+user -- leaderboard
+user -- signup
+user -- userUpdate
+user -- play
+user -- makeReview
+
+admin -- ban
+admin -- deleteReview
+admin -- deleteResults
+
+'''''''''''''''''''''''''''''''''''''''''
+signup -- auth
+results .. auth : JWT
+userController .. auth : JWT
+reviews .. auth : JWT
+
+
+email .. auth : JWT
+email <-- auth : Надіслати \n код підтвердження
+signup - email
+'auth . email : JWT
+'auth -> email : \n\n\n\nНадіслати \n код підтвердження
+'signup - email
+'''''''''''''''''''''''''''''''''''''''''
+userUpdate -- userController
+ban -- userController
+signup -- userController
+
+play -- results : зберегти результат
+leaderboard -- results : отримати лідерборд
+deleteResults -- results
+
+makeReview -- reviews
+deleteReview -- reviews
+'''''''''''''''''''''''''''''''''''''''''
+
+
+@enduml
