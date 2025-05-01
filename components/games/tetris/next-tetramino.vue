@@ -1,17 +1,15 @@
 <script setup>
 import {matrixTrim} from "~/composables/matrixTrim.js";
-import {computed} from "vue";
 
-const {nextTetramino} = defineProps({
+const props = defineProps({
   nextTetramino: {
     type: Object,
     required: false,
   }
 })
 
-const trimmedShape = computed(() => {
-  return matrixTrim(nextTetramino.shape).newMatrix
-})
+const trimmedShape = computed(() => matrixTrim(props.nextTetramino.shape).newMatrix)
+
 
 </script>
 

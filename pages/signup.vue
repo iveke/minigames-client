@@ -67,11 +67,6 @@ const onSubmit = handleSubmit(async (values) => {
 })
 
 
-
-// email.value = 'pryadka18@gmail.com';
-// password.value = '123456';
-// username.value = 'testuser';
-
 </script>
 
 <template>

@@ -15,6 +15,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@netlify/functions": "^3.0.4",
     "@vee-validate/i18n": "^4.15.0",
     "@vee-validate/rules": "^4.15.0",
     "axios": "^1.8.4",
