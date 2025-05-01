@@ -32,8 +32,8 @@ const clearedLines = ref(0)
 const tetraminoCount = ref(0)
 
 // level calculation
-watch(tetraminoCount, (newValue) => {
-  game.level = Math.floor(newValue / 10) + 1
+watch(clearedLines, (newValue) => {
+  game.level = Math.floor(newValue / 3) + 1
 })
 
 
@@ -71,6 +71,7 @@ function GetRandomTetramino() {
   randomTetramino.x = 10 / 2 - Math.floor(randomTetramino.shape[0].length / 2)
   return randomTetramino
 }
+
 function GenerateNextTetramino() {
   const nextTetramino = GetRandomTetramino()
 
@@ -232,9 +233,6 @@ game.DefineCustom('Reset', () => {
 })
 
 
-
-
-
 // Game loop
 
 function startLoop() {
@@ -299,19 +297,19 @@ onBeforeRouteLeave(() => {
       <!--      </div>-->
       <div id="board">
         <FunctionalModal v-if="game.isNotActive"
-               button-text="Play"
-               @action="() => {
+                         button-text="Play"
+                         @action="() => {
                  game.Reset()
                  game.Play()
                }"
         ><h2>Start</h2></FunctionalModal>
         <FunctionalModal v-if="game.isPaused"
-               button-text="Resume"
-               @action="game.Play()"
+                         button-text="Resume"
+                         @action="game.Play()"
         ><h2>Pause</h2></FunctionalModal>
         <FunctionalModal v-if="game.isGameOver"
-               button-text="Reset"
-               @action="() => {
+                         button-text="Reset"
+                         @action="() => {
                  game.Reset()
                  game.Play()
                }"
@@ -320,15 +318,8 @@ onBeforeRouteLeave(() => {
         </FunctionalModal>
         <GamesTetrisGrid :board :currentTetromino/>
       </div>
-      <GamesTetrisStats :next-tetramino="next.Peek()">
-        points: {{ game.formattedPoints }}<br>
-        level: {{ game.level }}<br>
-        lines: {{ clearedLines }}
 
-        <!--      {{ NOT_ACTIVE }}-->
-        <!--      {{ ACTIVE }}-->
-        <!--      {{ PAUSED }}-->
-        <!--      {{ GAME_OVER }}-->
+      <GamesTetrisStats>
         <GamesTetrisController
             @down="SoftDrop"
             @drop="HardDrop"
@@ -338,6 +329,21 @@ onBeforeRouteLeave(() => {
 
             @pause="game.Pause()"
         />
+
+        score <br>
+        {{ game.formattedPoints }} <br>
+        time <br>
+
+        lvl lines <br>
+        {{ game.level }} {{ clearedLines }}<br>
+
+        <!--      {{ NOT_ACTIVE }}-->
+        <!--      {{ ACTIVE }}-->
+        <!--      {{ PAUSED }}-->
+        <!--      {{ GAME_OVER }}-->
+
+        <GamesTetrisNextTetramino :nextTetramino="next.Peek()"/>
+
       </GamesTetrisStats>
     </div>
     <!--    <button class="temp" @click="FixTetramino">Fix</button>-->
