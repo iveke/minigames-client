@@ -1,6 +1,5 @@
 <script setup>
-import Cell from "~/components/tetris/cell.vue";
-import {arrSum} from "~/composables/arrSum";
+import Cell from "~/components/games/tetris/grid-cell.vue";
 import {matrixTrim} from "~/composables/matrixTrim.js";
 import {computed} from "vue";
 

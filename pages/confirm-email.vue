@@ -1,7 +1,4 @@
 <script setup>
-import FieldError from "~/components/fields/field-error.vue";
-import CodeInput from "~/components/fields/code-input.vue";
-import StatusPlate from "~/components/status-plate.vue";
 import {useLocalePath} from "#i18n";
 import {useTranslateApiResponse} from "~/composables/useTranslateApiResponse.js";
 
@@ -118,8 +115,8 @@ onMounted(() => {
       <div class="code-fields-container">
         <label for="email" class="field__label">{{ t('auth.emailConfirmation:label', {email: auth.email})}}</label>
         <input v-model="code" type="hidden">
-        <CodeInput v-bind="codeAttrs" v-model="receivedCode" code-mask="10000-99999" :class="{'field-error': errors.code}"/>
-        <FieldError type="error" :message="errors.code"/>
+        <FieldsCode v-bind="codeAttrs" v-model="receivedCode" code-mask="10000-99999" :class="{'field-error': errors.code}"/>
+        <FieldsError type="error" :message="errors.code"/>
         <span class="field__note">{{ t('auth.emailConfirmation:note')}}</span>
 
       </div>
@@ -127,12 +124,12 @@ onMounted(() => {
         <button v-if="restTime >= duration" type="button" class="link" @click="requestCode">{{ t('auth.emailConfirmation:resend')}}</button>
         <span v-else>{{ t('auth.emailConfirmation:resend:timeout', {time: restTimeSeconds})}}</span>
       </span>
-      <StatusPlate ref="statusPlate"/>
+      <FunctionalStatusPlate ref="statusPlate"/>
 
 
       <button v-if="state !== 1" type="submit" class="style-1">{{ t('auth.emailConfirmation:approve')}}</button>
       <button v-else type="button" class="style-1" style="height: 3.25rem">
-        <Spinner bg="transparent"
+        <CommonSpinner bg="transparent"
                  size="2rem"
                  color="var(--white)"
                  width="75"

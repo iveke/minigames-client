@@ -1,7 +1,4 @@
 <script setup>
-import FieldError from "~/components/fields/field-error.vue";
-import PasswordField from "~/components/fields/password-field.vue";
-import StatusPlate from "~/components/status-plate.vue";
 import {useLocalePath} from "#i18n";
 import {useTranslateApiResponse} from "~/composables/useTranslateApiResponse.js";
 
@@ -84,25 +81,20 @@ const onSubmit = handleSubmit(async (values) => {
                :class="{'field-error': errors.email}"
                type="email" id="email"
                :placeholder="t('field.email')">
-        <FieldError type="error" :message="errors.email"/>
+        <FieldsError type="error" :message="errors.email"/>
 
 
         <label for="password" class="field__label">{{ t('field.password')}}</label>
-        <PasswordField v-model="password"
+        <FieldsPassword v-model="password"
                        v-bind="passwordAttrs"
                        :class="{'field-error': errors.password}"
                        id="password"
                        :placeholder="t('field.password')"/>
-        <FieldError type="error" :message="errors.password"/>
+        <FieldsError type="error" :message="errors.password"/>
       </div>
 
       <span class="sub-note">{{ t('auth.noAccount')}} <NuxtLink :to="localePath('/signup')">{{ t('auth.toSignup')}}</NuxtLink></span>
-      <StatusPlate v-if="state === 3"
-                   type="error"
-                   title="Помилка"
-                   message="Помилка авторизації."
-      />
-      <StatusPlate ref="statusPlate"/>
+      <FunctionalStatusPlate ref="statusPlate"/>
 
       <!--      <Spinner bg="var(&#45;&#45;white)"-->
       <!--               size="3rem"-->
@@ -114,7 +106,7 @@ const onSubmit = handleSubmit(async (values) => {
 
       <button v-if="state !== 1" type="submit" class="style-1">{{ t('auth.toLogin')}}</button>
       <button v-else type="button" class="style-1" style="height: 3.25rem">
-        <Spinner bg="transparent"
+        <CommonSpinner bg="transparent"
                  size="2rem"
                  color="var(--white)"
                  width="75"
@@ -124,7 +116,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 
     </form>
-    <Divider :title="t('auth.or')" line-color="var(--orange)" width="min(100%, 384px)"/>
+    <CommonDivider :title="t('auth.or')" line-color="var(--orange)" width="min(100%, 384px)"/>
     <div class="continue-with">
       <button type="submit" class="continue-with__button" disabled>
         <Icon name="logos:google-icon" size="1.5rem"></Icon>

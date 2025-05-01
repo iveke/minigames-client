@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {symbols} from '~/assets/images/symbols.ts'
+import {symbols} from '~/assets/images/symbols'
 useHead({
   title: 'Memory',
 })
@@ -139,7 +139,7 @@ resetGame();
         <div>Time Left: {{ timer }}s</div>
       </div>
       <div class="board">
-        <memory-card
+        <GamesMemoryCard
             v-for="(card, index) in cards"
             :key="index"
             :status="getStatus(index)"
