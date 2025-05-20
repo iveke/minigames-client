@@ -18,7 +18,8 @@ defineProps<{
     <div class="card-inner">
       <div class="card-face card-back"></div>
       <div class="card-face card-front">
-        <img :src="image" />
+        <img v-if="image && image.startsWith('data:image')" :src="image" />
+        <span v-else style="font-size: 2.5em;">{{ image }}</span>
       </div>
     </div>
   </div>

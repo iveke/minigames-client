@@ -6,15 +6,31 @@ useHead({
 
 const cards = ref([]);
 const moves = ref(0);
-const totalPairs = 6; 
 const matchedCards = ref(new Set<number>());
 const openedCards = ref(new Set<number>());
 const matches = computed(() => matchedCards.value.size);
-const isGameWon = computed(() => matches.value === totalPairs);
+const isGameWon = computed(() => {
+  const { pairs } = difficulties[selectedDifficulty.value];
+  return matchedCards.value.size === pairs * 2;
+});
+
 
 const timer = ref(60); 
 const score = ref(0); 
 
+const difficulties = {
+  easy: { pairs: 4, time: 60 },
+  medium: { pairs: 6, time: 90 },
+  hard: { pairs: 9, time: 120 },
+};
+const selectedDifficulty = ref('medium');
+
+import { watch } from 'vue';
+
+
+watch(selectedDifficulty, () => {
+  resetGame(true); 
+});
 
 // const bestScore = ref(Number(localStorage.getItem('bestScore')) || 0);
 const bestScore = ref(0);
@@ -26,19 +42,31 @@ function resetGame(keepTimer = false) {
   moves.value = 0;
   openedCards.value.clear();
   matchedCards.value.clear();
-  cards.value = shuffleCards([...symbols.slice(0, totalPairs), ...symbols.slice(0, totalPairs)]);
+
+  const { pairs } = difficulties[selectedDifficulty.value];
+  const selectedSymbols = symbols.slice(0, pairs);
+
+
+  const duplicatedSymbols = selectedSymbols.flatMap(s => [{ ...s }, { ...s }]);
+
+
+  cards.value = shuffleCards(duplicatedSymbols);
+
   isGameRunning.value = false;
 
-  
   if (!keepTimer && timerInterval) {
     clearInterval(timerInterval);
     timerInterval = null;
   }
 }
 
+
+
 function startGame() {
   score.value = 0;
-  timer.value = 60;
+  const { time } = difficulties[selectedDifficulty.value];
+  timer.value = time;
+
   resetGame();
   isGameRunning.value = true;
 
@@ -47,11 +75,14 @@ function startGame() {
       timer.value -= 1;
 
     
-      if (matchedCards.value.size === totalPairs * 2) {
-        timer.value += 5;
-        resetGame(true); 
-        isGameRunning.value = true; 
-      }
+      const { pairs } = difficulties[selectedDifficulty.value];
+if (matchedCards.value.size === pairs * 2) {
+  timer.value += 5;
+  score.value += 20; // бонус за повний рівень — опційно
+  resetGame(true);
+  isGameRunning.value = true;
+}
+
     } else {
       endGame();
     }
@@ -148,6 +179,16 @@ resetGame();
             @click="openCard(index)"
         />
       </div>
+
+<div class="difficulty-select">
+  <label for="difficulty">Difficulty:</label>
+  <select v-model="selectedDifficulty" id="difficulty" :disabled="isGameRunning">
+    <option value="easy">Easy</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+  </select>
+</div>
+
 
       <button v-if="!isGameRunning" @click="startGame">Start Game</button>
       <button v-else @click="resetGame">Reset Game</button>
@@ -312,4 +353,18 @@ button:hover {
     height: 100px;
   }
 }
+
+.difficulty-select {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.difficulty-select select {
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
 </style>

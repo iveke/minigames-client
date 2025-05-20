@@ -29,5 +29,16 @@ export const symbols = [
     image:
       "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHBhdGggZmlsbD0iIzJlY2M3MSIgZD0iTTE5LDI3Yy0xLDAtMiwwLTMsMGMtMSwwLTIsMC0zLDBjLTQsLTEsLTctMy03LC03YzAsLTEsMC0yLDAsLTJjMCwtMiwxLC00LDEsLTZjMCwtMSwxLC0zLDIsLTNjMSwtMSwyLC0xLDMsLTFjMSwwLDIsMCwzLDBjMSwwLDIsLTEsMiwtMWMxLDAsMSwwLDEsMGMxLDAsMSwxLDEsMWMwLDEsMCwyLDAsMmMwLDIsMCwzLDAsMGMwLDEsLTEsMywwLDJjMCwxLDEsMCwxLDJjMCwyLDAsMywxLDRjMSwyLDEsNCwxLDZjMCwxLDAsMywtMSw0Yy0xLDEtMiwxLTIsMXoiLz48cGF0aCBmaWxsPSIjZjM5YzEyIiBkPSJNMTYsOWMwLDAsMCwwLDEsMGMwLDAsMCwwLDEsMGMwLDAsMCwwLDEsMGMwLDAsMCwwLDAsMGMwLC0xLDAsLTEsMCwtMWMwLDAsLTEsLTEsLTEsLTFjMCwwLDAsLTEsLTEsLTFjMCwwLDAsMCwtMSwwYzAsMCwwLDAsMCwwYzAsMC0xLDEsLTEsMWMwLDAsMCwxLDAsMS0xLDAsLTEsMC0xLDF6Ii8+PC9zdmc+",
   },
-
+  {
+    name: "strawberry",
+    image: "🍓",
+  },
+    {
+    name: "watermelon",
+    image: "🍉",
+  },
+  {
+    name: "pineapple",
+    image: "🍍",
+  },
 ];
