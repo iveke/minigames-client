@@ -1,3 +1,5 @@
+import {useUserService} from "~/services/user.js";
+
 export default defineNuxtPlugin((nuxtApp) => {
     const authStore = useAuthStore();
     const stateCookie = useCookie('app-state', { path: '/', maxAge: 60 * 60 * 24 * 7 })

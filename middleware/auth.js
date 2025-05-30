@@ -14,11 +14,11 @@ export default defineNuxtRouteMiddleware((to) => {
         return abortNavigation();
     }
 
-    if (to.path === localePath('/confirm-email') && authStore.emailStatus !== emailConfirmStatus.PENDING) {
+    if (to.path === localePath('/confirm-email') && authStore.emailStatus !== 'PENDING') {
         // console.log(1234)
         return abortNavigation();
     }
-    if (to.path !== localePath('/confirm-email') && authStore.tempToken && authStore.emailStatus === emailConfirmStatus.PENDING) {
+    if (to.path !== localePath('/confirm-email') && authStore.token && authStore.emailStatus === 'PENDING') {
         return navigateTo({
             path: localePath('/confirm-email'),
             query: {

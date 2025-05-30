@@ -7,7 +7,7 @@ const localePath = useLocalePath();
 
 
 onMounted(() => {
-  if (authStore.emailStatus === emailConfirmStatus.PENDING) {
+  if (authStore.emailStatus === 'PENDING') {
     navigateTo({
       path: localePath('/confirm-email'),
       query: {
