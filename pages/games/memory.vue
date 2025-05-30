@@ -1,22 +1,27 @@
 <script setup lang="ts">
+import { useOpenCard } from '~/composables/openCard'
 import {symbols} from '~/assets/images/symbols'
 useHead({
   title: 'Memory',
 })
-
-const cards = ref([]);
-const moves = ref(0);
-const matchedCards = ref(new Set<number>());
-const openedCards = ref(new Set<number>());
-const matches = computed(() => matchedCards.value.size);
-const isGameWon = computed(() => {
-  const { pairs } = difficulties[selectedDifficulty.value];
-  return matchedCards.value.size === pairs * 2;
-});
+import { onMounted } from 'vue'
+import { useGetStatus } from '~/composables/getStatus'
 
 
-const timer = ref(60); 
-const score = ref(0); 
+const isGameRunning = ref(false)
+const openedCards = ref(new Set<number>())
+const matchedCards = ref(new Set<number>())
+const moves = ref(0)
+const cards = ref([])
+const score = ref(0)
+
+
+const timer = ref(90); 
+
+const getStatus = useGetStatus(openedCards, matchedCards)
+const openCard = useOpenCard(
+  isGameRunning, openedCards, matchedCards, moves, cards, score
+)
 
 const difficulties = {
   easy: { pairs: 4, time: 60 },
@@ -29,14 +34,16 @@ import { watch } from 'vue';
 
 
 watch(selectedDifficulty, () => {
+  const { time } = difficulties[selectedDifficulty.value];
+  timer.value = time;         
   resetGame(true); 
 });
 
 // const bestScore = ref(Number(localStorage.getItem('bestScore')) || 0);
 const bestScore = ref(0);
 
-const isGameRunning = ref(false); 
 let timerInterval: NodeJS.Timeout | null = null;
+
 
 function resetGame(keepTimer = false) {
   moves.value = 0;
@@ -67,7 +74,9 @@ function startGame() {
   const { time } = difficulties[selectedDifficulty.value];
   timer.value = time;
 
-  resetGame();
+  onMounted(() => {
+  resetGame()
+})
   isGameRunning.value = true;
 
   timerInterval = setInterval(() => {
@@ -91,6 +100,7 @@ if (matchedCards.value.size === pairs * 2) {
 
 function endGame() {
   isGameRunning.value = false;
+  timer.value = 0;    
 
   if (timerInterval) {
     clearInterval(timerInterval);
@@ -103,101 +113,55 @@ function endGame() {
   }
 }
 
-function openCard(index) {
-  if (!isGameRunning.value || openedCards.value.has(index)) return;
-
-  moves.value += 1;
-  openedCards.value.add(index);
-
-  if (openedCards.value.size === 2) {
-    const [firstIndex, secondIndex] = [...openedCards.value.values()];
-    if (cards.value[firstIndex].name === cards.value[secondIndex].name) {
-      matchedCards.value.add(firstIndex);
-      matchedCards.value.add(secondIndex);
-      score.value += 10;
-    }
-
-    setTimeout(() => {
-      openedCards.value.clear();
-    }, 1000);
-  }
-}
-
-function getStatus(index) {
-  if (openedCards.value.has(index)) {
-    return 'opened';
-  }
-
-  if (matchedCards.value.has(index)) {
-    return 'matched';
-  }
-
-  return 'closed';
-}
-
 const CLOSE_TIMEOUT = 1000;
 const hasTwoCardsOpened = computed(() => openedCards.value.size === 2);
-watch(hasTwoCardsOpened, (areTwoCardsOpened) => {
-  if (!areTwoCardsOpened) {
-    return;
-  }
-
-  setTimeout(() => {
-    openedCards.value.clear()
-  }, CLOSE_TIMEOUT);
-
-  const [firstIndex, secondIndex] = [...openedCards.value.values()];
-  if (cards.value[firstIndex].name === cards.value[secondIndex].name) {
-    matchedCards.value.add(firstIndex);
-    matchedCards.value.add(secondIndex);
-  }
-});
 
 resetGame();
 </script>
 
 <template>
   <div class="main">
-    <div class="game">
-      <h1>Memory Game</h1>
+   <div class="game">
+  <h1>Memory Game</h1>
 
-      <div class="game-info">
-        <div>Score: {{ score }}</div>
-        <div>Best Score: {{ bestScore }}</div>
-      </div>
-      <div class="game-timer">
-        
-        <div>Time Left: {{ timer }}s</div>
-      </div>
-      <div class="board">
-        <GamesMemoryCard
-            v-for="(card, index) in cards"
-            :key="index"
-            :status="getStatus(index)"
-            :disabled="hasTwoCardsOpened || !isGameRunning"
-            :image="card.image"
-            @click="openCard(index)"
-        />
-      </div>
+  <div class="game-info">
+    <div>Score: {{ score }}</div>
+    <div>Best Score: {{ bestScore }}</div>
+  </div>
+  <div class="game-timer">
+    <div>Time Left: {{ timer }}s</div>
+  </div>
+  <div class="board">
+    <GamesMemoryCard
+      v-for="(card, index) in cards"
+      :key="index"
+      :status="getStatus(index)"
+      :disabled="hasTwoCardsOpened || !isGameRunning"
+      :image="card.image"
+      @click="openCard(index)"
+    />
+  </div>
 
-<div class="difficulty-select">
-  <label for="difficulty">Difficulty:</label>
-  <select v-model="selectedDifficulty" id="difficulty" :disabled="isGameRunning">
-    <option value="easy">Easy</option>
-    <option value="medium">Medium</option>
-    <option value="hard">Hard</option>
-  </select>
+<div v-if="!isGameRunning && timer === 0" class="overlay">
+  <div class="overlay-content">
+    <h2>Game over!</h2>
+    <div>Your score: {{ score }}</div>
+    <button @click="startGame">Reset</button>
+  </div>
 </div>
 
+  <div class="difficulty-select">
+    <label for="difficulty">Difficulty:</label>
+    <select v-model="selectedDifficulty" id="difficulty" :disabled="isGameRunning">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
 
-      <button v-if="!isGameRunning" @click="startGame">Start Game</button>
-      <button v-else @click="resetGame">Reset Game</button>
-
-      <div v-if="!isGameRunning && timer.value === 0" class="end-message">
-        Time's up! Your score: {{ score }}
-      </div>
-
-    </div>
+  <button v-if="!isGameRunning" @click="startGame">Start Game</button>
+  <button v-else @click="endGame">End Game</button>
+</div>
 
   </div>
 </template>
@@ -220,7 +184,7 @@ resetGame();
   align-items: center;
   flex-direction: column;
   padding: 20px;
-
+ position: relative; 
 }
 
 
@@ -365,6 +329,51 @@ button:hover {
   padding: 5px;
   border-radius: 5px;
   font-size: 1rem;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;     
+  height: 100%;  
+  background: rgba(10, 10, 10, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 10px;
+}
+
+.overlay-content {
+  background: #181c24;
+  color: #fff;
+  padding: 2em 3em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #000;
+  text-align: center;
+  border: 3px solid #fff;
+}
+
+.overlay-content h2 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+.overlay-content button {
+  margin-top: 1em;
+  padding: 0.5em 2em;
+  font-size: 1.1em;
+  border-radius: 8px;
+  border: none;
+  background: #fff;
+  color: #181c24;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.overlay-content button:hover {
+  background: #eee;
 }
 
 </style>
