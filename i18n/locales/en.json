@@ -16,11 +16,19 @@
     "emailConfirmation:resend:timeout": "Resend code in {time}",
     "emailConfirmation:approve": "Confirm"
   },
+  "account": {
+    "profile": "Profile",
+    "confirm": "Confirm"
+
+  },
   "field": {
     "email": "Email",
     "password": "Password",
     "username": "Username",
-    "code": "Code"
+    "code": "Code",
+    "age": "Age",
+    "phone": "Phone",
+    "country": "Country"
   },
   "validation": {
     "required": "{field} is required",
@@ -28,7 +36,9 @@
     "min": "{field} must be at least {length} characters",
     "max": "{field} must be at most {length} characters",
     "password": "Password must contain only Latin letters and numbers",
-    "username": "Username must contain only Latin letters"
+    "username": "Username must contain only Latin letters",
+    "phone": "Invalid format"
+
   },
   "games": {
     "tetris": "Tetris",

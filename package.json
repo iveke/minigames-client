@@ -1,6 +1,10 @@
 {
   "name": "@iveke/g-mini",
   "version": "0.1.0",
+  "description": "",
+  "main": "index.mjs",
+  "author": "",
+  "license": "",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   },
@@ -12,7 +16,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "test": "vitest"
+    "test": "vitest",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@netlify/functions": "^3.0.4",
@@ -43,6 +49,7 @@
     "@vue/test-utils": "^2.4.6",
     "happy-dom": "^17.4.4",
     "jsdom": "^26.0.0",
+    "msw": "^2.7.5",
     "playwright-core": "^1.51.1",
     "vitest": "^3.1.1"
   }
