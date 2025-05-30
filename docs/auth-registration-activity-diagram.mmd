@@ -1,0 +1,80 @@
+---
+title: Activity Diagram for Registration and Login with Email Confirmation
+---
+
+flowchart TD
+    Start([Start])
+    
+    %% Registration
+    RegReq[User sends registration data]
+    CreateUser[Create user]
+    GenerateCode[Generate email verification code]
+    SendEmail[Send email with verification code]
+    GenerateRegToken[Generate JwtToken for auth]
+    RegSuccess[Return token to user]
+    
+    %% Login
+    LoginReq[User sends login data]
+    FindUser[Find user by email]
+    UserNotFound[/Return "UNAUTHORIZED"/]
+    VerifyPassword{Verify password?}
+    PasswordFail[/Return "INVALID PASSWORD"/]
+    GenerateLoginToken[Generate JwtToken]
+    ReturnLoginData[Return token]
+    
+    %% Confirm Email
+    ConfirmEmailReq[User sends confirmation code]
+    CheckCode{Code matches with email verification code?}
+    CodeFail[/Return "INCORRECT CODE"/]
+    UpdateConfirmEmail[Confirm user's email]
+    ConfirmEmailSuccess[Return updated user]
+    
+    %% Send code again
+    SendCodeReq[User requests to resend code]
+    CheckUserAuth{User is authorized?}
+    Unauthorized[/Return "UNAUTHORIZED"/]
+    CheckAlreadyConfirmed{Confirmed email?}
+    AlreadyConfirmed[/Return "EMAIL ALREADY CONFIRMED"/]
+    SendCode[Send code to email]
+    SendCodeFail[/Return "SENDING TO EMAIL FAILED"/]
+    SendCodeSuccess[/Return "OK"/]
+    
+    End([End])
+
+    Start --> RegReq
+    RegReq --> CreateUser
+    CreateUser --> GenerateCode
+    GenerateCode --> SendEmail
+    SendEmail --> GenerateRegToken
+    GenerateRegToken --> RegSuccess
+    RegSuccess --> LoginReq
+    
+    LoginReq --> FindUser
+    FindUser -- not found --> UserNotFound
+    FindUser -- found --> VerifyPassword
+    VerifyPassword -- no --> PasswordFail
+    VerifyPassword -- yes --> GenerateLoginToken
+    GenerateLoginToken --> ReturnLoginData
+    ReturnLoginData --> ConfirmEmailReq
+    
+    ConfirmEmailReq --> CheckCode
+    CheckCode -- no --> CodeFail
+    CheckCode -- yes --> UpdateConfirmEmail
+    UpdateConfirmEmail --> ConfirmEmailSuccess
+    ConfirmEmailSuccess --> SendCodeReq
+    
+    SendCodeReq --> CheckUserAuth
+    CheckUserAuth -- no --> Unauthorized
+    CheckUserAuth -- yes --> CheckAlreadyConfirmed
+    CheckAlreadyConfirmed -- yes --> AlreadyConfirmed
+    CheckAlreadyConfirmed -- no --> SendCode
+    SendCode -- no --> SendCodeFail
+    SendCode -- yes --> SendCodeSuccess
+    SendCodeSuccess --> End
+
+    UserNotFound --> End
+    PasswordFail --> End
+    CodeFail --> End
+    Unauthorized --> End
+    AlreadyConfirmed --> End
+    SendCodeFail --> End
