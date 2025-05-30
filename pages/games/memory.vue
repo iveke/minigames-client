@@ -4,6 +4,9 @@ import {symbols} from '~/assets/images/symbols'
 useHead({
   title: 'Memory',
 })
+onMounted(() => {
+  resetGame()
+})
 import { onMounted } from 'vue'
 import { useGetStatus } from '~/composables/getStatus'
 
@@ -73,25 +76,20 @@ function startGame() {
   score.value = 0;
   const { time } = difficulties[selectedDifficulty.value];
   timer.value = time;
-
-  onMounted(() => {
-  resetGame()
-})
+  resetGame(true);
   isGameRunning.value = true;
 
   timerInterval = setInterval(() => {
     if (timer.value > 0) {
       timer.value -= 1;
 
-    
       const { pairs } = difficulties[selectedDifficulty.value];
-if (matchedCards.value.size === pairs * 2) {
-  timer.value += 5;
-  score.value += 20; // бонус за повний рівень — опційно
-  resetGame(true);
-  isGameRunning.value = true;
-}
-
+      if (matchedCards.value.size === pairs * 2) {
+        timer.value += 5;
+        score.value += 20;
+        resetGame(true);
+        isGameRunning.value = true;
+      }
     } else {
       endGame();
     }
