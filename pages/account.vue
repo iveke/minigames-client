@@ -150,6 +150,7 @@ onMounted(() => {
 <style scoped>
 .main {
   display: block;
+  padding-left: 128px;
 }
 
 input {
