@@ -74,11 +74,11 @@ watch(() => auth.isAuthorized, (newValue) => {
   }
 })
 
-onMounted(() => {
-  age.value = auth.userData?.age ? auth.userData.age : null;
-  country.value = auth.userData?.country ? auth.userData.country : '';
-  phone.value = auth.userData?.phone ? auth.userData.phone : '';
-})
+// onMounted(() => {
+//   age.value = auth.userData?.age ? auth.userData.age : null;
+//   country.value = auth.userData?.country ? auth.userData.country : '';
+//   phone.value = auth.userData?.phone ? auth.userData.phone : '';
+// })
 </script>
 
 <template>

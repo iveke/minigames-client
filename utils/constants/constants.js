@@ -6,7 +6,7 @@ export const gameStates = {
 }
 export const games = {
     tetris: 1,
-
+    memory: 2,
 }
 
 
