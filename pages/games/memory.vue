@@ -96,9 +96,14 @@ function startGame() {
   }, 1000);
 }
 
+// const game = useGameStore();
+// game.gameID = 2
 function endGame() {
   isGameRunning.value = false;
-  timer.value = 0;    
+  timer.value = 0;
+  // game.duration = timer.value;
+  // game.level = 0;
+
 
   if (timerInterval) {
     clearInterval(timerInterval);

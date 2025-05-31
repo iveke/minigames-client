@@ -50,9 +50,12 @@ const [phone, phoneAttrs] = defineField('phone');
 
 
 const isSameValues = computed(() => {
-  return auth.userData?.age === values.age &&
-      auth.userData?.country === values.country &&
-      auth.userData?.phone === values.phone;
+  if (auth.userData !== null) {
+    return auth.userData?.age === age.value &&
+        auth.userData?.country === country.value &&
+        auth.userData?.phone === phone.value;
+  }
+  return false
 });
 
 const state = ref(0)
