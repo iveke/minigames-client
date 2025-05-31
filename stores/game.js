@@ -1,5 +1,6 @@
 import {useFormatNumbers} from "~/composables/useFormatNumbers.js";
 import {gameStates} from "~/utils/constants/constants.js";
+import {useGameService} from "~/services/game.js";
 
 export const useGameStore = defineStore('game', {
     state: () => ({
@@ -113,7 +114,7 @@ export const useGameStore = defineStore('game', {
             this.SetPauseTimeStamp()
             this.CustomPause()
         },
-        GameOver() {
+        async GameOver() {
             this.gameState = gameStates.GAME_OVER
             this.SetPauseTimeStamp()
             this.CustomGameOver()
@@ -121,7 +122,7 @@ export const useGameStore = defineStore('game', {
             const authStore = useAuthStore()
 
             if (authStore.isAuthorized) {
-                const response = this.SaveResult(authStore.token)
+                const response = await this.SaveResult(authStore.token)
                 console.log(response)
             }
         },
@@ -186,23 +187,28 @@ export const useGameStore = defineStore('game', {
             const dateTime = new Date().toISOString()
 
             const jwtBearer = `Bearer ${token}`
+            // const body = {
+            //     gameId: this.gameID,
+            //     playTime: dateTime,
+            //     points: this.points,
+            //     duration: this.duration,
+            //     level: this.level,
+            // }
             const body = {
                 gameId: this.gameID,
-                userId: this.userId,
-                playtime: dateTime,
+                playTime: dateTime,
                 points: this.points,
                 duration: this.duration,
                 level: this.level,
             }
+            const game = useGameService()
+            const response = await game.postResult(body)
 
+            if (!response.ok) {
+                console.error(response)
+            }
 
-            return ({
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': jwtBearer
-                },
-                data: body,
-            })
+            return response
 
         },
 

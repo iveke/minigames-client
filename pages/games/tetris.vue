@@ -8,11 +8,14 @@ import {games} from "~/utils/constants/constants.js";
 import Queue from "~/utils/queue.js";
 import {useGameStore} from "~/stores/game.js";
 import {matrixTrim} from "~/composables/matrixTrim.js";
+import {useAuthStore} from "~/stores/auth.js";
 
 useHead({
   title: 'Тетріс',
 })
 //
+const auth = useAuthStore();
+
 const game = useGameStore()
 game.DefineGameID(games.tetris)
 
@@ -72,7 +75,7 @@ function GetRandomTetramino() {
   return randomTetramino
 }
 
-function GenerateNextTetramino() {
+async function GenerateNextTetramino() {
   const nextTetramino = GetRandomTetramino()
 
   next.value.Enqueue(nextTetramino)
@@ -80,7 +83,7 @@ function GenerateNextTetramino() {
 
 
   if (tetraminoCollider().Overlap()) {
-    game.GameOver()
+    await game.GameOver()
   }
 }
 
@@ -315,6 +318,9 @@ onBeforeRouteLeave(() => {
                }"
         >
           <h2>Game over!</h2>Your points: {{ game.formattedPoints }}
+          <br>
+          <div v-if="auth.isAuthorized">Result was saved!</div>
+          <div v-else>Sign up to save results. <NuxtLink :to="localePath('/signup')">{{ t('auth.toSignup')}}</NuxtLink></div>
         </FunctionalModal>
         <GamesTetrisGrid :board :currentTetromino/>
       </div>
