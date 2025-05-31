@@ -89,8 +89,8 @@ watch(() => auth.isAuthorized, (newValue) => {
     <h1>{{ t('account.profile') }}</h1>
     <!--  route: {{ route.fullPath }} <br>-->
     <br>
-    <h2>{{ auth.userData.username }}</h2>
-    <label>Email: {{ auth.userData.email }}</label><br>
+    <h2>{{ auth.userData?.username }}</h2>
+    <label>Email: {{ auth.userData?.email }}</label><br>
 <!--    <label>Age: {{ auth.userData.age }}</label><br>-->
 <!--    <label>Country: {{ auth.userData.country }}</label><br>-->
 <!--    <label>Phone: {{ auth.userData.phone }}</label><br>-->
