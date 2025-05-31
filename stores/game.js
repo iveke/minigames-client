@@ -201,6 +201,7 @@ export const useGameStore = defineStore('game', {
                 duration: this.duration,
                 level: this.level,
             }
+            console.log(body)
             const game = useGameService()
             const response = await game.postResult(body)
 
